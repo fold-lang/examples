@@ -1,0 +1,27 @@
+
+
+binary_search :: {Comparable a} [a] -> a -> Int?
+binary_search haystack needle = search 0 (#haystack - 1) haystack needle
+  where search low high haystack needle =
+    let mid = (low + high) / 2 in:
+      if | high < low              -> None
+         | haystack # mid > needle -> search low (mid - 1)  haystack needle
+         | haystack # mid < needle -> search (mid + 1) high haystack needle
+         | otherwise               -> Some mid
+
+
+function binary_search {Eq T} :: [T] -> T -> Int?
+function binary_search haystack needle
+    search 0 (#haystack - 1) haystack needle where
+    search low high haystack needle =
+        mid = (low + high) / 2
+        if | high < low              -> None
+           | haystack # mid > needle -> search low (mid - 1)  haystack needle
+           | haystack # mid < needle -> search (mid + 1) high haystack needle
+           | otherwise               -> Some mid
+end
+
+protocol Comparable a
+
+end
+instance

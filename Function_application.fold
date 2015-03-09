@@ -1,0 +1,30 @@
+--
+-- Function application
+--
+
+-- Math-style
+IO.write(String.join(map(show, args), with: sep) + end, file: IO.stdout)
+
+-- Ruby Style, with commas
+IO.write (String.join (map show, args), with: sep) + end, file: IO.stdout
+
+-- Haskell-style
+IO.write ((String.join (map show args) with: sep) + end) file: IO.stdout)
+
+IO.write $ (String.join (map show args) with: sep) + end) file: IO.stdout
+
+-- S-expressions
+(IO.write ((String.join (map show args) with: sep) + end) file: IO.stdout))
+
+
+-- Haskell-style with application operator
+IO.write: (String.join (map show args) with: sep) + end
+	file: IO.stdout
+
+"Docstring..."
+function print args... (sep :: String = " ") (end :: String = "\n") -> Unit:
+	IO.write: (String.join (map show args) with: sep) + end
+		file: IO.stdout
+end
+
+print: "Hello" " " "World" "!"

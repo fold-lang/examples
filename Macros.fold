@@ -1,0 +1,11 @@
+
+
+{ define-method ?class:name . ?name:name (?params:*)
+      ?:body
+    end } =>
+  { define method ?name (?=self :: ?class, ?params)
+      ?body
+    end }
+
+macro (class::Symbol) . (attribute::Symbol) ()
+

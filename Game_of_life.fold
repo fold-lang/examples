@@ -1,0 +1,44 @@
+-- http://rhnh.net/2012/01/02/conway's-game-of-life-in-haskell
+
+load Control.Monad only: replicate
+load System.Random
+load World only: (World, Loc)
+load World as: W
+
+-- Generic utility functions
+
+count {Eq a} :: a -> [a] -> Int
+count x xs = length (filter (x ==) xs)
+
+-- Game of Life
+
+type Cell_State {Eq, Show} = Alive | Dead
+
+random_cell :: IO Cell_State
+random_cell = do
+  x <- random_io
+  return (x ? Alive : Dead)
+
+random_world :: Int -> Int -> IO (World Cell_State)
+random_world width height = do
+  states <- replicate (width * height) random_cell
+  let bounds = ((0, 0), (width - 1, height - 1))
+  return : W.from_list bounds W.Torus states
+
+neighborsAlive :: World CellState -> Loc -> Int
+neighborsAlive w x = count Alive neighborStates
+  where neighborStates = map cellAt (neighbors x)
+        neighbors = W.neighbors W.mooreNeighbors w
+        cellAt = W.cellAt w
+
+transition :: CellState -> Int -> CellState
+transition Dead  n | n == 3           = Alive
+transition Alive n | n == 2 || n == 3 = Alive
+transition _ _                        = Dead
+
+evolveCell :: World CellState -> Loc -> CellState -> CellState
+evolveCell w x s = transition s (neighborsAlive w x)
+
+renderCell :: CellState -> Char
+renderCell Alive = '@'
+renderCell Dead  = ' '

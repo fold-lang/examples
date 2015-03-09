@@ -1,0 +1,61 @@
+--
+-- Currying
+-- http://rosettacode.org/wiki/Currying#Fold
+--
+-- http://en.wikipedia.org/wiki/Currying
+-- https://github.com/JuliaLang/julia/issues/554
+
+Fold supports natural parameter currying.
+
+--
+-- (((curry +) 3) 2) ; =>5
+
+
+sum x y = x + y
+
+alter_elements = !(map ~ [1, 2, 3])
+
+alter_elements (+ 1)
+--> [2, 3, 4]
+
+--> elements_length = \ x -> map length ~1
+
+~1 + ~1
+
+elements_length [[1, 2, 3], [1, 2], [1]]
+
+
+def visits_duration_by_device(visits_list: [Visits]) -> [Detections]:
+    durations = lambda V: list(map(lambda v: last(v) - first(v), V))
+    return map(star(to_argn(durations, n=1)), visits_list)
+
+
+visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]}
+visits_durations_by_device visits_by_device =
+	visit_duration = \v -> (last v) - (first v)
+	map_values (\V -> map visit_duration V) visits_by_device
+	map_values \(map visit_duration ~) visits_by_device
+
+
+visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]} =
+	map_values (map (\[first, ... , last] -> first - last))
+
+
+sum = a b -> a + b
+
+map (x -> sum 3 x) [1, 2, 3]
+
+map sum 3 [1, 2, 3]
+
+map (sum 3 ~) [1, 2, 3]
+
+map {sum 3 ~} [1, 2, 3]
+
+
+
+
+->   binding
+=>   application
+
+-- http://opendylan.org/documentation/library-reference/dylan/alternative-curry-syntax.html
+

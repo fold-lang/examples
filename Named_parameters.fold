@@ -1,0 +1,83 @@
+-- 
+-- Named parameters
+-- http://rosettacode.org/wiki/Named_parameters#Fold
+--
+
+- Implementation:
+    - records
+    - mixfix operators
+
+
+## Records
+
+    if (a > 3) then: "yes" else: "no"
+
+
+
+join (s1::String) (to s2::String) (with joiner::String = " ") -> String =
+    s1 + joiner + s2
+
+
+join (s1::String) (to s2::String) (with joiner::String = " ") -> String =
+
+
+join "hello" to: "world" with: ", "
+join("hello", to: "world", with: ", ")
+
+
+
+range (from start = 0) (to stop) (by step = 1) =
+    start == stop
+        ? []
+        : [start, (range from: (start + 1) to: stop by: step)...]
+
+range :: from: Int -> to: Int -> by: Int
+
+
+
+
+let surround string (border = `Double) (padding = 0) =
+    print ul (ho ^ (|string| + 2 * padding)) ur "\n"
+          ve (" " ^ padding) string (" " ^ padding) ve "\n"
+          dl (ho ^ (|string| + 2 * padding)) dr
+    where ve, ho, ul, ur, dl, dr = border =>
+    | `Round  -> ("\u2502", "\u2500", "\u256d", "\u256e", "\u2570", "\u256f")
+    | `Bold   -> ("\u2503", "\u2501", "\u250F", "\u2513", "\u2517", "\u251b")
+    | `Double -> ("\u2551", "\u2550", "\u2554", "\u2557", "\u255a", "\u255d")
+    | `Dotted -> ("\u254e", "\u254c", "\u250c", "\u2510", "\u2514", "\u2518")
+    | `Cross  -> ("\u2502", "\u2500", "\u253c", "\u253c", "\u253c", "\u253c")
+
+
+    -> surround "Hello" padding: 1 border: `double
+    ╔═══════╗
+    ║ Hello ║
+    ╚═══════╝
+
+"hello" |> capitalize |> surround with: ("***", "***") |> print
+
+"hello"
+    => capitalize
+    >> surround with: ("***", "***")
+    >> print
+
+"hello" => capitalize
+           (surround with: ("***", "***"))
+           print
+
+dot =
+  scale 2 (move (20, 20) (filled blue (circle 10)))
+
+
+dot =
+  circle 10
+    |> filled blue
+    |> move (20, 20)
+    |> scale 2
+
+
+dot =
+  circle 10
+    => filled blue
+    >> move (20, 20)
+    >> scale 2
+

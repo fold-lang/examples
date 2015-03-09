@@ -1,0 +1,166 @@
+--
+-- Conditional structures
+-- http://rosettacode.org/wiki/Conditional_structures#Metaphor
+--
+
+
+cond: x > 2 -> "Really big."
+    | x < 2 -> "To small."
+    | *     -> "Not interessted."
+
+
+if cond : 1 else: 2 + 1
+
+((if (x > 3)) (1 (else : 2)))
+
+((if (x > 3)) 1) (else : 2)
+
+my_else = else "something else"
+
+if (x > 3): "yes" my_else
+
+
+if (x > 2) "Hello" "No"
+
+f x y z
+
+f : x : y : z
+
+((f : x + 5) : y) : z
+
+
+((if (x > 3)) : h1: "Hello") (else : 2)
+
+---
+if :: bool -> then: a -> else: a -> a
+---
+
+if (user is logged_in):
+    p: "Hello ~(user.name)!"
+else:
+    p: "Please sign in."
+
+-->
+
+if_cond : p : "Hello ~(user.name)!"
+else:
+    p: "Please sign in."
+
+-->
+
+(if_cond p) : "Hello ~(user.name)!"
+else:
+    p: "Please sign in."
+
+-->
+
+fn1 arg1: expr1 arg2: (fn2 arg1: expr1) arg3: expr3
+
+(if a)  x  else  y
+
+    ^   ^   ^    ^
+    |   |   |    |
+
+    (   x   ,    y)
+
+(if_cond :: then: a -> else: a -> a) p: "Hello ~(user.name)!"
+else:
+    p: "Please sign in."
+
+-- At this point the function application operation tries to match the named argument.
+-- The provided function has name `p`, which it cannot match, and thus it uses the
+-- application of `p` as a parameter of `then`.
+-- It is important to note that the name checking is done on the type level, as it
+-- will be ilustrated by the `my_else` example.
+
+
+if (user is logged_in):
+    (p "Hello ~(user.name)!")
+else:
+    (p "Please sign in.")
+
+
+parser parse infix_operator
+
+
+map f::(a -> b) l::[a]
+
+
+2 + 2
+
+
+function a::int div b::int -> int
+
+end
+
+2 div 3
+
+
+
+x::a -> y::b -> z::c -> d
+
+
+
+name :: Int -> name :: Int ->
+
+(sum x)::Int -> (with y)::Int -> Int
+
+-> sum x::Int -> with y::Int -> Int
+-> sum 3 with 2
+-> if cond::`Bool -> then::`a -> else::`a -> `a
+
+
+-- # Prefix Parameter Annotation
+--
+-- Any function or lambda parameter can be prexifed wih
+
+    p x :: a -> p x :: a
+
+-- The
+
+--
+-> divide a::Int ->
+       by b::Int -> Int
+
+-> divide 10 2
+-> divide 10 by: 2
+
+--
+-> if cond::Bool ->
+      then::a ->
+      else::a -> a
+
+
+load Lang (if:then:else)
+
+
+if :: Bool -> a -> else alternative::a -> a
+
+if predicate::Bool (then consequent::a) (else alternative::a) -> a =
+
+
+
+if (x > 3) then:
+    "Too big"
+else:
+    "Okay"
+
+
+-- With two parameter annotations:
+function div a by b
+
+
+
+function if cond::`Bool -> then::`a -> else::`a -> `a
+    `if %(not cond) then:
+end
+
+if (a > 3) then:
+    3
+else:
+    4
+
+
+
+get "/main/:name" do:
+

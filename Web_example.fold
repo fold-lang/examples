@@ -1,0 +1,34 @@
+
+open Core_kernel.Std
+open Opium.Std
+
+type Person =
+  { name :: String
+     age :: Int }
+
+
+let print_param = put "/hello/:name" do: req ->
+  `String ("Hello " + param req "name")
+
+
+let print_person = get "/person/:name/:age": req ->
+  let person = {
+    name = param req "name";
+    age = "age" |> param req |> Int.of_string;
+  } in
+  `Json (person |> json_of_person |> Ezjsonm.wrap) |> respond'
+end
+
+let main =
+  App.empty => print_param
+            >> print_person
+            >> App.run_command
+
+
+
+get "/analytics/<metric_name::String>/<date::Date>" do req =>
+  div: h1 {style = {font = `Helvetica, color = #223322}}:
+    Response req.metric_name
+end
+
+

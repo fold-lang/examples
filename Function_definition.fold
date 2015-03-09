@@ -1,0 +1,376 @@
+--
+-- Function definition
+-- http://rosettacode.org/wiki/Function_definition#Metaphor
+--
+
+
+-- In a simple curried function definition:
+function f x y z
+
+-- The second token, `f` is by default parsed as a parameter annotation.
+
+-- Consider the following example:
+function div x y
+
+-- Is parsed as:
+function div x (by y)
+--        ^  ^  ^
+--        |  |  |
+--        |  |  `- annotated parameter name
+--        |  `- simple parameter name
+--        `- function name
+
+-- With types:
+function (div x::Int) (y::Int)
+
+-- Functions with more than two parameters:
+function range start stop step
+
+-- Here is the version with types and default values.
+function range (start::Int = 0) (stop::Int) (step::Int = 1)
+
+-- The functon can be called like this:
+
+range 100           -- Only the `stop` argument passed.
+range 0 100         -- First two arguments passed, the `step` is default.
+range 0 100 2       -- Positional function application.
+
+-- The last example's readability can be improved with parameter annotations.
+range (from start = 0) (to stop::Int) (by step::Int = 1) =
+    ...
+
+range :: from: Int -> to: Int -> by: Int -> [Int]
+
+
+range (from start = 0) (to stop) (by step = true) =
+
+range (from start = 0) (to stop::Int) (by step::Int = 1)
+
+
+case (fetch last_node: n1) of:
+	| Node (3, 2 Tree (Node)) -> "This is what we need."
+	| Node (8, 1 Node)        -> "This is different."
+	| * 					  -> "No, no"
+
+
+if (x > 3) then:
+	"Hello!"
+eles: "Not good."
+
+-- Equivalent because removing then still requires one arg after.
+
+if (x > 3):
+	print "Hello!" "World" sep: "\n";
+eles:
+	"Not good."
+
+
+-> range to: 100
+-> range from: 0 to: 100 by: 2
+
+-- If the parameter annotation and the actual parameter name are the same:
+function hello (name name::String)
+
+hello name: "Robot"
+
+-- Instead, just add a `~` in front of the parameter name as a shortcut:
+function hello (~name::String)
+
+hello name: "Robot"
+
+-- If you have a variable in scope with the same name as a parameter annotation,
+-- you can use `~` to directly apply it.
+
+name = "Robot"
+hello name: name
+hello name
+!@#$%^&*_+\'/.,><~`
+
+-- Instead of:
+name = %"Robot %(full_name # 1)"
+hello ~name: name
+
+-- methods
+function (view::View) did_update context::Context
+
+map (_ + _) (range 100)
+
+type units =
+	| Metric   [@name "metric"]
+	| Imperial [@name "imperial"]
+	@(deriving yojson)
+
+type Units =
+	| Metric   @(name "metric")
+	| Imperial @(name "imperial")
+	deriving: Yojson
+
+
+
+let%lwt x = 3
+
+[%lwt let x = 3]
+
+name = "ppx_string"
+mood = "fine"
+larrys_baby = "perl"
+
+msg = [%str "hello $(name) are you $(mood)?\n"]
+print msg
+
+  print [%str {"
+This also works with new string syntax
+So you can do templates like in $(larrys_baby).
+
+"}];
+
+  print [%str "testing double dollar: $$(name)"];
+  print_newline()
+
+type Longident = [%import: Longident.t] deriving: Show
+
+let () =
+  print_endline (show_longident (Longident.parse "Foo.Bar.baz"))
+
+
+
+If we allow keyword parameters to be also used positionally (perhaps we should do this), we retain all of traditional positional usage and rules. Using Evan's example:
+
+f : from:Int -> String
+g : to:Int -> String
+h : Int with: Int -> String
+
+f from: 2 -- fine, returns String
+f 2 -- also fine, returns String
+f to: 2 -- type error
+h 2 -- fine, returns (with: Int -> String)
+h with:2 -- fine, returns (Int -> String)
+h 1 2 -- fine, returns Int
+
+okay = map (\f -> f 10) [f,g] -- types OK
+what = map (\f -> f (to:10)) [f,g] -- type error
+
+
+move : String -> from: Int -> to: List{Int} -> Result
+ move "a" from: 1 to: [2] -- Result
+3 immediate and readable curried forms without need for "flips":
+ move "a" -- from:Int -> to:List[Int] -> Result
+ move from:1 -- String -> to:List[Int] -> Result
+ move to:[2] -- String -> from:[Int] -> Result
+
+
+move :: String -> from: Int -> to: [Int] -> Result
+
+`(move:from:to)
+
+
+if_then_else_ : ∀ {a} {A : Set a} → Bool → A → A → A
+if true  then t else f = t
+if false then t else f = f
+
+if: Bool -> then: a -> else: a -> a
+
+
+if-then-else- : Bool → A → A → A
+
+if : Bool -> then : A -> else : A -> A
+
+sum : Int -> Int -> Int
+
+Int -> div : Int -> Int
+
+3 div 2
+
+
+(+)
+(if: then: else:)
+
+if:then:else ::
+if: Bool -> then: Lazy a -> else: Lazy a =
+
+
+_+_ : ℕ → ℕ → ℕ
+zero + m = m
+(suc n) + m = suc (n + m)
+
+
+(+) : ℕ → ℕ → ℕ
+zero + m = m
+(suc n) + m = suc (n + m)
+
+
+--
+
+sum x y = x + y
+
+sum(x, y) = x + y
+
+sum[x, y] = x + y
+
+sum x, y = x + y
+
+--
+
+sum(2, 3)
+
+sum[2, 3]
+
+--
+
+visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] =
+	durations = map !((last ~1) - (first ~1))
+	durations = map (x -> (last x) - (first x))
+	map !(~, durations ~) visits_by_device
+
+visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] = {
+	durations = map !((last ~1) - (first ~1))
+	durations = map (x -> (last x) - (first x))
+	map !(~, durations ~) visits_by_device
+}
+
+
+--
+
+-- Space-based application
+IO.write ((String.join (map show args) with: sep) + end) to: IO.stdout
+
+if (detections_count < settings.min_count):
+	log warning "Not enough detections."
+else:
+	log status "Captured `~detections_count` detections."
+
+
+-- Space-based application with commas
+IO.write (String.join (map show args), with: sep) + end, to: IO.stdout
+
+if (detections_count < settings.min_count),
+	log warning "Not enough detections."
+else:
+	log status "Captured `~detections_count` detections."
+
+-- Parentheses as application operator
+IO.write(String.join(map show args, with: sep) + end, file: IO.stdout)
+
+
+get "/analytics/<metric_name::String>/<date::Date>":
+	div: h1 {style = {font = Helvetica}}:
+		request.metric_name
+	end
+end
+
+"Returns a sequence of numbers from start (inclusive) to end (exclusive),
+by step, where start defaults to 0, step to 1."
+function range (from start::Int = 0) (to stop::Int) (by step::Int = 1) -> [Int]:
+	if (start == stop):
+		[]
+	else:
+		[start, (range from: (start + 1) to: stop by: step)...]
+	end
+end
+
+
+function square n:
+  n * n
+end
+
+square n = n * n
+
+square = n => n * n
+
+function square n:
+	log "Will calculate square..."
+	n * n
+end
+
+square n = do
+	log "Will calculate square..."
+	n * n
+end
+
+
+square n = do
+	x <- read_str
+	return x
+end
+
+square = n => do
+	log "Will calculate square..."
+	n * n
+end
+
+
+
+function assoc v::(PersistentVector a) i::Int el::a -> PersistentVector:
+    check_bounds! v i
+    if (i > |v| - |v.tail|):
+        newtail = v.tail # [1..end]
+        newtail # (mask i) := el
+        PersistentVector v.trie newtail v.length
+    else:
+        newnode = v.trie # i # [1..end]
+        newnode # (mask i) := el
+        PersistentVector (assoc v.trie i newnode) v.tail v.length
+    end
+end
+
+
+visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]}
+visits_durations_by_device visits_by_device = do
+	visit_duration = \v => (last v) - (first v)
+	map_values (\V => map visit_duration V) visits_by_device
+end
+
+
+
+---
+
+def greet
+  return "hello"
+end
+
+def greet()
+  return "hello"
+end
+
+def greet():  string
+  return "hello"
+end
+
+def greet(name:string)
+  return "hello " + name
+end
+
+def greet(first:string, last:string)
+  return "hello " + first + " " + last
+end
+
+def greet(first:string, last:string):string
+  return "hello " + first + " " + last
+end
+
+
+---
+
+function greet
+  return "hello"
+end
+
+function greet()
+  return "hello"
+end
+
+function greet():  string
+  return "hello"
+end
+
+function greet(name:string)
+  return "hello " + name
+end
+
+function greet(first:string, last:string)
+  return "hello " + first + " " + last
+end
+
+function greet(first:string, last:string):string
+  return "hello " + first + " " + last
+end
