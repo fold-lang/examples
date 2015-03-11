@@ -1,0 +1,5 @@
+
+type Result a b = Ok a | Error b
+
+
+type

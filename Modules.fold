@@ -102,3 +102,49 @@ module User =
     compare x y =
 
 
+
+-- // --
+
+
+
+module JSONCodec n do
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+interface Codec a =
+    encode :: a -> Result Data
+    decode :: Data -> Result a
+end
+
+module Codec Json =
+    encode = String x => "\"{x}\""
+           | Object x => surround x with ('{', '}')
+           | List xs  => surround (join (map encode xs) with: ',')
+                             with: '"'
+end
+
+module JSONCodec n =
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+module JSONCodec n:
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+JSONCodec n = module
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+module JSONCodec n = {
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+}
+
+JSONCodec n = module {
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+}

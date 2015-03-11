@@ -1,0 +1,17 @@
+
+type Pair a = { first::a, second::a }
+
+Pair :: first: a -> second: a -> Pair a
+
+
+type Person = MkPerson String Int
+
+showPerson : Person -> String
+showPerson p = let MkPerson name age = p in
+                      name ++ " is " ++ show age ++ " years
+                         old"
+
+
+alan = { name: "Alan Turing", age: 32 }
+
+alan = { name: "Alan Turing" age: 32 }

@@ -226,23 +226,25 @@ end
 -- // --
 
 
-(function factorial [n]
+(def factorial [n]
     (log/info "Will calculate factorial of {n}")
     (if (= n 0)
         1
         (* n (factorial (- n 1)))))
 
-function factorial n do
+
+
+def factorial n do
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-let factorial n =
+def factorial n =
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-function factorial n:
+def factorial n:
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
@@ -252,7 +254,7 @@ factorial n = do
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-function factorial n {
+def factorial n = {
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 }
