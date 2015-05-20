@@ -1,13 +1,25 @@
--- 
+--
 -- Parametric polymorphism
 -- http://rosettacode.org/wiki/Parametric_polymorphism#Metaphor
 --
 
 
-type Tree[a] =
-	| Empty
-	| Node (a, Tree[a], Tree[a])
+type<A> Tree A = Empty
+               | Node (Tree A, A, Tree A)
 
-map :: (a -> b) -> Tree{a} -> Tree{b}
+map :: (A -> B) -> Tree A -> Tree B
 map f = Empty => Empty
-      | Node (x, l, r) => Node (f x, map f l, map f r)
+      | Node (l, x, r) => Node (map f l, f x, map f r)
+
+
+-- // --
+
+type<A> Tree A = {
+    Empty
+    Node (Tree A, A, Tree A)
+}
+
+map f = {
+    Empty => Empty
+    Node (l, x, r) => Node (map f l, f x, map f r)
+}

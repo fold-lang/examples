@@ -2,4 +2,18 @@
 type Result a b = Ok a | Error b
 
 
-type
+sum :: Num a => a -> a -> a
+
+sum <Num a> :: a -> a -> a
+
+sum :: (implicit Num) -> Num.t -> Num.t -> Num.t
+
+sum :: <Num a> => Num.t -> Num.t -> Num.t
+
+
+-- Interfaces
+-- https://schani.wordpress.com/2014/06/11/associated-types-considered-weird/
+
+interface (Eq n, Show n) => Graph (g n) {
+    ...
+}

@@ -1,0 +1,22 @@
+-- Pattern-matching
+
+
+fold [1 .. 100] [] { acc i =>
+	case calculate i {
+		Ok x  => [x | acc]
+		Error => acc
+	}
+}
+
+fold [1 .. 100] [] { acc i =>
+	case calculate i {
+		Ok x  => [x | acc]
+		Error => acc
+	}
+}
+
+Enum.reduce list, [], fn(element, acc) ->
+  case some_test(f) do
+    :ok    -> [ f(element) | acc ]
+    :error -> acc
+end

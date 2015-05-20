@@ -1,27 +1,100 @@
+--
+-- Quicksort
+--
 
 
-binary_search :: {Comparable a} [a] -> a -> Int?
-binary_search haystack needle = search 0 (#haystack - 1) haystack needle
-  where search low high haystack needle =
-    let mid = (low + high) / 2 in:
-      if | high < low              -> None
-         | haystack # mid > needle -> search low (mid - 1)  haystack needle
-         | haystack # mid < needle -> search (mid + 1) high haystack needle
-         | otherwise               -> Some mid
+binary_search <A: Eq> : [A] -> A -> A?
+binary_search haystack needle =
+    search 0 (#haystack - 1) haystack needle
+    where search low high haystack needle =
+        let mid = (low + high) / 2 in
+        cond
+            (high < low)             => None
+            (haystack[mid] > needle) => search low (mid - 1)  haystack needle
+            (haystack[mid] < needle) => search (mid + 1) high haystack needle
+            otherwise                => Some mid
+        end
 
 
-function binary_search {Eq T} :: [T] -> T -> Int?
-function binary_search haystack needle
-    search 0 (#haystack - 1) haystack needle where
-    search low high haystack needle =
+binary_search <A: Eq> : [A] -> A -> A?
+binary_search haystack needle = {
+    search low high haystack needle = {
         mid = (low + high) / 2
-        if | high < low              -> None
-           | haystack # mid > needle -> search low (mid - 1)  haystack needle
-           | haystack # mid < needle -> search (mid + 1) high haystack needle
-           | otherwise               -> Some mid
-end
+        cond {
+            high < low             => None
+            haystack[mid] > needle => search low (mid - 1)  haystack needle
+            haystack[mid] < needle => search (mid + 1) high haystack needle
+            otherwise              => Some mid
+        }
+    }
+    search 0 (#haystack - 1) haystack needle
+}
 
-protocol Comparable a
+numbers = [1, 2, 2, 7, 8, 5]
+case binary_search numbers 8 {
+    Some x => print "Found number: {x}!"
+    None   => print "Could not find the number!"
+}
 
-end
-instance
+
+
+qsort :: [Int] -> [Int]
+qsort []     = []
+qsort (x:l)  = qsort (filter (<x) l) ++ x : qsort (filter (>=x) l)
+
+goal = qsort [2,3,1,0]
+
+qsort (x:xs) = qsort [y | y <- xs, y < x] ++ [x] ++ qsort [y | y <- xs, y >= x]
+
+qsort [] = []
+qsort [x|xs] = [qsort ys + x | qsort zs]
+    where (ys, zs) = partition (< x) xs
+
+
+qsort = {
+    [] => []
+    [x|xs] => let (ys, zs) = partition (< x) xs in:
+        [qsort ys + x | qsort zs]
+}
+
+
+qsort = {
+    [] => []
+    [x|xs] => {
+        (ys, zs) = partition (< x) xs
+        [qsort ys + x | qsort zs]
+    }
+}
+
+
+qsort = {
+    [] => []
+    [x|xs] => qsort ys ++ [x | qsort zs] where
+                (ys, zs) <- partition (< x) xs]
+}
+
+
+qsort = {
+    [] => []
+    [x|xs] => qsort ys ++ [x | qsort zs]
+        where (ys, zs) <- partition (< x) xs]
+}
+
+qsort [] = []
+qsort [x|xs] = qsort ys ++ [x | qsort zs]
+    where (ys, zs) = partition (< x) xs
+
+qsort [] = []
+    | [x | xs] = qsort ys ++ [x | qsort zs]
+        where (ys, zs) = partition (< x) xs
+
+qsort list = match list {
+    [] => []
+    [x|xs] => qsort ys ++ [x | qsort zs]
+        where (ys, zs) <- partition (< x) xs]
+}
+
+qsort = [] => []
+      | [x|xs] => qsort ys ++ [x | qsort zs]
+        where (ys, zs) <- partition (< x) xs]
+

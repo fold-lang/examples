@@ -1,6 +1,7 @@
--- 
+--
 -- Named parameters
 -- http://rosettacode.org/wiki/Named_parameters#Fold
+-- http://briancarper.net/blog/579/keyword-arguments-ruby-clojure-common-lisp
 --
 
 - Implementation:
@@ -80,4 +81,6 @@ dot =
     => filled blue
     >> move (20, 20)
     >> scale 2
+
+
 

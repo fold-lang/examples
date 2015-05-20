@@ -1,0 +1,5 @@
+-- Tuples
+
+()
+(1, "Hello")
+(name: "Alan", age: 23)

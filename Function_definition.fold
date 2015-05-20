@@ -1,27 +1,172 @@
 --
 -- Function definition
 -- http://rosettacode.org/wiki/Function_definition#Metaphor
+-- http://www.objc.io/issue-16/swift-functions.html
 --
 
+greet :: String -> Void
+greet name = print "Hello, ~name"
+
+-- // --
+
+a a =
+f x y z =
+
+fib :: Int -> Int
+fib = {
+    0 -> 0
+    1 -> 1
+    n -> fib (n - 1) + fib (n - 2)
+}
+
+fib 0 = 0
+  | 1 = 1
+  | n = fib (n - 1) + fib (n - 2)
+
+fib n | n == 0    = 0
+      | n == 1    = 1
+      | otherwise = fib (n - 1) + fib (n - 2)
+
+-- // --
+
+range :: from: Int? -> to: Int -> by: Int? -> [Int]
+range (from start) (to end) (by step) =
+    if (start >= stop)
+        then: []
+        else: [start | range from: (start + 1) to: stop by: step]
+
+
+range :: from: Int? -> to: Int -> by: Int? -> [Int]
+range (from start) (to end) (by step) = do
+    if (start >= stop)
+        then: []
+        else: [start | range from: (start + 1) to: stop by: step]
+end
+
+=> range to: 100
+:: [Int] = [1, 2, 3, 4, 5, ... 99, 100]
+
+=> range from: 2, to: 10, by: 3
+:: [Int] = [2, 5, 8]
+
+
+range :: from: Int? -> to: Int -> by: Int? -> [Int]
+range (from start = 0) (to end) (by step = 1) =
+    let should_continue = start >= stop,
+        default_case    = [],
+        continuation    = range from: (start + 1) to: stop by: step in
+    if should_continue
+        [start | continuation]
+    else
+        default_case
+    end
+
+range (from start = 0) (to end = +Infinity) (by step = 1) -> [Int] =
+    should_continue = start >= stop
+    default_case    = []
+    continuation    = range from: (start + 1) to: stop by: step
+    if should_continue
+        then: [start, continuation...]
+        else: default_case
+
+range :: from: Int? -> to: Int -> by: Int? -> [Int]
+
+
+let sum x y: x + y
+
+
+function range (from start::Int = 0) (to end::Int = +Infinity) (by step::Int = 1) -> [Int] =
+    let should_continue = start >= stop,
+        default_case    = [],
+        continuation    = range from: (start + 1) to: stop by: step in
+    if should_continue
+        [start | continuation]
+    else
+        default_case
+    end
+
+range start end step =
+    let should_continue = start >= stop,
+        default_case    = [],
+        continuation    = range from: start + 1, to: stop, by: step
+    in
+        if should_continue
+            []
+        else
+            default_case
+        end
+    end
+
+
+function range start stop step
+end
+
+range start stop step = do
+end
+
+
+
+
+-- // --
+
+
+factorial :: Int -> Int
+factorial = {
+    0 => 1
+    n => n * factorial (n - 1)
+}
+
+-- // --
+
+take_while <A> :: (A -> Bool) -> [A] -> [A]
+take_while p = {
+    []       => []
+    [x | xs] => p x ? [x | take_while p, xs] : []
+}
+
+-- // --
+
+range :: from: Int? -> to: Int -> by: Int? -> [Int]
+range (from start) (to end) (by step) <- {
+    if (start >= stop)
+        then: []
+        else: [start | range from: (start + 1) to: stop by: step]
+}
+
+-- // --
+
+range :: from: Int? -> to: Int -> by: Int? -> [Int]
+range (from start) (to end) (by step) = do
+    if (start >= stop) then
+        []
+    else
+        [start | range from: (start + 1) to: stop by: step]
+    end
+end
+
+-- // --
+
+map file_list, read \file
+map file_list (read \file)
 
 -- In a simple curried function definition:
-function f x y z
+f x y z = ...
 
 -- The second token, `f` is by default parsed as a parameter annotation.
 
 -- Consider the following example:
-function div x y
+div x y
 
 -- Is parsed as:
-function div x (by y)
---        ^  ^  ^
---        |  |  |
---        |  |  `- annotated parameter name
---        |  `- simple parameter name
---        `- function name
+=> div x (by y)
+-- ^  ^  ^
+-- |  |  |
+-- |  |  `- annotated parameter name
+-- |  `- simple parameter name
+-- `- function name
 
 -- With types:
-function (div x::Int) (y::Int)
+(div x::Int) (y::Int)
 
 -- Functions with more than two parameters:
 function range start stop step
@@ -34,10 +179,12 @@ function range (start::Int = 0) (stop::Int) (step::Int = 1)
 range 100           -- Only the `stop` argument passed.
 range 0 100         -- First two arguments passed, the `step` is default.
 range 0 100 2       -- Positional function application.
+`
 
 -- The last example's readability can be improved with parameter annotations.
 range (from start = 0) (to stop::Int) (by step::Int = 1) =
     ...
+'
 
 range :: from: Int -> to: Int -> by: Int -> [Int]
 
@@ -48,21 +195,21 @@ range (from start = 0) (to stop::Int) (by step::Int = 1)
 
 
 case (fetch last_node: n1) of:
-	| Node (3, 2 Tree (Node)) -> "This is what we need."
-	| Node (8, 1 Node)        -> "This is different."
-	| * 					  -> "No, no"
+    | Node (3, 2 Tree (Node)) -> "This is what we need."
+    | Node (8, 1 Node)        -> "This is different."
+    | *                       -> "No, no"
 
 
 if (x > 3) then:
-	"Hello!"
+    "Hello!"
 eles: "Not good."
 
 -- Equivalent because removing then still requires one arg after.
 
 if (x > 3):
-	print "Hello!" "World" sep: "\n";
+    print "Hello!" "World" sep: "\n";
 eles:
-	"Not good."
+    "Not good."
 
 
 -> range to: 100
@@ -90,20 +237,31 @@ hello name
 name = %"Robot %(full_name # 1)"
 hello ~name: name
 
--- methods
-function (view::View) did_update context::Context
+
+
+
+function (view::View) did_update context::Context with_opitions::({String => Int}?) = {
+    ...
+}
+
+
+my_view did_update my_ctx with_opitions {...}
+
+my_view did_update my_ctx!
+
+
 
 map (_ + _) (range 100)
 
 type units =
-	| Metric   [@name "metric"]
-	| Imperial [@name "imperial"]
-	@(deriving yojson)
+    | Metric   [@name "metric"]
+    | Imperial [@name "imperial"]
+    @(deriving yojson)
 
 type Units =
-	| Metric   @(name "metric")
-	| Imperial @(name "imperial")
-	deriving: Yojson
+    | Metric   @(name "metric")
+    | Imperial @(name "imperial")
+    deriving: Yojson
 
 
 
@@ -134,7 +292,9 @@ let () =
 
 
 
-If we allow keyword parameters to be also used positionally (perhaps we should do this), we retain all of traditional positional usage and rules. Using Evan's example:
+-- If we allow keyword parameters to be also used positionally (perhaps we
+-- should do this), we retain all of traditional positional usage and rules.
+-- Using Evan's example:
 
 f : from:Int -> String
 g : to:Int -> String
@@ -162,18 +322,6 @@ move : String -> from: Int -> to: List{Int} -> Result
 move :: String -> from: Int -> to: [Int] -> Result
 
 `(move:from:to)
-
-
-if_then_else_ : ∀ {a} {A : Set a} → Bool → A → A → A
-if true  then t else f = t
-if false then t else f = f
-
-if: Bool -> then: a -> else: a -> a
-
-
-if-then-else- : Bool → A → A → A
-
-if : Bool -> then : A -> else : A -> A
 
 sum : Int -> Int -> Int
 
@@ -218,14 +366,14 @@ sum[2, 3]
 --
 
 visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] =
-	durations = map !((last ~1) - (first ~1))
-	durations = map (x -> (last x) - (first x))
-	map !(~, durations ~) visits_by_device
+    durations = map !((last ~1) - (first ~1))
+    durations = map (x -> (last x) - (first x))
+    map !(~, durations ~) visits_by_device
 
 visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] = {
-	durations = map !((last ~1) - (first ~1))
-	durations = map (x -> (last x) - (first x))
-	map !(~, durations ~) visits_by_device
+    durations = map !((last ~1) - (first ~1))
+    durations = map (x -> (last x) - (first x))
+    map !(~, durations ~) visits_by_device
 }
 
 
@@ -235,37 +383,37 @@ visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] = {
 IO.write ((String.join (map show args) with: sep) + end) to: IO.stdout
 
 if (detections_count < settings.min_count):
-	log warning "Not enough detections."
+    log warning "Not enough detections."
 else:
-	log status "Captured `~detections_count` detections."
+    log status "Captured `~detections_count` detections."
 
 
 -- Space-based application with commas
 IO.write (String.join (map show args), with: sep) + end, to: IO.stdout
 
 if (detections_count < settings.min_count),
-	log warning "Not enough detections."
+    log warning "Not enough detections."
 else:
-	log status "Captured `~detections_count` detections."
+    log status "Captured `~detections_count` detections."
 
 -- Parentheses as application operator
 IO.write(String.join(map show args, with: sep) + end, file: IO.stdout)
 
 
 get "/analytics/<metric_name::String>/<date::Date>":
-	div: h1 {style = {font = Helvetica}}:
-		request.metric_name
-	end
+    div: h1 {style = {font = Helvetica}}:
+        request.metric_name
+    end
 end
 
 "Returns a sequence of numbers from start (inclusive) to end (exclusive),
 by step, where start defaults to 0, step to 1."
 function range (from start::Int = 0) (to stop::Int) (by step::Int = 1) -> [Int]:
-	if (start == stop):
-		[]
-	else:
-		[start, (range from: (start + 1) to: stop by: step)...]
-	end
+    if (start == stop):
+        []
+    else:
+        [start, (range from: (start + 1) to: stop by: step)...]
+    end
 end
 
 
@@ -278,24 +426,24 @@ square n = n * n
 square = n => n * n
 
 function square n:
-	log "Will calculate square..."
-	n * n
+    log "Will calculate square..."
+    n * n
 end
 
 square n = do
-	log "Will calculate square..."
-	n * n
+    log "Will calculate square..."
+    n * n
 end
 
 
 square n = do
-	x <- read_str
-	return x
+    x <- read_str
+    return x
 end
 
 square = n => do
-	log "Will calculate square..."
-	n * n
+    log "Will calculate square..."
+    n * n
 end
 
 
@@ -316,13 +464,36 @@ end
 
 visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]}
 visits_durations_by_device visits_by_device = do
-	visit_duration = \v => (last v) - (first v)
-	map_values (\V => map visit_duration V) visits_by_device
+    visit_duration = \v => (last v) - (first v)
+    map_values (\V => map visit_duration V) visits_by_device
 end
 
 
+-- // --
 
----
+def greet
+  return "hello"
+end
+
+greet() =
+  return "hello"
+end
+
+greet() -> String = "hello"
+
+def greet(name:String)
+  return "hello " + name
+end
+
+def greet(first:String, last:String)
+  return "hello " + first + " " + last
+end
+
+greet(first: String, last: String) -> String =
+    "hello " + first + " " + last
+
+
+-- // --
 
 def greet
   return "hello"
@@ -349,7 +520,7 @@ def greet(first:string, last:string):string
 end
 
 
----
+-- // --
 
 function greet
   return "hello"
@@ -374,3 +545,494 @@ end
 function greet(first:string, last:string):string
   return "hello " + first + " " + last
 end
+
+-- // --
+
+type List T = {
+    Cons (head: T, tail: List T)
+    Nil
+}
+
+function length = {
+    Cons (_, tail) => 1 + length tail
+    Nil => 0
+}
+
+list_1 = Cons (11, Cons (22, Cons (33, Nil)))
+length test_list == 3
+
+function append l1 l2 = l1 . {
+    Nil => l2
+    Cons (x, tail) => Cons (x, append tail l2)
+}
+
+list_2 = append(test_list, Cons (44, Nil))
+list_2 == Cons (11, Cons (22, Cons (33, Cons (44, Nil))))
+
+
+-- // --
+
+type List T =
+    | Cons (T, List T)
+    | Nil
+
+function length =
+    | Cons (_, tail) => 1 + length tail
+    | Nil => 0
+end
+
+list_1 = Cons (11, Cons (22, Cons (33, Nil)))
+length test_list == 3
+
+function append l1 l2 =
+    case l1:
+        Nil => l2
+        Cons (x, tail) => Cons (x, append tail l2)
+    end
+end
+
+list_2 = append test_list (Cons (44, Nil))
+list_2 == Cons (11, Cons (22, Cons (33, Cons (44, Nil))))
+
+-- // --
+
+(def hello [name]
+    (print ("Hello" + name)))
+
+(def hello
+    [] => (hello "World")
+    [name] => (print ("Hello" + name)))
+
+
+-- // --
+
+
+function hello name
+    print ("Hello" + name)
+end
+
+function
+    hello
+    [] => (hello "World")
+    [name] => (print ("Hello" + name)))
+end
+
+def hello
+    => hello "World"
+    name => print ("Hello" + name)
+end
+
+-- // --
+
+retry callback timeout retries = ...
+
+retry = callback timeout retries ->
+    Log#info
+    repeat retries (-> callback >>= wait for: 5.Time#seconds)
+
+-- // --
+
+run_seq_command :: [Int] -> A -> Bool -> Int -> Unit
+run_seq_command nslots ready n =
+  | Done r => do
+    Log.info "Job %a finished" (slog (string_of_int << V.hash)) n
+    results = M.append n r results
+    running = M.remove n   running
+    if not (M.is_empty running)
+      print_status (M.cardinal results) running
+    end
+    new_ready = (Set (G.succ g n) ++ mutual_exclusion_set n)
+                  |> filter (n => all (n => M.mem n results) (G.pred g n) &&
+                                  empty? (mutual_exclusion_set n \\ map_keys running))
+    loop (nslots + 1) results running (ready ++ new_ready)
+  end
+  | Run (cmd, cont) -> do
+    log "Next task in job %a: %a" (slog (string_of_int @* V.hash)) n
+      (slog OpamProcess.string_of_command) cmd;
+    if OpamProcess.is_verbose_command cmd ||
+       not (OpamGlobals.disp_status_line ()) then
+      OpamMisc.Option.iter
+        (OpamGlobals.msg "%s Command started\n")
+        (OpamProcess.text_of_command cmd);
+    let p =
+      if dry_run then OpamProcess.dry_run_background cmd
+      else OpamProcess.run_background cmd
+    in
+    let running =
+      M.add n (p, cont, OpamProcess.text_of_command cmd) running
+    in
+    print_status (M.cardinal results) running;
+    loop nslots results running ready
+  end
+
+-- // --
+
+[1, 2, 3, 4].map {|x| x > 2 }.first
+
+[1, 2, 3, 4].map (x -> x > 2).first
+
+[1, 2, 3, 4] >> map (x -> x > 2) >> first
+
+[1, 2, 3, 4] => map (x -> x > 2) => first
+
+[1, 2, 3, 4] -> map (x => x > 2) -> first
+
+[1, 2, 3, 4] |> map (x -> x > 2) |> first
+
+[1, 2, 3, 4] | map { \x > 2 } | first
+
+=> [1, 2, 3, 4]
+   (where { \x > 2 })
+   first
+
+select first from: [1, 2, 3, 4] where: x -> x > 2
+
+
+
+-- // --
+
+open Str
+
+def read_line ch
+  try Some (input_line ch)
+    with: End_of_file -> None
+end
+
+def fold_channel f acc ch
+  case (read_line ch)
+    | Some line -> fold_channel f (f line acc) ch
+    | None -> acc
+end
+
+def add_to totals values =
+  case totals
+    | [] -> values
+    | _  -> if length totals == length values
+              then: map (+) totals values
+              else: fail "Inconsistent-length rows"
+end
+
+|| Sums all the values from channel.
+def sum_channel ch
+  values_of_line line = map (::Float) (split line on: ',')
+  fold_channel folder [] ch where
+    folder line acc = add_to acc (values_of_line line)
+  end
+end
+
+|| Reads numbers from a CSV file located at <file_path> and sums all results.
+|| The output is printed in a CSV format to standard output.
+def sum_and_print_file file_path::String -> Unit
+  with chan <- open file_path mode: Read_only
+    result = sum_channel chan
+    print : join (map (::String) result) with: "," ++ "\n"
+  end
+end
+
+def main
+  | [_app, file_path] -> sum_and_print_file file_path
+  | _ -> fail "usage: sum_csv <file>"
+end
+
+main Sys#args
+
+-- // --
+
+let access_counts_to_string access_counts =
+  String.Map.fold access_counts ~init:""
+    ~f:(fun ~key:access ~data:hourly_counts access_str ->
+      List.fold hourly_counts ~init:access_str ~f:(fun hours_str (h, c) ->
+          hours_str ^ (format "%s, %d, %d\n" access (Float.to_int (Time.to_float h)) c)))
+
+def access_counts_to_string access_counts
+  String.Map.fold access_counts
+    init: "" f: \(key access) (data hourly_counts) access_str =>
+        List.fold hourly_counts init: access_str f: \hours_str (h, c) =>
+          hours_str ++ ("%s, %d, %d\n" % (access, Float.to_int (Time.to_float h), c))
+end
+
+-- // --
+
+def x y -> x + y end
+
+fn: x y -> x + y
+
+type Tree
+  Leaf
+  Node (Int, Left, Right)
+end
+
+
+type Tree: do
+  Leaf
+  Node (Int, Left, Right)
+end
+
+
+detections => length
+detections -> length
+detections >> length
+detections |> length
+
+detections => ([] -> [x | xs] -> 1 + length xs)
+detections -> ([] => [x | xs] => 1 + length xs)
+detections |> ([] => [x | xs] => 1 + length xs)
+detections :- ([] => [x | xs] => 1 + length xs)
+detections :> ([] => [x | xs] => 1 + length xs)
+
+detections # ([] => [x | xs] => 1 + length xs)
+detections . ([] => [x | xs] => 1 + length xs)
+detections & ([] => [x | xs] => 1 + length xs)
+detections | ([] => [x | xs] => 1 + length xs)
+detections > ([] => [x | xs] => 1 + length xs)
+
+
+-> name
+
+-- // --
+
+|| Creates a new object given a message passing primitive.
+|| This is very good function.
+function mk_object n_vs
+  msg ->
+    function lookup locals
+      case locals
+        | Empty -> raise: "Message not found: " + msg
+        | Link f r -> if (f.name == m): f.value else: lookup(r)
+    end
+    lookup n_vs
+  end
+end
+
+lookup <A> :: Self => Formula -> Bool -> Int -> A
+
+function self => lookup attrs recursive level
+    ...
+end
+
+db => lookup
+
+db => lookup ("city" == "London" and "age" > 25)
+        : True : 2
+
+db => lookup ("city" == "London" and "age" > 25)
+        $ True $ 2
+
+
+
+function db => lookup
+
+
+
+|| Transforms the integer index in content object by selecting the adequate
+|| content type of the provided index.
+function <Content_type::Collection_type where Content_type.Index::Forward_indext_type>
+    (integer_index_into_content content::Content_type content_index::Int)
+        -> Content_type.Element
+    ...
+end
+
+
+|| Transforms the integer index in content object by selecting the adequate
+|| content type of the provided index.
+function <Content_type::Collection_type where Content_type.Index::Forward_indext_type>
+    integer_index_into_content content::Content_type content_index::Int
+        -> Content_type.Element
+    ...
+end
+
+-- // --
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs >- group_by_access
+       >- xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       >- add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts => `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+["Susanovska", "Riszovsky"]
+    >- tonhos -> escolher_um_tonho_a_sorte tonhos
+    >- pedir_para_dizer_um_disparate >> rir_se_do_disparate disparate
+
+plano = rir_se_do_disparate disparate << pedir_para_dizer_um_disparate
+
+dizer_ola = nome -> print "Olá, " + nome
+
+
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs -> group_by_access
+       -> xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       -> add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts => `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs >> group_by_access
+       >> xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       >> add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs => group_by_access
+       => xs -> add_missing_accesses xs (Spaces.obtain_access_list)
+       => add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function calc_sum ctx xs
+  hourly_counts_by_access =
+    xs => group_by_access
+       => xs -> add_missing_accesses xs (Spaces.obtain_access_list)
+       => add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts -> `Sum (fold (+) 0 (map (#2) hourly_counts)))
+  sum_by_access
+end
+
+
+function calc_sum self xs
+  xs => group_by_access
+     => add_missing_accesses (Spaces.obtain_access_list!)
+     => add_missing_hours_by_access self.date
+     => map ((#2) >> (\case | [] | [x] -> `Sum 0
+                            | counts   -> `Sum (fold (+) 0 counts)))
+end
+
+function calc_sum ctx xs
+  xs | group_by_access
+     | add_missing_accesses (Spaces.obtain_access_list!)
+     | add_missing_hours_by_access ctx.date
+     | map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
+end
+
+
+function calc_sum ctx xs
+  xs -> group_by_access
+     -> add_missing_accesses (Spaces.obtain_access_list!)
+     -> add_missing_hours_by_access ctx.date
+     -> map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
+end
+
+function self -> calc_sum ctx
+  self -> group_by_access
+       -> add_missing_accesses (Spaces.obtain_access_list!)
+       -> add_missing_hours_by_access ctx.date
+       -> map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
+end
+
+function calc_sum ctx xs
+  hourly_counts_by_access =
+    xs => group_by_access
+       => add_missing_accesses \xs (Spaces.obtain_access_list)
+       => add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (\hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs >- group_by_access
+       >- xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       >- improve_the_format >> prepare_for_operation
+       >- add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts => `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs | group_by_access
+       | xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       | add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs . group_by_access
+       . xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       . add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+
+function sum ctx xs
+  hourly_counts_by_access =
+    xs # group_by_access
+       # xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       # add_missing_hours_by_access ctx.date
+  sum_by_access = map hourly_counts_by_access
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
+end
+
+process = >> add_missing_accesses >> add_missing_hours_by_access
+
+<* <*> <+> <$> *** <|> !! ||
+=== ==> <<< >>> <> +++ <- ->
+=> >> << >>= =<< .. ... ::
+-< >- -<< >>- ++ /= ==
+
+
+class Monad m where
+    return :: a -> m a
+     (>>=) :: m a -> (a -> m b) -> m b
+
+-- VIEW
+view :: (Int, Int) -> Turtle -> Element
+view (w,h) turtle =
+  let turtle_pic =
+        to_form (image 96 96 "/turtle.gif")
+          ▷ rotate turtle.angle
+          ▷ move (turtle.x,turtle.y)
+  in
+      layers
+        [ collage w h [turtle_pic]
+        , opacity 0.7 <| fitted_image w h "/water.gif"
+        ]
+
+
+-- VIEW
+view :: (Int, Int) -> Turtle -> Element
+view (w,h) turtle =
+  let turtle_pic =
+        to_form (image 96 96 "/turtle.gif")
+          >- x -> rotate turtle.angle >> not true
+          >= move (turtle.x, turtle.y)
+  in
+      layers
+        [collage w h [turtle_pic],
+         opacity 0.7 : fitted_image w h "/water.gif"]
+
+
+[1, 2, 3, 4, 5] => length
+

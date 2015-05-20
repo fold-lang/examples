@@ -1,32 +1,56 @@
--- 
+--
 -- Binary search
 -- http://rosettacode.org/wiki/Binary_search#Metaphor
 --
 
 
-function {Ord a} binary_search haystack::[a] needle::a -> Int?
-	function recurse low high haystack needle
-		mid = (low + high) / 2
-		if | high < low            -> None
-		   | haystack.mid > needle -> recurse low (mid - 1) haystack needle
-		   | haystack.mid < needle -> recurse (mid + 1) high haystack needle
-		   | otherwise             -> Some mid
-	end
-	recurse 0 (#haystack - 1) haystack needle
+binary_search <Ord T> :: [T] -> T -> Int?
+binary_search haystack needle = do
+    search l h = do
+        m = (low + high) / 2
+        if | (h < l)                 => None
+           | (haystack # m > needle) => search l (m - 1)
+           | (haystack # m < needle) => search (m + 1) h
+           | otherwise               => Some m
+    end
+    search 0 (#haystack - 1)
 end
 
-
-fn binary_search_rec<T: Ord>(haystack: &[T], needle: T) -> Option<uint> {
-    fn recurse<T: Ord>(low: uint, high: uint, haystack: &[T], needle: T) -> Option<uint> {
-        match (low + high) / 2 {
-            _ if high < low => None,
-            mid if haystack[mid] > needle => recurse(low, mid - 1, haystack, needle),
-            mid if haystack[mid] < needle => recurse(mid + 1, high, haystack, needle),
-            mid => Some(mid)
-        }
+binary_search <Ord T> :: [T] -> T -> Int?
+binary_search haystack needle = {
+    search l h = {
+        m = (low + high) / 2
+        if | h < l                 => None
+           | haystack # m > needle => search l (m - 1)
+           | haystack # m < needle => search (m + 1) h
+           | otherwise             => Some m
     }
-    recurse::<T>(0, haystack.len() - 1, haystack, needle)
+    search 0 (#haystack - 1)
 }
+
+
+binarySearch :: Integral a => (a -> Ordering) -> (a, a) -> Maybe a
+binarySearch p (l, h)
+  | h < l = Nothing
+  | otherwise =
+      let mid = (low + high) `div` 2 in
+      case p mid of
+        LT -> binarySearch p (low, mid-1)
+        GT -> binarySearch p (mid+1, high)
+        EQ -> Just mid
+
+
+
+function {Ord a} binary_search haystack::[a] needle::a -> Int?
+  function recurse low high haystack needle
+    mid = (low + high) / 2
+    if | high < low            -> None
+       | haystack.mid > needle -> recurse low (mid - 1) haystack needle
+       | haystack.mid < needle -> recurse (mid + 1) high haystack needle
+       | otherwise             -> Some mid
+  end
+  recurse 0 (#haystack - 1) haystack needle
+end
 
 
 binarySearch :: Integral a => (a -> Ordering) -> (a, a) -> Maybe a

@@ -9,3 +9,38 @@
 
 macro (class::Symbol) . (attribute::Symbol) ()
 
+
+if_then_else_ : ∀ {a} {A : Set a} → Bool → A → A → A
+if true  then t else f = t
+if false then t else f = f
+
+if: Bool -> then: a -> else: a -> a
+
+
+if-then-else- : Bool → A → A → A
+
+if : Bool -> then : A -> else : A -> A
+
+if <Comparable A, B> :: Code A -> then: Code A ->
+if condition consequence alternative =
+    `if {not condition}
+        then: consequence
+        else: alternative
+
+if cond::`Bool -> then::`a -> else::`a -> `a
+    `if %(not cond) then:
+end
+
+unless (a > 3) do:
+    3
+else:
+    4
+
+(+) :: Code A -> Code B -> Code C
+x + y = `(+, [x, y])
+
+
+-> `(2 + {4 + 2})
+ = Code (2 + 6)
+ 
+ 

@@ -1,0 +1,78 @@
+open Batteries_uni
+open List
+
+type Cell = Dead | Alive
+type Grid = [[Cell]]
+
+set_value g::Grid (row, col)::(Int, Int) val::Cell -> Grid = {
+    old_row = at grid row
+    old_row = at grid row
+    new_row = take col old_row + [val] + drop (col + 1) old_row
+    take row grid + [new_row] + drop (row + 1) grid
+}
+
+get_value grid (row,col) =
+    at (at grid row) col
+
+let to_string grid =
+  let string_of_cell = function Dead -> " " | Alive -> "o" in
+  grid |> map (map string_of_cell |- String.join "") |> String.join "\n"
+
+let random_grid probability_alive rows cols =
+  let choose probability a b =
+    if Random.float 1.0 < probability then a else b
+  in
+  let random_row _ =
+    List.init cols (fun _ -> choose probability_alive Alive Dead)
+  in
+  List.init rows random_row
+
+let max_row grid =
+  length grid - 1
+
+let max_col grid =
+  if max_row grid >= 0 then
+    (length (at grid 0)) - 1
+  else
+    (-1)
+
+let closed_interval lower upper =
+  List.init (upper - lower + 1) (fun i -> i + lower)
+
+let neighbours (row,col) grid =
+  let rows = closed_interval (Pervasives.max 0 (row-1)) (Pervasives.min (max_row grid) (row+1)) in
+  let cols = closed_interval (Pervasives.max 0 (col-1)) (Pervasives.min (max_col grid) (col+1)) in
+  let positions = map (List/make (length rows) |- combine rows) cols |> concat
+  in
+  remove positions (row,col)
+
+x . xs
+
+let next prev_grid =
+  let rows = closed_interval 0 (max_row prev_grid) in
+  let cols = closed_interval 0 (max_col prev_grid) in
+  let num_live_neighbours pos =
+    neighbours pos prev_grid |> map (get_value prev_grid) |> filter ((=) Alive) |> length
+  in
+  fold_left (fun next_grid row ->
+    fold_left (fun next_grid col ->
+      let pos = (row, col) in
+      let prev_value = get_value prev_grid pos in
+      let next_value =
+        match num_live_neighbours pos with
+        | 0 | 1 -> Dead   (* under-population *)
+        | 2 -> prev_value (* remains stable *)
+        | 3 -> Alive      (* reproduction *)
+        | _ -> Dead       (* overcrowding *)
+      in
+      set_value next_grid pos next_value
+    ) next_grid cols
+  ) prev_grid rows
+
+let _ =
+  Random.init (int_of_float (Unix.gettimeofday () *. 1000.));
+  let rec iterate grid =
+    grid |> to_string |> print_endline;
+    iterate (next grid)
+  in
+  iterate (random_grid 0.5 40 60)

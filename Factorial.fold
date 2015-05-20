@@ -1,0 +1,61 @@
+
+function factorial (n)
+    if n == 0 then:
+        1
+    else:
+        n * factorial(n - 1)
+    end
+end
+
+factorial (n::Int) -> Int = do
+    Log.info "Will calculate factorial of {n}"
+    if | (n == 0)  => 1
+       | otherwise => n * factorial (n - 1)
+end
+
+"Calculates the factorial of the number `n`."
+function factorial (n::Int) -> Int
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+
+factorial = n =>t = do
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+
+factorial (n::Int) -> Int = {
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+}
+
+
+factorial :: Int -> Int
+factorial n =
+    (n == 0) ? 1 : n * factorial (n - 1)
+
+
+factorial :: Int -> Int
+factorial = 0 => 1
+          | n => n * factorial (n - 1)
+
+
+factorial :: Int -> Int
+factorial =
+    | 0 => 1
+    | n => n * factorial (n - 1)
+
+factorial :: Int -> Int
+factorial = {
+    0 => 1
+    n => n * factorial (n - 1)
+}
+
+factorial :: Int -> Int
+factorial n | (n == 0)  => 1
+            | otherwise => n * factorial (n - 1)
+
+
+

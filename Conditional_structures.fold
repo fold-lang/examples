@@ -1,7 +1,10 @@
 --
 -- Conditional structures
 -- http://rosettacode.org/wiki/Conditional_structures#Metaphor
---
+-- https://github.com/kallisti-dev/cond/blob/master/src/Control/Conditional.hs
+-- http://elixir-lang.org/getting-started/case-cond-and-if.html
+-- http://research.microsoft.com/en-us/um/people/simonpj/Haskell/guards.html
+-- http://en.wikipedia.org/wiki/Guarded_Command_Language
 
 
 cond: x > 2 -> "Really big."
@@ -163,4 +166,63 @@ else:
 
 
 get "/main/:name" do:
+
+
+
+
+if_then_else_ : Bool -> a -> a -> a
+if condition then consequence else alternative =
+
+---
+
+if (x > 2):
+    print "x is greater than 2"
+else:
+    print "x is to small..."
+
+
+if (x > 2) then
+    print "x is greater than 2"
+else
+    print "x is to small..."
+end
+
+if | (x > 2) -> print "x is greater than 2"
+   | else -> print "x is to small..."
+
+
+(x > 2) ? print "x is greater than 2"
+        : print "x is to small..."
+
+
+(x > 2) ? print "x is greater than 2"
+        : print "x is to small..."
+
+
+-- // --
+
+
+if | x > 3 => "hello"
+   | else  => "no"
+
+if x > 3 then: "hello"
+   y < 2 then: "yes"
+         else: "no"
+
+if | x > 3 => "hello"
+   | else  => "no"
+
+cond | x > 3 => "hello"
+     | else  => "no"
+
+case [1..99] \\ gen_random_list
+    | []  then: "empty list"
+    | [x] then: "one element only"
+    | xs  then
+        "everything else"
+    end
+
+if x > 3 => "hello" | "no"
+
+
 

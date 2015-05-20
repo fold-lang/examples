@@ -3,43 +3,40 @@
 -- Interfaces
 --
 
-protocol Animal {a}:
-    init :: name: String -> a
-    name :: a -> String
-    talk :: a -> String
-end
+protocol Animal T {
+    init :: String -> T
+    name :: T -> String
+    talk :: T -> String
+}
 
-type Dog = { name :: String }
+data Dog (name : String)
 
-instance Animal {Dog}:
-    init ~name = { name: name }
-    name a = a.name
-    talk a = "woof!"
-end
+instance Animal Dog {
+    init ~name = Dog name
+    name dog = dog.name
+    talk dog = "woof!"
+}
 
-laika :: Dog = { name: "Laika Kosmonavt" }
-name laika   --> Laika Kosmonavt
-talk laika   --> woof!
+laika : Dog = init (name: "Laika Kosmonavt")
+name laika == "Laika Kosmonavt"
+talk laika == "woof!"
 
 -- Module User
 
-type User =
-  { name       :: String,
-    birthday   :: Date,
-    profession :: Symbol }
+protocol Show T {
+    show : T -> String
+}
 
-protocol Show T:
-    show :: T -> String
-end
+type User = (name: String, birthday: Date, profession: String)
+
+instance Show User {
+    show (u: user) -> String = u.name
+}
 
 
-instance Show :: User:
-    show u :: user -> String = u.name
-
-    function show (u, formatter) :: user -> String
-        u.name
-    end
-end
+protocol Show T {
+    show : T -> String
+}
 
 
 instance Show {Eq T} :: (List a)
@@ -72,8 +69,8 @@ protocol Comparable a
 end
 
 instance Comparable int
-    function compare a b =
-        if | a == b -> EQ
+    function compare a b
+           | a == b -> EQ
            | a >  b -> GT
            | a <  b -> LT
     end
@@ -148,3 +145,4 @@ JSONCodec n = module {
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 }
+

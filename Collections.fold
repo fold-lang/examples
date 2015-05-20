@@ -1,0 +1,8 @@
+
+matrix = [1, 2, 3;
+          4, 5, 6]
+Enum.at(matrix, 1)               # => [4, 5, 6]
+Enum.at(matrix, 1) |> Enum.at(2) # => 6
+
+mtarix # 1 # 2
+

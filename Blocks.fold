@@ -1,4 +1,80 @@
 
+-- https://programmers.stackexchange.com/questions/135544/why-are-several-popular-programming-languages-influenced-by-c
+
+-- in function application \n denotes :
+-- in do statements \n denotes ;
+-- in collections \n deontes ,
+
+do: expr
+
+do expr end
+
+
+fun dist ((x0, y0), (x1, y1)) = let
+     val dx = x1 - x0
+     val dy = y1 - y0
+     in
+       Math.sqrt (dx * dx + dy * dy)
+     end
+
+
+function dist ((x0, y0)::Point) ((x1, y1)::Point) -> Int
+    let dx = x1 - x0,
+        dy = y1 - y0
+    in
+        Math.sqrt (dx * dx + dy * dy)
+    end
+end
+
+
+function dist (x0, y0) (x1, y1)
+    dx = x1 - x0
+    dy = y1 - y0
+    Math.sqrt (dx * dx + dy * dy)
+end
+
+
+function dist ((x0, y0)::Point) ((x1, y1)::Point) -> Int
+    dx = x1 - x0
+    dy = y1 - y0
+    Math.sqrt (dx * dx + dy * dy)
+end
+
+
+function dist ((x0, y0)::Point), ((x1, y1)::Point) -> Int
+    dx = x1 - x0
+    dy = y1 - y0
+    Math.sqrt (dx * dx + dy * dy)
+end
+
+
+map \(range 0) [10, 20, 30]
+
+
+-- Composing expressions.
+dist : Point -> Point -> Int
+dist (x0, y0) (x1, y1) =
+    let dx = x1 - x0,
+        dy = y1 - y0 in
+    Math.sqrt (dx * dx + dy * dy)
+
+
+-- Doing.
+dist : Point -> Point -> Int
+dist (x0, y0) (x1, y1) = do
+    dx = x1 - x0
+    dy = y1 - y0
+    Math.sqrt (dx * dx + dy * dy)
+end
+
+
+-- Letting.
+dist : Point -> Point -> Int
+dist (x0, y0) (x1, y1) = let
+    dx = x1 - x0
+    dy = y1 - y0
+    Math.sqrt (dx * dx + dy * dy)
+end
 
 --
 -- do-end notation
@@ -40,12 +116,12 @@ end
 
 function assoc[T] v::PersistentVector[T] i::Int el = {
     boundscheck! v i
-    if (i > |v| - |v.tail|) {
+    if (i > |v| - |v.tail|) then: {
         newtail = v.tail # (1..end)
         newtail # (mask i) := el
         PersistentVector v.trie newtail v.length
     }
-    else {
+    else: {
         newnode = v.trie[i][1:end]
         newnode # (mask i) := el
         PersistentVector (assoc v.trie i newnode) v.tail v.length
@@ -226,7 +302,16 @@ end
 -- // --
 
 
-(def factorial [n]
+(def factorial
+    [n]
+    (log/info "Will calculate factorial of {n}")
+    (if (= n 0)
+        1
+        (* n (factorial (- n 1)))))
+
+
+(def factorial
+    [n]
     (log/info "Will calculate factorial of {n}")
     (if (= n 0)
         1
@@ -234,33 +319,180 @@ end
 
 
 
-def factorial n do
+function (factorial (n::Int) -> Int)
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-def factorial n =
+
+function factorial (n::Int) -> Int
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-def factorial n:
+
+function factorial (n::Int) -> Int do
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-factorial n = do
+
+function factorial (n::Int) -> Int =
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
 
-def factorial n = {
+
+function factorial (n::Int) -> Int:
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+
+function factorial (n::Int) -> Int {
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 }
 
-factorial n = {
+
+factorial (n::Int) -> Int = do
+    Log.info "Will calculate factorial of {n}"
+    (n == 0) ? 1 : n * factorial (n - 1)
+end
+
+
+factorial (n::Int) -> Int = {
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 }
+
+
+
+
+
+
+open Fold.Syntax, hiding: [`epsilon], in:
+    let expr :: Expr = `(f 2 1 1) in:
+        expr == (Sym "f", [Int 2, Int 1, Int 1])
+
+    let tests = {
+        {`(x = y; z) : (`;, [(`=, [`x, `y]), `z])
+         `(f x y z)  : (`f, [`x, `y, `z])}
+    in:
+        let passed, failed = partition second, (map \t r => (t, t == r), tests)
+
+
+let x = 2,
+    y = 1,
+    z = 1
+in:
+    x + y + z
+
+
+-- // --
+
+
+function greet name do
+    print "Hello, " + name "!!!"
+end
+
+
+function greet name =
+    print "Hello, " + name "!!!"
+end
+
+
+function greet name:
+    print "Hello, " + name "!!!"
+
+
+function greet name =
+    print "Hello, " + name "!!!"
+
+
+function greet name:
+    print "Hello, " + name "!!!"
+end
+
+
+function greet name = {
+    print "Hello, " + name "!!!"
+}
+
+
+greet name = do
+    print "Hello, " + name "!!!"
+end
+
+
+greet name = {
+    print "Hello, " + name "!!!"
+}
+
+---
+
+parallel_map(Fun, List) ->
+    Last = lists:foldl(fun(Value, Parent) ->
+        spawn(fun() ->
+            MappedValue = Fun(Value),
+            receive
+                Rest -> Parent ! [MappedValue|Rest]
+            end
+        end)
+    end, self(), List),
+    Last ! [],
+    receive
+        Result -> Result
+    end.
+
+
+parallel_map <A, B> :: (A -> B) -> [A] -> [B]
+parallel_map f xs =
+    last = fold xs [] : value parent ->
+        spawn : () -> tail -> parent <= [f v | tail]
+    Last ! [],
+    receive
+     Result -> Result
+    end.
+
+
+context_of_file_path file_path = do
+  args_str = with Path { file_path |> rem_ext |> rem_ext |> basename }
+  match split args_str ~sep: ":" with
+  | date_string::space_string::metric_name_string::scope::sub_scope::access::[]
+      ->
+    { name  = metric_name_of_string metric_name_string,
+      space = Int.of_string space_string,
+      date  = Date.of_string date_string,
+      scope = Hour_series [],
+      access }
+  | _ -> raise (Failure (format "Bad args format: %s" args_str))
+end
+
+
+-- // --
+
+type ('a, 'b) binding = (=>) of ('a * 'b)
+
+2 => "two"
+
+[]
+2 => "two"
+
+
+[ 1 => "one", 2 => "two" ] :: Dict Int Str   -- <=> List String
+[ "one" => 1, "two" => 2 ] :: Dict Str Int
+[  `One => 1,  `Two => 2 ] :: Dict Sym Int
+
+type Binding K V = K -> V
+type Dict K V    = List (Binding K V)
+type List V      = Binding
+
+
+-- `[ indroduces a macro that parses a list of bindings (also macros).
+
+binding <Code A, B> :: A -> B -> Code Binding
+list  :: List Binding -> List Binding
+
+
 

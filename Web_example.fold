@@ -25,10 +25,37 @@ let main =
             >> App.run_command
 
 
+(get "/analytics/<metric_name::String>/<date::Date>" (req =>
+  (div (h1 {style = {font = `Helvetica, color = #223322}}
+        (Response req.metric_name)))))
 
-get "/analytics/<metric_name::String>/<date::Date>" do req =>
-  div: h1 {style = {font = `Helvetica, color = #223322}}:
-    Response req.metric_name
-end
+get "/analytics/<metric_name::String>/<date::Date>": req =>
+    div:
+        h1 {style = {font = `Helvetica, color = #223322}}:
+            Response req.metric_name
+
+get "/analytics/<metric_name::String>/<date::Date>" { req =>
+    div {
+        h1 style: (font: `Helvetica, color: #223322) {
+            Response req.metric_name
+        }
+    }
+}
+
+
+get "/analytics/<metric_name::String>/<date::Date>" { req =>
+    div : h1 style: (font: `Helvetica, color: #223322) {
+            Response req.metric_name
+    }
+}
+
+
+
+
+
+get "/analytics/<metric_name::String>/<date::Date>" do: req =>
+    div (h1 {style = {font = `Helvetica, color = #223322}}
+        (Response req.metric_name)))
+
 
 

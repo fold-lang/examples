@@ -3,48 +3,63 @@
 --
 
 
--> \ x y -> x + y
--> \ 5
--> (~ + ~)
+
+map (x => x * x) [1..10]
+
+map { 2 => x * 4
+      x => x * x } [1..10]
+
+[1..10] . map { \1 * \2 }
+
+
+ tree . { Leaf => "x"
+          Node x => str x }
+
+=> \ x y => x + y
+=> \ 5
+=> (~ + ~)
 
 (-> system :fetcher :conf :credentials :username)
 
 -> system #fetcher #conf #credentials #username
 
--> map (data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
--> map (process ~ verbose: (not ~)) [1, 2, 3, 4, 5]
+-> map (data flag => process data verbose: (not flag)) [1, 2, 3, 4, 5]
+=> map (process _ verbose: (not _)) [1, 2, 3, 4, 5]
 
--> map (\data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
--> map \(process ~ verbose: (not ~)) [1, 2, 3, 4, 5]
+=> map { data flag => process data verbose: (not flag) } [1, 2, 3, 4, 5]
+=> map { process _ verbose: (not _) } [1, 2, 3, 4, 5]
 
--> map (λ data flag → process data verbose: (not flag)) [1, 2, 3, 4, 5]
--> map λ(process ~ verbose: (not ~)) [1, 2, 3, 4, 5]
+=> map (data flag => process data verbose: (not flag)) [1, 2, 3, 4, 5]
+=> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
 
--> map (data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
--> map {process ~ verbose: (not ~)} [1, 2, 3, 4, 5]
+=> map (λ data flag ⇒ process data verbose: (not flag)) [1, 2, 3, 4, 5]
+=> map λ(process _ verbose: (not _)) [1, 2, 3, 4, 5]
 
--> map (|data flag| -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
--> map {process ~ verbose: (not ~)} [1, 2, 3, 4, 5]
+=> map (data flag => process data verbose: (not flag)) [1, 2, 3, 4, 5]
+=> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
 
--> map (|x| -> x * x) [1 .. 5]
+=> map (|data flag| => process data verbose: (not flag)) [1, 2, 3, 4, 5]
+=> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
+
+=> map (|x| => x * x) [1 .. 5]
  = [1, 4, 9, 16, 25]
 
--> map \(~1 * ~1) [1 .. 5]
+=> map \(_1 * _1) [1 .. 5]
  = [1, 4, 9, 16, 25]
 
--- Consider using ~0 as a reference to the anonymous function, allowing this way recursion.
+-- Consider using _0 as a reference to the anonymous function, allowing this way recursion.
 
 -- Mathematica
 -- If[#1 == 1, 1, #1 * #0[#1-1]]&
 
--> \(~1 == 1 ? 1 : ~1 * (~0 (~1 - 1)))
--> \(if (~1 == 1): 1 else: ~1 * (~0 (~1 - 1)))
+=> \(_1 == 1 ? 1 : _1 * (_0 (_1 - 1)))
+=> \(if (_1 == 1): 1 else: _1 * (_0 (_1 - 1)))
 
--> \(\1 == 1 ? 1 : @1 * (@0 (@1 - 1)))
+=> \(\1 == 1 ? 1 : @1 * (@0 (@1 - 1)))
 
 
-fix = \f -> (\x a -> f (x x) a) (\x a -> f (x x) a)
+fix = \f => (\x a => f (x x) a) (\x a => f (x x) a)
 
-f -> (x a -> f (x x) a) (x a -> f (x x) a)
+f => (x a => f (x x) a) (x a => f (x x) a)
 
 

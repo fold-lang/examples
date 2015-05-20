@@ -4,6 +4,7 @@
 --
 -- http://en.wikipedia.org/wiki/Currying
 -- https://github.com/JuliaLang/julia/issues/554
+-- http://opendylan.org/documentation/library-reference/dylan/alternative-curry-syntax.html
 
 Fold supports natural parameter currying.
 
@@ -32,13 +33,13 @@ def visits_duration_by_device(visits_list: [Visits]) -> [Detections]:
 
 visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]}
 visits_durations_by_device visits_by_device =
-	visit_duration = \v -> (last v) - (first v)
-	map_values (\V -> map visit_duration V) visits_by_device
-	map_values \(map visit_duration ~) visits_by_device
+    visit_duration = \v -> (last v) - (first v)
+    map_values (\V -> map visit_duration V) visits_by_device
+    map_values \(map visit_duration ~) visits_by_device
 
 
 visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]} =
-	map_values (map (\[first, ... , last] -> first - last))
+    map_values (map (\[first, ... , last] -> first - last))
 
 
 sum = a b -> a + b
@@ -54,8 +55,21 @@ map {sum 3 ~} [1, 2, 3]
 
 
 
-->   binding
-=>   application
+function visits_durations_by_device
+         visits_by_device::{Device: [Visit]} -> {Device: [Time]} = {
+    visit_duration = \visit => last visit - first visit
+    map (\visits => map visit_duration visits) visits_by_device
+}
 
--- http://opendylan.org/documentation/library-reference/dylan/alternative-curry-syntax.html
 
+function visits_durations_by_device
+         visits_by_device::{Device: [Visit]} -> {Device: [Time]} =
+    visit_duration = \visit => last visit - first visit
+    map (\visits => map visit_duration visits) visits_by_device
+end
+
+function visits_durations_by_device
+         visits_by_device::{Device: [Visit]} -> {Device: [Time]} = {
+    visit_duration = \visit => last visit - first visit
+    map (\visits => map visit_duration visits) visits_by_device
+}

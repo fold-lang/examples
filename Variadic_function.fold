@@ -6,10 +6,16 @@
 load IO
 load String
 
-print :: {Show a} -> [a] -> end: String -> sep: String -> Unit
+print<Show a> :: [a] -> end: String -> sep: String -> Unit
 print args... (~end = "\n") (~sep = " ") =
 	IO.write ((String.join (map show args) with: sep) + end) to: IO.stdout
 
 print "Hello" "World!" sep: ", "
 
+
+print<Show a> :: [a] -> end: String -> sep: String -> Unit
+print args (~end = "\n") (~sep = " ") =
+	IO.write ((String.join (map show args) with: sep) + end) to: IO.stdout
+
+print "Hello" "World!" sep: ", "
 

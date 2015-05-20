@@ -1,0 +1,36 @@
+-- http://www.try-alf.org/blog/2014-12-03-what-would-a-functional-sql-look-like
+-- http://lambda-the-ultimate.org/node/2440
+
+ with candidate_rows as (
+     select id
+       from table
+      where conditions
+      limit 1000
+        for update nowait
+  ), update_rows as (
+     update table
+        set column = value
+       from candidate_rows
+      where candidate_rows.id = table.id
+  returning table.id
+  )
+  select count(1) from update_rows;
+
+
+|> ~ . -> => >-
+
+suppliers
+  | join shipments
+  | where #city == "London"
+  | select #sid, #pid, #name, #qty
+
+suppliers
+  > join shipments
+  > where #city == "London"
+  > select #sid, #pid, #name, #qty
+
+suppliers
+  , join shipments
+  , where @city = "London"
+  , select @sid, @pid, @name, @qty
+

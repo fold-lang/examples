@@ -8,16 +8,16 @@ load World as: W
 -- Generic utility functions
 
 count {Eq a} :: a -> [a] -> Int
-count x xs = length (filter (x ==) xs)
+count x xs = # (filter (x ==) xs)
 
 -- Game of Life
 
-type Cell_State {Eq, Show} = Alive | Dead
+type Cell deriving: [Eq, Show] = Alive | Dead
 
-random_cell :: IO Cell_State
-random_cell = do
+random_cell :: IO Cell = do
   x <- random_io
   return (x ? Alive : Dead)
+end
 
 random_world :: Int -> Int -> IO (World Cell_State)
 random_world width height = do
@@ -31,7 +31,16 @@ neighborsAlive w x = count Alive neighborStates
         neighbors = W.neighbors W.mooreNeighbors w
         cellAt = W.cellAt w
 
-transition :: CellState -> Int -> CellState
+transition = (Deat,  3) => Alive
+	       | (Alive, 2)
+	       | (Alive, 3) => Alive
+	       | _          => Dead
+
+transition Dead  n | n == 3           = Alive
+transition Alive n | n == 2 || n == 3 = Alive
+transition _ _                        = Dead
+
+transition :: Cell -> Int -> Cell
 transition Dead  n | n == 3           = Alive
 transition Alive n | n == 2 || n == 3 = Alive
 transition _ _                        = Dead

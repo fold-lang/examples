@@ -1,0 +1,15 @@
+"This is a simple string"
+
+"""
+This is a multi-line string.
+"""
+
+"Hello, {}" % "World"
+
+"Hello, {name}" % {name = "World"}
+
+-> `(2 + {4 + 2})
+ = Code (2 + 6)
+ 
+ 
+~\name

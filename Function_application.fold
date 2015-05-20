@@ -16,15 +16,196 @@ IO.write $ (String.join (map show args) with: sep) + end) file: IO.stdout
 -- S-expressions
 (IO.write ((String.join (map show args) with: sep) + end) file: IO.stdout))
 
+-- Fold
+IO.write: (String.join (map show args), with: sep) + end, file: IO.stdout
 
--- Haskell-style with application operator
-IO.write: (String.join (map show args) with: sep) + end
-	file: IO.stdout
-
-"Docstring..."
+"""
+Prints the values to a stream, or to Sys.stdout by default.
+Optional keyword arguments:
+  file:  a file-like object (stream); defaults to the current sys.stdout.
+  sep:   string inserted between values, default a space.
+  end:   string appended after the last value, default a newline.
+"""
 function print args... (sep :: String = " ") (end :: String = "\n") -> Unit:
-	IO.write: (String.join (map show args) with: sep) + end
-		file: IO.stdout
+    IO.write: (String.join (map show args) with: sep) + end
+        file: IO.stdout
 end
 
-print: "Hello" " " "World" "!"
+print "Hello" " " "World" "!" to: open("file.out")
+
+-- // --
+
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]                           -- All natural numbers
+    -> map (n => n * n)             -- Squared
+    -> take_while (n => n < upper)  -- Below upper limit
+    -> filter is_odd                -- That are odd
+    -> reduce sum                   -- Sum them
+
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] >> map (n => n * n)             -- Squared
+          >> take_while (n => n < upper)  -- Below upper limit
+          >> filter is_odd                -- That are odd
+          >> reduce sum                   -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ].map (n => n * n)             -- Squared
+         .take_while (n => n < upper)  -- Below upper limit
+         .filter is_odd                -- That are odd
+         .reduce sum                   -- Sum them
+
+sum_of_squared_odd_numbers upper =
+    [1 .. ] |> map (n -> \n * \n)             -- Squared
+            |> take_while (n => n < upper)  -- Below upper limit
+            |> filter is_odd                -- That are odd
+            |> reduce sum                   -- Sum them
+
+sum_of_squared_odd_numbers upper =
+    [1 .. ] ▷ map (n -> \n * \n)             -- Squared
+            ▷ take_while (n => n < upper)  -- Below upper limit
+            ▷ filter is_odd                -- That are odd
+            ▷ reduce sum                   -- Sum them
+
+=> f : x
+
+=> f to: x
+--   ^
+--   |
+--   `- named function application
+--
+-- the named arguments are used to verify the next avaliable function label.
+
+
+-- // --
+
+function send_msg (from sender::String) (to receiver::String) -> Unit {
+    ...
+}
+
+
+=> send_msg
+:: from: String -> to: String -> Unit
+=> send_msg from: "Steve"
+:: to: String -> Unit
+=> send_msg from: "Steve" to: "Alan"
+:: Unit
+
+=> (send_msg from: "Steve") to: "Alan"
+
+=> print 2 + 2
+== (print 2) + 2
+
+=> print : 2 + 2
+== (print 2) + 2
+
+=> from :: Code (from: a -> b) -> Code b
+
+=> f a: x b: y c: z
+== (((f a: x) b: y) c: z)
+
+=> f : x : y : z
+== (((f x) y) z)
+
+=> f $ g $ h $ x
+== f (g (h x))
+
+
+-- `: is a very low priority operator.
+
+-- Original Haskell version
+forM_ [1..10] $ \i -> do
+  l <- readLine
+  replicateM_ i $ print l
+
+
+for [1..10] : i => {
+    l <- input!
+    replicate i : print l
+}
+
+for [1..10] : i => {
+    for [5..20] : j => {
+        l <- input!
+        replicate i : print l
+    }
+}
+
+for (i <- [1..10],
+     j <- [5..20]) {
+
+    l <- input!
+    replicate i : print l
+}
+
+
+
+
+let squareOfEvens =
+    numbers
+    |> Seq.filter IsEven
+    |> Seq.map Square
+
+
+
+
+Cluster cluster = Cluster.builder()
+    .addContactPoint("ds5.movves.io")
+    .withCredentials("movves", "may0n3s3")
+    .withCompression(ProtocolOptions.Compression.SNAPPY)
+    .withPoolingOptions(new PoolingOptions()
+        .setCoreConnectionsPerHost(HostDistance.REMOTE,12)
+        .setMaxConnectionsPerHost(HostDistance.REMOTE,20))
+    .build();
+
+
+
+(-> Cluster.builder()
+    (addContactPoint "ds5.movves.io")
+    (withCredentials "movves" "may0n3s3")
+    (withCompression ProtocolOptions.Compression.SNAPPY)
+    (withPoolingOptions (-> PoolingOptions/new
+                            (setCoreConnectionsPerHost HostDistance.REMOTE 12)
+                            (setMaxConnectionsPerHost HostDistance.REMOTE 20))
+    build)
+
+
+cluster = Cluster.builder =>
+  (add_contact_point "ds5.movves.io")
+  (with_credentials "movves" "may0n3s3")
+  (with_compression ProtocolOptions.Compression.SNAPPY)
+  (with_pooling_options (PoolingOptions.new =>
+          (set_core_connections_per_host HostDistance.REMOTE 12)
+          (set_max_connections_per_host  HostDistance.REMOTE 20)))
+  build
+
+cluster = Cluster.create
+  contact_point: "ds5.movves.io"
+  credentials: ("movves", "may0n3s3")
+  compression: ProtocolOptions.Compression.SNAPPY
+  pooling_options: (PoolingOptions.create
+          core_connections_per_host: (HostDistance.REMOTE, 12)
+          max_connections_per_host:  (HostDistance.REMOTE, 20))
+
+
+cluster = Cluster.builder
+  |> add_contact_point "ds5.movves.io"
+  |> with_credentials "movves" "may0n3s3"
+  |> with_compression ProtocolOptions.Compression.SNAPPY
+  |> with_pooling_options (PoolingOptions.new
+        |> set_core_connections_per_host HostDistance.REMOTE 12
+        |> set_max_connections_per_host(HostDistance.REMOTE 20)
+  |> build
+
+cluster = Cluster.builder
+  >> add_contact_point "ds5.movves.io"
+  >> with_credentials "movves" "may0n3s3"
+  >> with_compression ProtocolOptions.Compression.SNAPPY
+  >> with_pooling_options (PoolingOptions.new
+        >> set_core_connections_per_host HostDistance.REMOTE 12
+        >> set_max_connections_per_host(HostDistance.REMOTE 20)
+  >> build
+
+
+
