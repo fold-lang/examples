@@ -23,9 +23,10 @@ fib 0 = 0
   | 1 = 1
   | n = fib (n - 1) + fib (n - 2)
 
-fib n | n == 0    = 0
-      | n == 1    = 1
-      | otherwise = fib (n - 1) + fib (n - 2)
+fib n when
+  | n == 0 = 0
+  | n == 1 = 1
+  | else   = fib (n - 1) + fib (n - 2)
 
 -- // --
 
@@ -35,13 +36,13 @@ range (from start) (to end) (by step) =
         then: []
         else: [start | range from: (start + 1) to: stop by: step]
 
+def range from: start = 0, to: stop, by: step = 1
+  if | start >= stop -> []
+     | else -> [start & range from: start + 1 to: stop by: step]
+end
+
 
 range :: from: Int? -> to: Int -> by: Int? -> [Int]
-range (from start) (to end) (by step) = do
-    if (start >= stop)
-        then: []
-        else: [start | range from: (start + 1) to: stop by: step]
-end
 
 => range to: 100
 :: [Int] = [1, 2, 3, 4, 5, ... 99, 100]
@@ -448,17 +449,18 @@ end
 
 
 
-function assoc v::(PersistentVector a) i::Int el::a -> PersistentVector:
+function assoc v::(PersistentVector a) i::Int el::a -> PersistentVector
     check_bounds! v i
-    if (i > |v| - |v.tail|):
-        newtail = v.tail # [1..end]
-        newtail # (mask i) := el
-        PersistentVector v.trie newtail v.length
-    else:
-        newnode = v.trie # i # [1..end]
-        newnode # (mask i) := el
-        PersistentVector (assoc v.trie i newnode) v.tail v.length
-    end
+    if | i > (length v - length v.tail) -> do
+         newtail = v.tail # [1..end]
+         newtail # (mask i) := el
+         PersistentVector v.trie newtail v.length
+       end
+       | otherwise -> do
+         newnode = v.trie # i # [1..end]
+         newnode # (mask i) := el
+         PersistentVector (assoc v.trie i newnode) v.tail v.length
+       end
 end
 
 
@@ -702,6 +704,7 @@ def fold_channel f acc ch
   case (read_line ch)
     | Some line -> fold_channel f (f line acc) ch
     | None -> acc
+  end
 end
 
 def add_to totals values =
@@ -910,13 +913,14 @@ function calc_sum ctx xs
 end
 
 
-function calc_sum self xs
+function self => calc_sum xs
   xs => group_by_access
      => add_missing_accesses (Spaces.obtain_access_list!)
      => add_missing_hours_by_access self.date
      => map ((#2) >> (\case | [] | [x] -> `Sum 0
-                            | counts   -> `Sum (fold (+) 0 counts)))
+                            | counts   -> `Sum (fold (+) 0 counts))
 end
+
 
 function calc_sum ctx xs
   xs | group_by_access
@@ -1035,4 +1039,120 @@ view (w,h) turtle =
 
 
 [1, 2, 3, 4, 5] => length
+
+-- // --
+
+
+type Space = Int
+
+show : Space -> Str
+show = space -> show (Int space)
+
+instance Show Space
+  show = show <Str>
+end
+
+group_devices_by_store :: Space -> Map Store (Set Device)
+group_devices_by_store => fn space ->
+  let store_distances_by_antenna = get_store_distances space,
+      find_stores = find_stores_for_antenna store_distances_by_antenna
+  in
+    In_channel.stdin => lines => fold init: Store_map.empty
+      do device_set_by_store line ->
+        let {antenna, device, rssi} = Row.parse line
+        in
+          fold (find_stores antenna rssi) init: device_set_by_store
+            \device_set_by_store' store ->
+              Store_map.change device_set_by_store' store
+                (some << (\case | None -> {}
+                                | Some device_set -> device @ device_set))
+        end
+      end
+  end
+end
+
+group_devices_by_store :: Space -> {Store: {Device}}
+group_devices_by_store = function space
+  let store_distances_by_antenna = get_store_distances space,
+      find_stores = find_stores_for_antenna store_distances_by_antenna
+  In_channel.stdin => lines => fold init: Store_map.empty
+    function device_set_by_store line
+      let {antenna, device, rssi} = Row.parse line
+      fold (find_stores antenna rssi) init: device_set_by_store
+        function device_set_by_store' store
+          Store_map.change device_set_by_store' store
+            (some << (\case | None -> {}
+                            | Some device_set -> device @ device_set))
+        end
+    end
+end
+
+
+
+-- // --
+
+-- Bodol Programming Language
+
+(ƒ factorial
+  0 → 1
+  n → (* n (factorial (- n 1))))
+
+(ƒ fibonacci
+  0 → 0
+  1 → 1
+  n → (+ (fibonacci (- n 1)) (fibonacci (- n 2))))
+
+(ƒ map
+   f () → ()
+   f (head . tail) → (cons (f head) (map f tail)))
+
+(= '(2 3 4) (map (λ a → (+ a 1)) '(1 2 3))))
+
+(ƒ constantly
+    a → (λ → a))
+
+factorial = lambda
+  0 -> 1
+  n -> n * factorial (n - 1)
+end
+
+fibonacci = fn
+  0 -> 0
+  1 -> 1
+  n -> fibonacci (n - 1) + fibonacci (n - 2)
+end
+
+map = fn
+   f [] -> []
+   f [x & xs] -> [f x & map f xs]
+end
+
+[2 3 4] == map (a -> a + 1) [1 2 3]
+
+say_hello = name ->
+  print "Hello, " name "!"
+
+say_hello :: String -> Void
+
+def say_hello name
+  print "Hello, {name}!"
+end
+
+say_hello name = do
+  print "Hello, {name}!"
+end
+
+range from: start to: stop by: step =
+
+let avg =
+  durations_by_dev
+    => fold init: (0, 0), (t, c) (key: dev) (data: dur) -> do
+         print "Counting durations for {dev}..."
+         (t + dur, c + 1)
+       end
+    => (total, count) -> total / count
+in
+  print "Average visiting time is {avg}"
+end
+
 

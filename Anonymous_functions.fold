@@ -3,6 +3,12 @@
 --
 
 
+x -> x + x
+
+do x ->
+  x + x
+end
+
 
 map (x => x * x) [1..10]
 
@@ -14,6 +20,10 @@ map { 2 => x * 4
 
  tree . { Leaf => "x"
           Node x => str x }
+
+ tree =>
+  | Leaf -> "x"
+  | Node x -> str x
 
 => \ x y => x + y
 => \ 5
@@ -47,6 +57,9 @@ map { 2 => x * 4
 => map \(_1 * _1) [1 .. 5]
  = [1, 4, 9, 16, 25]
 
+-> map \(_1 * _1) [1 .. 5]
+ = [1, 4, 9, 16, 25] : [Int]
+
 -- Consider using _0 as a reference to the anonymous function, allowing this way recursion.
 
 -- Mathematica
@@ -60,6 +73,35 @@ map { 2 => x * 4
 
 fix = \f => (\x a => f (x x) a) (\x a => f (x x) a)
 
-f => (x a => f (x x) a) (x a => f (x x) a)
+fix = f -> (x a -> f (x x) a)
+           (x a -> f (x x) a)
+
+
+-- // --
+
+-- Anonymous functions can be wrapped in blocks.
+
+[1..99] => fold init: {} do dict i ->
+  dict # i::String <- i + i
+end
+
+-- This approach has some advantages over a simple lambda expression:
+--
+-- * Since blocks are used, at any time you can extend the block with new statements.
+-- * `do` is a named argument for the lambda argument for `fold`.
+
+squares = [1..9] => map do n ->
+  n * n
+end
+
+for i <- [1..9]
+  print "hey there number {i}"
+end
+
+[print "hey there number {i}" | i <- [1..9]]
+
+
+
+
 
 

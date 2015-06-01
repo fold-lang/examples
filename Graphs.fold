@@ -1,5 +1,8 @@
 
 
+|| Inductive Graph
+type Graph A = Empty | Edge A & Graph A
+
 
 let neighbors g a cond =
     let edge l (b,c) = if b = a && cond c then c :: l
@@ -26,4 +29,5 @@ neighbors g a cond =
                       | c == a and cond b = [b, l...]
                       | otherwise         = l
     
+
 

@@ -98,3 +98,21 @@ qsort = [] => []
       | [x|xs] => qsort ys ++ [x | qsort zs]
         where (ys, zs) <- partition (< x) xs]
 
+
+function quick_sort xs
+  case xs
+    | [] -> []
+    | [x & xs] -> quick_sort ys ++ [x & quick_sort zs]
+        where: (ys, zs) = partition (< x) xs
+end
+
+
+function quick_sort
+    | [] -> []
+    | [x & xs] -> quick_sort ys ++ [x & quick_sort zs]
+        where: (ys, zs) = partition (< x) xs
+end
+
+
+
+

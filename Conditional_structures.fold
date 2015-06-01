@@ -222,7 +222,15 @@ case [1..99] \\ gen_random_list
         "everything else"
     end
 
-if x > 3 => "hello" | "no"
+if x > 3 -> "hello" | "no"
+
+if | x > 3 -> "hello"
+   | else -> "no"
 
 
+if did_succeed?
+  print "ok"
+else
+  print "no"
+end
 
