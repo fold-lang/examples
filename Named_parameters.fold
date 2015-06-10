@@ -27,12 +27,24 @@ join("hello", to: "world", with: ", ")
 
 
 
-range (from start = 0) (to stop) (by step = 1) =
+range from: start = 0, to: stop, by: step = 1 =
     start == stop
         ? []
         : [start, (range from: (start + 1) to: stop by: step)...]
 
+|| Function signature with named parameters.
 range :: from: Int -> to: Int -> by: Int
+
+
+|| Named application syntax
+
+range from: 0 to: 100 by: 5
+
+range from => 0 to 100 by => 5
+
+range ~from: 0 ~to: 100 ~by: 5
+
+
 
 
 

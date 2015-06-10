@@ -1,0 +1,109 @@
+
+
+-- Candidates are:
+
+    |>    =>    >>    ->    >-    |    .
+
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] |> map (n -> n * n)             -- Squared
+          |> take_while (n -> n < upper)  -- Below upper limit
+          |> filter is_odd                -- That are odd
+          |> xs -> reduce xs sum          -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] =>  map (n -> n * n)             -- Squared
+          => take_while (n -> n < upper)  -- Below upper limit
+          => filter is_odd                -- That are odd
+          => xs -> reduce xs sum          -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] >- map (n -> n * n)             -- Squared
+          >- take_while (n -> n < upper)  -- Below upper limit
+          >- filter is_odd                -- That are odd
+          >- xs -> reduce xs sum          -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] >> map (n -> n * n)             -- Squared
+          >> take_while (n -> n < upper)  -- Below upper limit
+          >> filter is_odd                -- That are odd
+          >> xs -> reduce xs sum          -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] -> map (n => n * n)             -- Squared
+          -> take_while (n => n < upper)  -- Below upper limit
+          -> filter is_odd                -- That are odd
+          -> \xs => reduce xs sum          -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] | map (n -> n * n)              -- Squared
+          | take_while (n -> n < upper)   -- Below upper limit
+          | filter is_odd                 -- That are odd
+          | xs -> reduce xs sum           -- Sum them
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ].map (n -> n * n)              -- Squared
+         .take_while (n -> n < upper)   -- Below upper limit
+         .filter is_odd                 -- That are odd
+         .xs -> reduce xs sum           -- Sum them
+
+-- // --
+
+-- channel to broadcast to all clients
+broadcast = chan ()
+Tcp_server.listen on: 8008 |> socket -> do
+  broadcast |> socket   -- connect to broadcast channel
+  socket |> broadcast   -- broadcast incoming message
+end
+
+-- channel to broadcast to all clients
+broadcast = chan ()
+Tcp_server.listen on: 8008 => socket -> do
+  broadcast => socket   -- connect to broadcast channel
+  socket => broadcast   -- broadcast incoming message
+end
+
+-- channel to broadcast to all clients
+broadcast = chan ()
+Tcp_server.listen on: 8008 >- socket -> do
+  broadcast >- socket   -- connect to broadcast channel
+  socket >- broadcast   -- broadcast incoming message
+end
+
+-- channel to broadcast to all clients
+broadcast = chan ()
+Tcp_server.listen on: 8008 | socket -> do
+  broadcast | socket   -- connect to broadcast channel
+  socket | broadcast   -- broadcast incoming message
+end
+
+
+
+
+
+
+function sum_of_squared_odd_numbers upper
+  [1 .. ] -> map (n => n * n)             -- Squared
+          -> take_while (n => n < upper)  -- Below upper limit
+          -> filter is_odd                -- That are odd
+          -> xs => reduce xs sum          -- Sum them
+end
+
+(defn sum_of_squared_odd_numbers [upper]
+  (-> [1 .. ]
+    (map (fn [n] n * n))             -- Squared
+    (take_while (fn [n] n < upper))  -- Below upper limit
+    (filter is_odd)                -- That are odd
+    (fn [xs] reduce xs sum)))        -- Sum them
+
+
+
+num_vector->length
+length num_vector
+
+
+let (|>) x f = f x
+let (->) x f = f x
+
+
+

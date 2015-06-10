@@ -226,6 +226,7 @@ if x > 3 -> "hello" | "no"
 
 if | x > 3 -> "hello"
    | else -> "no"
+end
 
 
 if did_succeed?
@@ -233,4 +234,5 @@ if did_succeed?
 else
   print "no"
 end
+
 

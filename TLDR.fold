@@ -1,0 +1,23 @@
+
+-- Smalltalk
+--
+-- := assigment
+-- | | variables
+-- [] blocks
+-- . expression delimiter
+--   message dispatch
+-- : keyword selector
+-- ^ hard return
+-- () precedence
+
+
+=   assigment
+|   alternative
+->  function return
+=>  pair, binding
+::  type annotation
+:   keyword selector
+()  precedence
+[]  collections
+
+

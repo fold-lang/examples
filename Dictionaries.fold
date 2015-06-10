@@ -1,0 +1,24 @@
+
+-- Dictionary is a hash-map
+
+type Person =
+  { name :: String
+    age  :: Int
+    city :: City }
+
+dylan :: Person =
+  { name => "Bob Dylan"
+    age  => 32
+    city => `London }
+
+|| There are also structural run-time types (row polymorphism) that do not
+|| require type definition.
+
+p1 :: { `x :: Int, `y :: Int }
+    = { `x => 231, `y => 500 }
+
+|| The operator `=>` represents a pair, or an item. You can use items anywhere.
+
+coordinate = `x => 23
+
+

@@ -958,11 +958,11 @@ end
 function sum ctx xs
   hourly_counts_by_access =
     xs >- group_by_access
-       >- xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       >- xs -> add_missing_accesses xs (Spaces.obtain_access_list)
        >- improve_the_format >> prepare_for_operation
        >- add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
-    (hourly_counts => `Sum (fold (+) 0 (map #2 hourly_counts)))
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
   sum_by_access
 end
 
@@ -1075,7 +1075,7 @@ group_devices_by_store :: Space -> {Store: {Device}}
 group_devices_by_store = function space
   let store_distances_by_antenna = get_store_distances space,
       find_stores = find_stores_for_antenna store_distances_by_antenna
-  In_channel.stdin => lines => fold init: Store_map.empty
+  In_channel.stdin >- lines >- fold init: Store_map.empty
     function device_set_by_store line
       let {antenna, device, rssi} = Row.parse line
       fold (find_stores antenna rssi) init: device_set_by_store
@@ -1122,12 +1122,50 @@ fibonacci = fn
   n -> fibonacci (n - 1) + fibonacci (n - 2)
 end
 
-map = fn
+
+(ƒ factorial
+  0 -> 1
+  n -> (* n (factorial (- n 1))))
+
+
+function factorial
+  | 0 -> 1
+  | n -> n * factorial (n - 1)
+end
+
+-- Map function defintition
+
+map :: (a -> b) -> [a] -> [b]
+map f [] = []
+map f (x:xs) = (f x) : (map f xs)
+
+function map
+   | f [] -> []
+   | f [x & xs] -> [f x & map f xs]
+end
+
+fn map :: (a -> b) -> [a] -> [b]
+   | f [] -> []
+   | f [x & xs] -> [f x & map f xs]
+end
+
+
+function map
+   | f [] -> []
+   | f [x & xs] -> [f x & map f xs]
+end
+
+map = do
    f [] -> []
    f [x & xs] -> [f x & map f xs]
 end
 
 [2 3 4] == map (a -> a + 1) [1 2 3]
+
+
+--
+|| Saying hello...
+--
 
 say_hello = name ->
   print "Hello, " name "!"
@@ -1142,15 +1180,22 @@ say_hello name = do
   print "Hello, {name}!"
 end
 
-range from: start to: stop by: step =
+say_hello name =>
+  print "Hello, " name "!"
+
+
+range from: start = 0, to: stop, by: step = 1 =>
+    start == stop
+        ? []
+        : [start, (range from: (start + 1) to: stop by: step)...]
 
 let avg =
   durations_by_dev
-    => fold init: (0, 0), (t, c) (key: dev) (data: dur) -> do
+    >- fold init: (0, 0) do (t, c) (key: dev) (data: dur) ->
          print "Counting durations for {dev}..."
          (t + dur, c + 1)
        end
-    => (total, count) -> total / count
+    >- (total, count) -> total / count
 in
   print "Average visiting time is {avg}"
 end

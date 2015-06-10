@@ -33,41 +33,6 @@ end
 
 print "Hello" " " "World" "!" to: open("file.out")
 
--- // --
-
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]                           -- All natural numbers
-    -> map (n => n * n)             -- Squared
-    -> take_while (n => n < upper)  -- Below upper limit
-    -> filter is_odd                -- That are odd
-    -> reduce sum                   -- Sum them
-
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ] >> map (n => n * n)             -- Squared
-          >> take_while (n => n < upper)  -- Below upper limit
-          >> filter is_odd                -- That are odd
-          >> reduce sum                   -- Sum them
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ].map (n => n * n)             -- Squared
-         .take_while (n => n < upper)  -- Below upper limit
-         .filter is_odd                -- That are odd
-         .reduce sum                   -- Sum them
-
-sum_of_squared_odd_numbers upper =
-    [1 .. ] |> map (n -> \n * \n)             -- Squared
-            |> take_while (n => n < upper)  -- Below upper limit
-            |> filter is_odd                -- That are odd
-            |> reduce sum                   -- Sum them
-
-sum_of_squared_odd_numbers upper =
-    [1 .. ] ▷ map (n -> \n * \n)             -- Squared
-            ▷ take_while (n => n < upper)  -- Below upper limit
-            ▷ filter is_odd                -- That are odd
-            ▷ reduce sum                   -- Sum them
-
 => f : x
 
 => f to: x
@@ -197,6 +162,15 @@ cluster = Cluster.builder
         |> set_core_connections_per_host HostDistance.REMOTE 12
         |> set_max_connections_per_host(HostDistance.REMOTE 20)
   |> build
+
+cluster = Cluster.builder
+  >- add_contact_point "ds5.movves.io"
+  >- with_credentials "movves" "may0n3s3"
+  >- with_compression ProtocolOptions.Compression.SNAPPY
+  >- with_pooling_options (PoolingOptions.new
+        >- set_core_connections_per_host HostDistance.REMOTE 12
+        >- set_max_connections_per_host(HostDistance.REMOTE 20)
+  >- build
 
 cluster = Cluster.builder
   >> add_contact_point "ds5.movves.io"

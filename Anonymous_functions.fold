@@ -90,7 +90,21 @@ end
 -- * Since blocks are used, at any time you can extend the block with new statements.
 -- * `do` is a named argument for the lambda argument for `fold`.
 
-squares = [1..9] => map do n ->
+squares = [1..9] -> map do n =>
+  n * n
+end
+
+
+squares = [1..9] >- map do n ->
+  n * n
+end
+
+squares = [1..9] -> map do n =>
+  n * n
+end
+
+
+squares = [1..9] -> map do n =>
   n * n
 end
 
@@ -99,6 +113,9 @@ for i <- [1..9]
 end
 
 [print "hey there number {i}" | i <- [1..9]]
+
+
+
 
 
 

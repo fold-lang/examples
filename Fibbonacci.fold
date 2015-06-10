@@ -1,0 +1,5 @@
+
+
+fibs = [1 & 1 & zip fibs (tail fibs) with: (+)]
+
+
