@@ -6,3 +6,15 @@ Enum.at(matrix, 1) |> Enum.at(2) # => 6
 
 mtarix # 1 # 2
 
+
+--
+-- Lists
+--
+
+-- Linked Lists
+
+fibs = [1 & 1 & zip fibs (tail fibs) with: (+)]
+
+fibs = 1 & 1 & (zip fibs (tail fibs) with: (+))
+
+
