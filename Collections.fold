@@ -1,8 +1,83 @@
 
 matrix = [1, 2, 3;
           4, 5, 6]
-Enum.at(matrix, 1)               # => [4, 5, 6]
-Enum.at(matrix, 1) |> Enum.at(2) # => 6
+Iter.at(matrix, 1)               # => [4, 5, 6]
+Iter.at(matrix, 1) |> Enum.at(2) # => 6
 
-mtarix # 1 # 2
+matrix # 1 # 2
+
+
+--
+-- List (Singly linked list)
+--
+
+-- Lists are polimorphic homogeneous containers.
+
+-- An inductive type definition
+type List a = [] | a & List a
+
+-- Here's how a list of integers is created:
+[1, 2, 3, 4, 5]
+
+-- The previous syntax is desugared into an inductive chain.
+1 & 2 & 3 & 4 & 5 & []
+
+B = ^5
+
+#B == 5
+
+rev B == [5..1]
+
+rev B # 5 == 1
+
+Average ← {(+/ ω) ÷ ρ ω}
+
+Average = A -> fold (+) A / #A
+
+ -> ^4
+ :: [Int] = [1, 2, 3, 4]
+
+ -> ^5 ++ ^3
+ :: [Int] = [1, 2, 3, 4, 5, 1, 2, 3]
+
+ -> ^4 \\ 3
+ :: [Int] = [1, 2, 4]
+
+ -> ^5 \\ [1, 4]
+ :: [Int] = [2, 3, 5]
+
+ -> ^5 \\ [2..4]
+ :: [Int] = [1, 5]
+
+ -> 3 in ^5
+ :: Bool = T
+
+--
+-- Dict (Persistent Hash Map)
+--
+
+D = {"a" => 2, "b" => 4, "c" => 8}
+
+-> fold (dict, c -> dict # c <- 0), {}, ['a'..'z']
+:: {Char => Int} = {
+     'a' => 0
+     'b' => 0
+     'c' => 0
+     ...
+     'z' => 0
+   }
+
+['a'..'z']
+  >> map (=> 0)
+  >> into {}
+
+
+(map #(hash-map % 0) (seq "abcdefgh"))
+
+map ['a'..'z']
+
+
+List.fold ["a".."z"]
+    init: String.Map.empty
+      fn: dict ch -> String.Map.add dict 0
 
