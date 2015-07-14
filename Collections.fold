@@ -81,3 +81,15 @@ List.fold ["a".."z"]
     init: String.Map.empty
       fn: dict ch -> String.Map.add dict 0
 
+
+--
+-- Lists
+--
+
+-- Linked Lists
+
+fibs = [1 & 1 & zip fibs (tail fibs) with: (+)]
+
+fibs = 1 & 1 & (zip fibs (tail fibs) with: (+))
+
+
