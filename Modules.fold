@@ -1,5 +1,98 @@
 
 --
+-- # Modules
+--
+-- * 1.0 Definition
+-- * 2.0 Loading and Opening Modules
+-- * 3.0 Functors
+
+--
+-- ## 2.0 Loading and Opening Modules
+--
+
+--
+-- Load a module
+--
+-> load OS
+
+-- Only the module can be used
+-> user = OS.getenv "USER"
+user :: String = "dmr"
+
+
+--
+-- Load a module using an alias
+--
+-> load OS as POSIX
+
+-- Only the alias can be used
+-> user = POSIX.getenv "USER"
+user :: String = "dmr"
+
+-- Using module name directly will not work
+-> user = OS.getenv "USER"
+ * Error: Unbound module OS
+
+
+--
+-- Load multiple modules
+--
+-> load OS, Sys
+
+-- Both modules can be used.
+-> user = OS.getenv "USER"
+user :: String = "dmr"
+-> Sys.time ()
+:: Float = 0.276656
+
+
+--
+-- Load a module and some symbols.
+--
+-> load OS with: [getenv, getuid as uid]
+
+-- The `getenv` and `getuid` symbols can be used directly.
+-> user, uid = getenv "USER", uid ()
+user :: String = "dmr"
+ uid :: Int = 501
+-- The `OS` was also loaded and can be used.
+-> OS.getguid ()
+:: Int = 20
+
+--
+-- Open all module symbols
+--
+-- The usage of `open` without selection is discouraged since conflicting
+-- symbols may be introduced in the scope. In which case, for a conflicting
+-- name, the last imported definition will be used.
+--
+-> open OS
+
+-- All module symbols can be used directly.
+-> getuid ()
+:: Int = 501
+-> getgid ()
+:: Int = 20
+-- Opened modules are not loaded.
+-> OS.getuid ()
+ * Error Unbound module OS
+
+
+--
+-- Open only some module symbols
+--
+-> open OS only: [getcwd as cwd]
+
+-- Only the symbols `cwd` was opened from the module.
+-> cwd ()
+:: String = "/home/dmr"
+
+-- Open all module symbols with exceptions
+open OS hide: [mkdir, mkfifo]
+
+
+
+--
 -- Interfaces
 --
 
