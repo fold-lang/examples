@@ -1,4 +1,6 @@
 
+-- A static record is simply a list of bindings.
+
 type Pair a = { first::a, second::a }
 
 Pair :: first: a -> second: a -> Pair a
@@ -39,7 +41,7 @@ List/length [1, 2, 3, 4, 5]
 -- Inverse function application
 distances_by_class . transpose >> sort >> take k >> map (#2) >> flatten
 distances_by_class : transpose >> sort >> take k >> map (#2) >> flatten
-distances_by_class # transpose >> sort >> take k >> map (#2) >> flatten
+distances_by_class >> transpose >> sort >> take k >> map (#2) >> flatten
 distances_by_class / transpose >> sort >> take k >> map (#2) >> flatten
 
 [1 2 3 4] # 3
@@ -92,21 +94,20 @@ alan = { name: "Alan Turing", age: 32 }
 
 alan = { name: "Alan Turing" age: 32 }
 
+get_older self =
+  { self | age <- self.age + 1 }
 
 
+open Engine
+open Web.Engine
 
-data Event = Event { eventDescription :: String
-                   , eventName        :: String
-                   , eventLocation    :: String
-                   , eventType        :: String
-                   } deriving Show
-
+open Web_Utils
 
 type Event = {
-    event_description :: String
-    event_name        :: String
-    event_location    :: String
-    event_type        :: String
-} deriving Show
+  name        :: String
+  kind        :: String
+  description :: String
+  location    :: String
+}
 
 

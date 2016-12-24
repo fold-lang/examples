@@ -1,118 +1,32 @@
---
--- Quicksort
---
+{-
+  # Sorting Algorithms
+
+  - Quicksort
+  - Binary Search -}
 
 
-binary_search <A: Eq> : [A] -> A -> A?
-binary_search haystack needle =
-    search 0 (#haystack - 1) haystack needle
-    where search low high haystack needle =
-        let mid = (low + high) / 2 in
-        cond
-            (high < low)             => None
-            (haystack[mid] > needle) => search low (mid - 1)  haystack needle
-            (haystack[mid] < needle) => search (mid + 1) high haystack needle
-            otherwise                => Some mid
-        end
-
-
-binary_search <A: Eq> : [A] -> A -> A?
-binary_search haystack needle = {
-    search low high haystack needle = {
-        mid = (low + high) / 2
-        cond {
-            high < low             => None
-            haystack[mid] > needle => search low (mid - 1)  haystack needle
-            haystack[mid] < needle => search (mid + 1) high haystack needle
-            otherwise              => Some mid
-        }
-    }
-    search 0 (#haystack - 1) haystack needle
-}
-
-numbers = [1, 2, 2, 7, 8, 5]
-case binary_search numbers 8 {
-    Some x => print "Found number: {x}!"
-    None   => print "Could not find the number!"
-}
+def qsort input =
+  match input
+  | [] | [_] -> input
+  | [x & xs] ->
+    qsort less ++ [x & qsort more]
+    where (less, more) = List.partition (\x < p) xs
+  end
 
 
 
-qsort :: [Int] -> [Int]
-qsort []     = []
-qsort (x:l)  = qsort (filter (<x) l) ++ x : qsort (filter (>=x) l)
+-- * --
 
-goal = qsort [2,3,1,0]
-
-qsort (x:xs) = qsort [y | y <- xs, y < x] ++ [x] ++ qsort [y | y <- xs, y >= x]
-
-qsort [] = []
-qsort [x|xs] = [qsort ys + x | qsort zs]
-    where (ys, zs) = partition (< x) xs
-
-
-qsort = {
-    [] => []
-    [x|xs] => let (ys, zs) = partition (< x) xs in:
-        [qsort ys + x | qsort zs]
-}
-
-
-qsort = {
-    [] => []
-    [x|xs] => {
-        (ys, zs) = partition (< x) xs
-        [qsort ys + x | qsort zs]
-    }
-}
-
-
-qsort = {
-    [] => []
-    [x|xs] => qsort ys ++ [x | qsort zs] where
-                (ys, zs) <- partition (< x) xs]
-}
-
-
-qsort = {
-    [] => []
-    [x|xs] => qsort ys ++ [x | qsort zs]
-        where (ys, zs) <- partition (< x) xs]
-}
-
-qsort [] = []
-qsort [x|xs] = qsort ys ++ [x | qsort zs]
-    where (ys, zs) = partition (< x) xs
-
-qsort [] = []
-    | [x | xs] = qsort ys ++ [x | qsort zs]
-        where (ys, zs) = partition (< x) xs
-
-qsort list = match list {
-    [] => []
-    [x|xs] => qsort ys ++ [x | qsort zs]
-        where (ys, zs) <- partition (< x) xs]
-}
-
-qsort = [] => []
-      | [x|xs] => qsort ys ++ [x | qsort zs]
-        where (ys, zs) <- partition (< x) xs]
-
-
-function quick_sort xs
-  case xs
-    | [] -> []
-    | [x & xs] -> quick_sort ys ++ [x & quick_sort zs]
-        where: (ys, zs) = partition (< x) xs
+def binary_search haystack needle
+  search 0 (#haystack - 1) haystack needle where
+  search low high haystack needle =>
+    let mid = (low + high) / 2 in
+    when
+    | high < low             => None
+    | haystack[mid] > needle => search low (mid - 1)  haystack needle
+    | haystack[mid] < needle => search (mid + 1) high haystack needle
+    | otherwise              => Some mid
+    end
 end
-
-
-function quick_sort
-    | [] -> []
-    | [x & xs] -> quick_sort ys ++ [x & quick_sort zs]
-        where: (ys, zs) = partition (< x) xs
-end
-
-
 
 

@@ -4,12 +4,12 @@
 This is a multi-line string.
 """
 
-"Hello, {}" % "World"
+name = "World"
 
-"Hello, {name}" % {name = "World"}
+print "Hello, %(name)"
+print ("Hello, %s" name)
 
--> `(2 + {4 + 2})
- = Code (2 + 6)
- 
- 
-~\name
+
+=> `(2 + %(4 + 2))
+:: Code Int = `(2 + 6)
+

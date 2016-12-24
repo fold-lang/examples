@@ -4,11 +4,11 @@ load sequtils
 load times
 
 type Route =
-    { dest :: int,
-      cost :: int }
+  { dest :: int
+    cost :: int }
 
 type Node =
-    { neighbours :: Seq[Route] }
+  { neighbours :: Seq[Route] }
 
 let lines    = split (file "agraph")
 let numNodes = lines[0].parseInt

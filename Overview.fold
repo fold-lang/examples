@@ -1,0 +1,189 @@
+#!/usr/bin/env fold
+
+-- ## Comments
+
+-- This is a comment
+-- TODO: Add some features.
+-- XXX: Important notice.
+-- FIXME: Don't forget about this issue!
+-- WHAT THE HACK?
+
+{{ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+   tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+   quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+   consequat. }}
+
+
+-- ## Polymorphic Variants
+
+`Continue `foo
+`Color 0xFF00FF
+`Point (20.0, 0.0)
+
+
+-- ## Characters
+
+'x' 'a'
+'\t' '\n'
+'\99' '\9' -- Invalid char syntax
+
+
+-- ## Booleans
+
+True False
+
+
+-- ## Numbers
+
+0 1 42 100 322
+0.0 3.14 0.999
+0x998 0b1001
+
+
+-- ## Strings
+
+"Hello, World!"
+
+"Hello, $name!"
+
+"""
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat.
+"""
+
+"""
+<div id="content">
+  $(Post.content)
+</div>
+"""
+
+
+-- ## Structures
+
+mod Person
+  ...
+end
+
+sig Ord
+  ...
+end
+
+ext List
+  ...
+end
+
+-- ## Statements
+
+assert True
+ignore (2 + 2)
+undefined
+
+
+-- ## Module Operations
+
+open Control.Monad
+load Opium.App
+
+include (Printable Person)
+
+
+-- ## Conditionals
+
+if True then `OK
+else `Error 102
+
+when
+  x < 0     -> -1
+  x > 0     -> +1
+  otherwise -> 0
+end
+
+unless (' ' in name)
+  print "Enter your full name!"
+end
+
+case color
+  `Red   -> "red"
+  `Green -> "green"
+  `Blue  -> "blue"
+end
+
+
+-- ## Loops
+
+for i in [0..9]
+  print "i = $i"
+end
+
+flag = ref True
+while flag!
+  if is_done ()
+    flag := False
+  end
+end
+
+
+-- ## Keywords
+
+result = do
+  a = 32
+  b = 110
+  sqrt (-4 * a * b / 2)
+end
+
+let
+  a = 32
+  b = 110
+in
+  sqrt (-4 * a * b / 2)
+end
+
+fun hello name
+  print "Hello, $name!"
+end
+
+
+-- ## Macro
+
+macro if $test then $true_expr else $false_expr
+  ```
+  case $test
+    True  -> $true_expr
+    False -> $false_expr
+  end
+  ```
+end
+
+
+-- ## Type
+
+type Point =
+  { x :: Float,
+    y :: Float }
+
+Int Bool Char String
+List a
+List (Int, { x :: Float, y :: Float }) -> Map Char Float
+
+
+-- ## Delimiters
+
+( ) { } [ ]
+
+-- ## Operators
+:: -> <- ~> $ @ |> >>
+
+-- ## Function Definition and Application
+
+range from: (start = 0) to: stop by: (step = 1) =
+  if start == stop then []
+  else start & range from: (start + 1) to: stop by: step
+
+range from: 10 to: 100 by: 2
+
+hello name :: String -> () =
+  print "Hello, $name!"
+
+

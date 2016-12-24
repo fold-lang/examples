@@ -11,13 +11,160 @@
 -- () precedence
 
 
-=   assigment
-|   alternative
-->  function return
-=>  pair, binding
-::  type annotation
-:   keyword selector
-()  precedence
-[]  collections
+    =       assigment
+    |       alternative
+    ->      function return
+    =>      pair, binding
+    ::      type annotation
+    ..      range operator
+    ()      precedence
+    []      collections
+    {}      tuples, records
+    :       keyword selector
+    &       collection cons
+    `       symbol, code quote
+    ~       scoped keyword name
+    %       format, unquote, interpolate
+    !       force application
+    ?       optional type, boolean condition
+    \       lambda argument
+    #       get key, length
+    ^       top-bounded range
 
+
+ -> num = 42
+    num :: Int = 42
+
+ -> head & tail = [1..5]
+    head :: Int = 1
+    tail :: [Int] = [2, 3, 4, 5]
+
+  -> if success?
+   ~   IO.print "everything is ok"
+   ~ else
+   ~   IO.print "try again"
+   ~ end
+
+  -> when
+   ~   | 2 + 2 == 5 -> "This will not be true"
+   ~   | 2 * 2 == 3 -> "Nor this"
+   ~   | 1 + 1 == 2 -> "But this will"
+   ~   | otherwise  -> "If non of above suceed this will"
+   ~ end
+
+  -> case Int.parse (IO.read_line msg: "How old are you?"!)
+   ~   | n if n <  18 -> "You are too young."
+   ~   | n if n >= 18 -> "You are %(n) years old!"
+   ~ end
+
+-- // --
+
+-- Hello, world!
+"Hello, world!" >> print
+
+-- Assignment
+number = 42
+opposite = True
+
+-- Conditions
+number = -42 if opposite else: 0
+
+-- Lists (stored as immutable singly-linked lists)
+list = [1, 2, 3, 4, 5]
+
+-- Tuples (think of them as immutable arrays)
+tuple = {1, 2, 3, 4, 5}
+
+-- Atoms (known as symbols to Ruby people)
+-- Think of them as an open-ended enumeration
+atom = `up_and_atom
+
+-- Dicts (also known as hashes to Ruby people)
+dict = {`foo => 1, `bar => 2, `baz => 3}
+
+-- Strings (unlike Erlang, Reia has a real String type!)
+string = "I'm a string! Woohoo I'm a string! %('And I interpolate too!')"
+
+-- Ranges
+range = [0..42]
+
+-- Funs (anonymous functions, a.k.a. lambdas, procs, closures, etc.)
+-- Calling me with plustwo(40) would return 42
+plustwo = n => n + 2
+
+-- Modules (collections of functions)
+-- Calling Plusser.addtwo(40) would return 42
+module Plusser
+  def addtwo n
+    n + 2
+  end
+end
+
+-- List comprehensions
+doubled = [n * 2 | n <- numbers]
+
+
+person # `name # [2..4]
+person[`name][2..4]
+
+# [0..99]
+
+
+-- Function Application
+
+print to: IO.stderr, "warning: invalid input format:" % line
+
+-- * --
+
+-- Block syntax showcase.
+-- Task: extract the nth column from the csv file.
+
+-- C-style braces.
+def get_column file_path n {
+    line = IO.get_line (File.open mode: `r file_path)
+    if (length line == 0) {
+        print to: IO.stderr ("warning: invalid input format:" % line)
+        None
+    } else {
+        Some ((String.split on: ',' line) # n))
+    }
+}
+
+
+-- Python-like indentation.
+get_column file_path n =
+  line = IO.get_line (File.open mode: `r file_path)
+  if (length line == 0):
+    print to: IO.stderr ("warning: invalid input format:" % line)
+    None
+  else:
+    Some ((String.split on: ',' line) # n))
+
+
+-- Ruby-like do-end blocks.
+def get_column file_path n
+  line = IO.get_line (File.open mode: `r file_path)
+  if (length line = 0)
+    print to: IO.stderr, "warning: invalid input format:" % line
+    None
+  else
+    Some ((String.split on: ',' line) # n))
+  end
+end
+
+
+def sum x y: x + y
+
+
+hello name: "world"
+
+hello name
+  "world"
+end
+
+
+
+def sum x y
+  x + y
+end
 

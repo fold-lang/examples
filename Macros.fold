@@ -1,3 +1,41 @@
+--
+-- Fold Macros
+--
+
+-- To create a macro a syntax rule is defined:
+
+macro `unless (cond & body)...
+    `(if (not %cond) then: %body...)
+end
+
+unless (User.authorized? usr)
+    log "Unauthorized user: %(usr)..."
+    redirect to: `Login_page
+end
+
+(unless (User.authorized? usr)
+    (do (log "Unauthorized user: %(usr)...")
+        (redirect :to `Login_page)))
+
+(defmacro unless [arg & body]
+  `(if (not ~arg)
+     (do ~@body))) ; Remember the do!
+
+
+macro `time exp
+    quote
+        t = Time.now!
+        x = %(exp)
+        print "elapsed time: %(t - Time.now!) seconds"
+        x
+    end
+end
+
+
+=> `(2 + %(4 + 2))
+:: Code Int = `(2 + 6)
+
+---
 
 
 { define-method ?class:name . ?name:name (?params:*)
@@ -40,7 +78,207 @@ else:
 x + y = `(+, [x, y])
 
 
--> `(2 + {4 + 2})
- = Code (2 + 6)
- 
- 
+=> `(2 + {4 + 2})
+:: Code Int = `(2 + 6)
+
+=> function_name = "fold"
+=> List.{{function_name}}
+:: Code Int = `(2 + 6)
+
+---
+
+macro time(ex)
+  return quote
+    local t0 = time()
+    local val = $ex
+    local t1 = time()
+    println("elapsed time: ", t1-t0, " seconds")
+    val
+  end
+end
+
+
+macro time exp
+    quote
+        t = Time.now!
+        x = %(exp)
+        print "elapsed time: %(t - Time.now!) seconds"
+        x
+    end
+end
+
+
+(print (format t "I have ~D apples." 4))
+
+(let ((num 4))
+     (quasiquote (I have (unquote num) apples)))
+
+
+
+print ("I have %s apples." 4)
+
+let num = 4
+    in quote (I have (unquote num) apples)
+
+let num = 4
+    in `(I have ~(num) apples)
+
+--
+-- If then else, macro definition syntax
+--
+
+if_then_else_ : ∀ {a} {A : Set a} → Bool → A → A → A
+if true  then t else f = t
+if false then t else f = f
+
+
+macro `if condition a `else b {
+  ...
+}
+
+macro `do expr {
+
+}
+
+macro print (to file = IO.stdout) (flush = False) (~sep = " ") (~end = "\n") args... {
+  string = (String.join (map show args) with: sep) ++ end
+  IO.write to: file string
+  if (flush == True)
+    IO.{ flush stdout }
+}
+
+
+print to: IO.stderr flush: true sep: "\n\t" end: "\n---"
+  "warning: invalid input format:" row
+
+
+---
+
+-- Declaration of conditional
+-- if true then TrueClause else FalseClause -> TrueClause
+-- if false then TrueClause else FalseClause -> FalseClause
+
+if true  then A else _ = A
+if false then _ else B = B
+
+
+---
+
+
+-- https://en.wikipedia.org/wiki/Lithe_(programming_language)
+-- rule "|" <i:int> "|" return int;
+--   {if i<0 then return -i else return i end}
+
+syntax "|" n "|" =
+  quote
+    if (unquote n) < 0 then -(unquote n) else (unquote n)
+  end
+
+
+| _ | :: Int -> Int =
+  quote
+    if (unquote n) < 0 then -(unquote n) else (unquote n)
+  end
+
+
+-- * --
+
+-- Nemerle Macros
+-- https://github.com/rsdn/nemerle/wiki/Syntax-extensions
+
+macro while_macro (cond, body)
+syntax ("while", "(", cond, ")", body) {
+  <[
+    def loop () {
+      when ($cond) {
+        $body;
+        loop ()
+      }
+    }
+    loop ()
+  ]>
+}
+
+
+while _ _ :: Expr -> Expr -> Expr
+while c a =
+  quote
+    loop! = if (unquote c) then (unquote a) else loop!
+    loop!
+  end
+
+
+-- ## Quoting/Unquoting
+
+-- Just a list with expressions: [2, `+, 2]
+quote (2 + 2)
+
+-- Operator for quoting.
+`(2 + 2)
+
+-- Values can be unquoted (during compile-time) into the quoted expression:
+x = 7
+quote (2 + (unquote x))   -- produces a list [2, +, 7]
+
+`(2 + $x)
+
+-- Quoted expression blocks are also supported
+x = 7
+
+```
+a = 2 + $x
+print a
+```
+
+
+macro while $c $a
+  quote
+    loop () = if (unquote c) then (unquote a) else loop!
+    loop ()
+  end
+end
+
+
+macro if $t then [a] else (b)
+  ...
+end
+
+macro $k => $v
+  ...
+end
+
+
+-- * --
+
+-- Idris – Syntax Extensions
+-- http://docs.idris-lang.org/en/latest/tutorial/syntax.html
+-- syntax for {x} in [xs] ":" [body] = forLoop xs (\x => body)
+
+macro for $x in $xs $body
+  `(List.iter (x -> $body) $xs)
+end
+
+
+-- * --
+
+table       = '{' table-items '}' | '{' '}'
+table-items = item | item ',' table-items
+
+
+comma_list form =
+  case form
+    | [a, ',', b, rest...] ->
+  end
+
+
+(item | item ',') +
+
+Reuse the sedlex syntax
+
+
+macro table
+  {   } ->
+end
+
+
+

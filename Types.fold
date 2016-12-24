@@ -8,7 +8,12 @@ sum <Num a> :: a -> a -> a
 
 sum :: (implicit Num) -> Num.t -> Num.t -> Num.t
 
-sum :: <Num a> => Num.t -> Num.t -> Num.t
+sum :: (implicit Num) -> Num.t -> Num.t -> Num.t
+
+sum :: {Num a} => Num.t -> Num.t -> Num.t
+
+filter :: Fn (Fn a Bool) (Fn (List a) (List a))
+filter :: (a -> Bool) -> [a] -> [a]
 
 
 -- Interfaces

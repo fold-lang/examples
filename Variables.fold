@@ -1,0 +1,198 @@
+
+{-
+  # Definitions
+
+  Definitions populate the environment with bindings to values, modules or
+  types.
+
+  Values or functions can be defined in #n different contexts:
+
+  <separator>    ::= ';' | '\n'
+
+  <binding>      ::= <identifier> = <expression>
+  <binding_list> ::= <identifier> = <expression> <separator> <binding_list>
+
+  <definition> ::=
+    | def <binding>
+    | let <binding_list> in <expression>
+    | <expression> where <binding_list>
+
+-}
+
+
+{-
+  ## Definitions
+
+  A basic definition has the form
+
+  ```
+  def <id> = <expr>
+  ```
+
+  in which case id is bound to the result of expr.
+
+  **Examples**:
+
+  ```
+  def greeting = "Hello, world!"
+
+  -> greeting
+  :: String = "Hello, world!"
+  ```
+ -}
+
+-- Value definitions
+a = 1
+
+-- Function definitions
+def f a => a + 1
+
+-- Function definitions with patterns
+def f
+  | 1 => 0
+  | a => a + 1
+end
+
+
+-- Multiple definitions
+def
+  a = 1
+
+  f b = b + 1
+
+  factorial =
+    match n
+    | 0 => 1
+    | n => n * factorial (n - 1)
+    end
+
+  factorial2 =
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+
+  c = 3
+end
+
+
+
+
+-- ## Let Expressions
+
+let a = 1
+print "The value of a is $a!"
+
+let f a = a + 1
+print "The value of (f a) is $(f 4)!"
+
+fun test () =>
+  let
+    a = 1
+
+    f b = b + 1
+
+    factorial =
+      match n
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+      end
+
+    factorial2 =
+      | 0 -> 1
+      | n -> n * factorial (n - 1),
+
+    c = 3
+  in
+    print "The value of a, f b, c are $a, $(f 4), $c!"
+
+
+-- ## Where Expressions
+
+print "The value of a is $a!"
+where a = 1
+
+print "The value of (f a) is $(f 4)!"
+where f a = a + 1
+
+print "The value of a, f b, c are $a, $(f 4), $c!"
+where
+  a = 1
+
+  f b = b + 1
+
+  factorial n =
+    match n
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+    end
+
+  factorial2 =
+    | 0 -> 1
+    | n -> n * factorial (n - 1),
+  c = 3
+end
+
+
+-- * --
+
+
+
+module Person = ...
+
+interface Comparable = ...
+
+def hello name = ...
+
+object
+  def say_hello () =
+    print
+end
+
+
+-- * --
+
+-- StandardML
+fun heron (a, b, c) = let
+    val ab = dist (a, b)
+    val bc = dist (b, c)
+    val ac = dist (a, c)
+    val perim = ab + bc + ac
+    val s = perim / 2.0
+    in
+      Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+    end
+
+
+def heron a b c =
+  let
+    ab    = dist (a, b)
+    bc    = dist (b, c)
+    ac    = dist (a, c)
+    perim = ab + bc + ac
+    s     = perim / 2.0
+  in
+    Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+  end
+
+def heron a b c =
+  Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+    where
+      ab    = dist (a, b)
+      bc    = dist (b, c)
+      ac    = dist (a, c)
+      perim = ab + bc + ac
+      s     = perim / 2.0
+    end
+
+
+-- * --
+
+var x = 0  -- let x = ref 0
+
+macro var $name = $val
+  $name = ref $val
+end
+
+x = ref 0
+
+x!
+

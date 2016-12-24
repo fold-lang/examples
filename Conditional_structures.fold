@@ -6,6 +6,101 @@
 -- http://research.microsoft.com/en-us/um/people/simonpj/Haskell/guards.html
 -- http://en.wikipedia.org/wiki/Guarded_Command_Language
 
+-- ## If Expression
+def factorial n =
+  if (n == 0)
+    1
+  else
+    n * factorial (n - 1)
+  end
+
+
+-- ## When Expressions
+
+-- When checks multiple boolean conditions and evaluates to the result of the
+-- first true condition. Exhaustiveness cheks are performed is demonstrated in
+-- the following example: the compiler knows that all cases are covered meaning
+-- that the otherwise case is not needed.
+def compare a b =
+  when
+  | a  > b -> +1
+  | a  < b -> -1
+  | a == b ->  0
+  end
+
+-- The previous `when` expression is translated to:
+if (a > b)
+  +1
+else if (a < b)
+  -1
+else
+  0
+end
+
+
+-- * --
+
+-- http://stackoverflow.com/questions/9345589/guards-vs-if-then-else-vs-cases-in-haskell
+def nth [x & xs] n =
+  when
+  | n <= 0    -> None
+  | n == 1    -> Some x
+  | otherwise -> nth xs (n - 1)
+  end
+
+
+-- * --
+
+
+-- https://github.com/ocaml/ocaml/pull/715#issuecomment-239619178
+let rec find x = function
+  | Empty -> None
+  | Node (l, v, d, r, _) ->
+      let c = Ord.compare x v in
+      if c < 0 then find x l else
+      if c > 0 then find x r else
+      d
+
+def find x
+  | Empty -> None
+  | Node (l, v, d, r, _) ->
+    let c = Ord.compare x v in
+    when
+    | c < 0     -> find x l
+    | c > 0     -> find x r
+    | otherwise -> d
+    end
+end
+
+
+-- https://github.com/ocaml/ocaml/pull/715#issuecomment-235252219
+if some condition then
+  some thing
+else (
+  do something;
+  do something_else)
+>>= fun () ->
+some other_thing
+
+
+if some condition
+  some thing
+else
+  do something;
+  do something_else
+end >>= fun () ->
+some other_thing
+
+
+if User.is_logged_in user
+  View.render_profile ~user
+else
+  View.render_login ()
+end >>= () ->
+Console.log "rendered view"
+
+
+-- * --
 
 cond: x > 2 -> "Really big."
     | x < 2 -> "To small."
@@ -215,6 +310,12 @@ if | x > 3 => "hello"
 cond | x > 3 => "hello"
      | else  => "no"
 
+cond {
+  x > 3 -> "hello"
+  else  -> "no"
+}
+
+
 case [1..99] \\ gen_random_list
     | []  then: "empty list"
     | [x] then: "one element only"
@@ -234,5 +335,30 @@ if did_succeed?
 else
   print "no"
 end
+
+
+if did_succeed? {
+  print "ok"
+} else {
+  print "no"
+}
+
+
+-- * --
+
+-- (defun factorial (n)
+--   (if (= n 0) 1
+--     (* n (factorial (- n 1)))))
+
+factorial n =
+  if (n == 0)
+    then 1
+    else factorial (n - 1)
+
+factorial n =
+  if (n == 0)
+    then: 1
+    else: factorial (n - 1)
+
 
 

@@ -1,22 +1,111 @@
---
--- Function definition
--- http://rosettacode.org/wiki/Function_definition#Metaphor
--- http://www.objc.io/issue-16/swift-functions.html
---
+{- Function definition
+   http:--www.objc.io/issue-16/swift-functions.html -}
 
-greet :: String -> Void
-greet name = print "Hello, ~name"
+-- Just say hello.
+def hello name =>
+    print "Hello, $name!"
 
--- // --
+-- Hello function with a type annotation.
+def hello (name :: String) :: () =>
+    print "Hello, $name!"
+
+-- Lambda greeting. Equivalent to the previous examples.
+hello = name => print "Hello, $name!"
+
+-- Lambda greeting with a block body.
+hello = name -> do
+    print "Hello, $name!"
+end
+
+-- Oneliner, uses expression binding.
+def hello name => print "Hello, $name!"
+
+-- Hello function with separate type annotations.
+def hello :: String -> ()
+def hello name =
+  print "Hello, $(name)!";
+  print "Hello, again"
+
+-- Factorial with implicit pattern matching.
+def factorial
+  | 0 -> 1
+  | n -> n * factorial (n - 1)
+end
+
+-- Factorial with implicit pattern matching and type annotation.
+def factorial :: Int -> Int
+  | 0 -> 1
+  | n -> n * factorial (n - 1)
+end
+
+
+def factorial
+  | 0 => 1
+  | n => n * factorial (n - 1)
+end
+
+
+-- Create an iterator of list.
+define next
+  | []     -> None
+  | x & xs -> Some (x, xs)
+end
+
+
+-- * --
+
+let eps = 0.0001
+
+def derivative f =
+  x -> (f (x + eps) - f x) / eps
+
+def square x = x * x
+def around delta target =
+  actual -> abs (actual - target) < delta
+
+assert
+  dsquare = derivative square
+
+  dsquare 5  |> satisfies (around 0.1 10)
+  dsquare 10 |> satisfies (around 0.1 20)
+end
+
+
+-- * --
+
+next :: List a -> Producer a
+
+next []      = return ()
+next (a & l) = yield a >> next l
+
+next =
+  | []      -> return ()
+  | (a & l) -> yield a >> next l
+
+def next
+  | []      -> return ()
+  | (a & l) -> yield a >> next l
+end
+
+def next
+  | []      -> return ()
+  | (a & l) -> yield a >> next l
+end
+
+
+
+
+
+-- -- --
 
 a a =
 f x y z =
 
 fib :: Int -> Int
 fib = {
-    0 -> 0
-    1 -> 1
-    n -> fib (n - 1) + fib (n - 2)
+    0 => 0
+    1 => 1
+    n => fib (n - 1) + fib (n - 2)
 }
 
 fib 0 = 0
@@ -28,7 +117,7 @@ fib n when
   | n == 1 = 1
   | else   = fib (n - 1) + fib (n - 2)
 
--- // --
+-- -- --
 
 range :: from: Int? -> to: Int -> by: Int? -> [Int]
 range (from start) (to end) (by step) =
@@ -108,7 +197,7 @@ end
 
 
 
--- // --
+-- -- --
 
 
 factorial :: Int -> Int
@@ -117,7 +206,7 @@ factorial = {
     n => n * factorial (n - 1)
 }
 
--- // --
+-- -- --
 
 take_while <A> :: (A -> Bool) -> [A] -> [A]
 take_while p = {
@@ -125,7 +214,7 @@ take_while p = {
     [x | xs] => p x ? [x | take_while p, xs] : []
 }
 
--- // --
+-- -- --
 
 range :: from: Int? -> to: Int -> by: Int? -> [Int]
 range (from start) (to end) (by step) <- {
@@ -134,7 +223,7 @@ range (from start) (to end) (by step) <- {
         else: [start | range from: (start + 1) to: stop by: step]
 }
 
--- // --
+-- -- --
 
 range :: from: Int? -> to: Int -> by: Int? -> [Int]
 range (from start) (to end) (by step) = do
@@ -145,7 +234,7 @@ range (from start) (to end) (by step) = do
     end
 end
 
--- // --
+-- -- --
 
 map file_list, read \file
 map file_list (read \file)
@@ -377,6 +466,13 @@ visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] = {
     map !(~, durations ~) visits_by_device
 }
 
+visits_durations_by_device :: [Visits] -> [(Device, [Time])]
+visits_durations_by_device visits_by_device =
+    let durations = map \(last ~1 - first ~1)
+        durations = map (x -> (last x) - (first x))
+    in:
+      map !(~, durations ~) visits_by_device
+
 
 --
 
@@ -471,7 +567,7 @@ visits_durations_by_device visits_by_device = do
 end
 
 
--- // --
+-- -- --
 
 def greet
   return "hello"
@@ -495,7 +591,7 @@ greet(first: String, last: String) -> String =
     "hello " + first + " " + last
 
 
--- // --
+-- -- --
 
 def greet
   return "hello"
@@ -522,7 +618,7 @@ def greet(first:string, last:string):string
 end
 
 
--- // --
+-- -- --
 
 function greet
   return "hello"
@@ -548,7 +644,7 @@ function greet(first:string, last:string):string
   return "hello " + first + " " + last
 end
 
--- // --
+-- -- --
 
 type List T = {
     Cons (head: T, tail: List T)
@@ -572,7 +668,7 @@ list_2 = append(test_list, Cons (44, Nil))
 list_2 == Cons (11, Cons (22, Cons (33, Cons (44, Nil))))
 
 
--- // --
+-- -- --
 
 type List T =
     | Cons (T, List T)
@@ -596,7 +692,7 @@ end
 list_2 = append test_list (Cons (44, Nil))
 list_2 == Cons (11, Cons (22, Cons (33, Cons (44, Nil))))
 
--- // --
+-- -- --
 
 (def hello [name]
     (print ("Hello" + name)))
@@ -606,7 +702,7 @@ list_2 == Cons (11, Cons (22, Cons (33, Cons (44, Nil))))
     [name] => (print ("Hello" + name)))
 
 
--- // --
+-- -- --
 
 
 function hello name
@@ -624,7 +720,7 @@ def hello
     name => print ("Hello" + name)
 end
 
--- // --
+-- -- --
 
 retry callback timeout retries = ...
 
@@ -632,10 +728,10 @@ retry = callback timeout retries ->
     Log#info
     repeat retries (-> callback >>= wait for: 5.Time#seconds)
 
--- // --
+-- -- --
 
-run_seq_command :: [Int] -> A -> Bool -> Int -> Unit
-run_seq_command nslots ready n =
+fun run_seq_command :: [Int] -> A -> Bool -> Int -> Unit
+fun run_seq_command nslots ready n =
   | Done r => do
     Log.info "Job %a finished" (slog (string_of_int << V.hash)) n
     results = M.append n r results
@@ -667,7 +763,7 @@ run_seq_command nslots ready n =
     loop nslots results running ready
   end
 
--- // --
+-- -- --
 
 [1, 2, 3, 4].map {|x| x > 2 }.first
 
@@ -691,7 +787,7 @@ select first from: [1, 2, 3, 4] where: x -> x > 2
 
 
 
--- // --
+-- -- --
 
 open Str
 
@@ -739,7 +835,7 @@ end
 
 main Sys#args
 
--- // --
+-- -- --
 
 let access_counts_to_string access_counts =
   String.Map.fold access_counts ~init:""
@@ -754,7 +850,7 @@ def access_counts_to_string access_counts
           hours_str ++ ("%s, %d, %d\n" % (access, Float.to_int (Time.to_float h), c))
 end
 
--- // --
+-- -- --
 
 def x y -> x + y end
 
@@ -792,7 +888,7 @@ detections > ([] => [x | xs] => 1 + length xs)
 
 -> name
 
--- // --
+-- -- --
 
 || Creates a new object given a message passing primitive.
 || This is very good function.
@@ -807,15 +903,15 @@ function mk_object n_vs
   end
 end
 
-lookup <A> :: Self => Formula -> Bool -> Int -> A
+lookup <A> :: Self >> Formula -> Bool -> Int -> A
 
-function self => lookup attrs recursive level
+function self >> lookup attrs recursive level
     ...
 end
 
 db => lookup
 
-db => lookup ("city" == "London" and "age" > 25)
+db >> lookup ("city" == "London" and "age" > 25)
         : True : 2
 
 db => lookup ("city" == "London" and "age" > 25)
@@ -844,16 +940,16 @@ function <Content_type::Collection_type where Content_type.Index::Forward_indext
     ...
 end
 
--- // --
+-- -- --
 
 
 function sum ctx xs
   hourly_counts_by_access =
-    xs >- group_by_access
-       >- xs => add_missing_accesses xs (Spaces.obtain_access_list)
-       >- add_missing_hours_by_access ctx.date
+    xs >> group_by_access
+       >> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
+       >> add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
-    (hourly_counts => `Sum (fold (+) 0 (map #2 hourly_counts)))
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
   sum_by_access
 end
 
@@ -928,6 +1024,13 @@ function calc_sum ctx xs
      | add_missing_hours_by_access ctx.date
      | map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
 end
+
+
+fun calc_sum ctx xs :: App.Context -> [(Time, Int)] =
+  xs |> group_by_access
+     |> add_missing_accesses (Spaces.obtain_access_list ())
+     |> add_missing_hours_by_access ctx.date
+     |> map (\item #2 >> fold (+) 0 >> `Sum))
 
 
 function calc_sum ctx xs
@@ -1030,7 +1133,7 @@ view :: (Int, Int) -> Turtle -> Element
 view (w,h) turtle =
   let turtle_pic =
         to_form (image 96 96 "/turtle.gif")
-          >- x -> rotate turtle.angle >> not true
+          >> x -> rotate turtle.angle >> not true
           >= move (turtle.x, turtle.y)
   in
       layers
@@ -1040,7 +1143,7 @@ view (w,h) turtle =
 
 [1, 2, 3, 4, 5] => length
 
--- // --
+-- -- --
 
 
 type Space = Int
@@ -1089,7 +1192,7 @@ end
 
 
 
--- // --
+-- -- --
 
 -- Bodol Programming Language
 
@@ -1151,13 +1254,13 @@ end
 
 
 function map
-   | f [] -> []
-   | f [x & xs] -> [f x & map f xs]
+   | f [] => []
+   | f [x & xs] => [f x & map f xs]
 end
 
 map = do
-   f [] -> []
-   f [x & xs] -> [f x & map f xs]
+   f [] => []
+   f [x & xs] => [f x & map f xs]
 end
 
 [2 3 4] == map (a -> a + 1) [1 2 3]
@@ -1200,4 +1303,73 @@ in
   print "Average visiting time is {avg}"
 end
 
+
+-- From carcass by D. Buenzli
+-- https://github.com/dbuenzli/carcass/blob/b2c7af8ba6dfe69ca59b8a0ba33afc296a1c53d9/src/carcass.ml#L212
+
+let create ?(nln = true) ~src input =
+  let nln = if nln then Some (`ASCII 0x000A (* LF *)) else None in
+  let d = Uutf.decoder ~encoding:`UTF_8 ?nln input in
+  { src; d; buf = Buffer.create 1024;
+    prev_line = 0; prev_col = 0;
+    peek = `Start }
+
+
+function create (nln = true) ~src input
+  nln = if nln then Some (`ASCII 0x000A (* LF *)) else None
+  d = Uutf.decoder ~encoding:`UTF_8 ?nln input
+  { src, d, buf = Buffer.create 1024,
+    prev_line = 0, prev_col = 0,
+    peek = `Start }
+end
+
+
+fun create ?(nln = true) ~src input:
+  nln = if nln then Some (`ASCII 0x000A (* LF *)) else None
+  d = Uutf.decoder ~encoding:`UTF_8 ?nln input
+  { src; d; buf = Buffer.create 1024;
+    prev_line = 0; prev_col = 0;
+    peek = `Start }
+
+
+-- * --
+
+-- StandardML
+fun area (Circle (_, r)) = 3.14 * r * r
+  | area (Square (_, s)) = s * s
+  | area (Triangle (a, b, c)) = heron (a, b, c)
+
+
+
+area = do
+  (Circle (_, r)) => 3.14 * r * r
+  (Square (_, s)) => s * s
+  (Triangle (a, b, c)) => heron (a, b, c)
+end
+
+
+-- * --
+
+-- Ur/Web
+fun foldl [a] [b] (f : a -> b -> b) =
+    let
+        fun foldl' acc ls =
+            case ls of
+                [] => acc
+              | x :: ls => foldl' (f x acc) ls
+    in
+        foldl'
+    end
+
+
+foldl (f :: a -> b -> b) =
+  let
+    foldl' acc ls =
+      case ls of
+        | [] => acc
+        | x & ls => foldl' (f x acc) ls
+      end
+  in
+    foldl'
+  end
 

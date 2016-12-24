@@ -1,4 +1,5 @@
 
+
 -- https://programmers.stackexchange.com/questions/135544/why-are-several-popular-programming-languages-influenced-by-c
 
 -- in function application \n denotes :
@@ -9,6 +10,25 @@ do: expr
 
 do expr end
 
+
+if (x > 3)
+    print "Too big!"
+end
+
+if (x > 3) : print "Too big!"
+
+if (x > 3)
+    print "Too big!"
+else
+    print "Just fine."
+end
+
+if (x > 3) : print "Too big!" else: print "Just fine."
+
+print ((x > 3) ? "Too big!" : "Just fine.")
+
+
+-- // --
 
 fun dist ((x0, y0), (x1, y1)) = let
      val dx = x1 - x0
@@ -325,7 +345,7 @@ function (factorial (n::Int) -> Int)
 end
 
 
-function factorial (n::Int) -> Int
+function factorial n::Int -> Int
     Log.info "Will calculate factorial of {n}"
     (n == 0) ? 1 : n * factorial (n - 1)
 end
@@ -390,6 +410,15 @@ in:
 
 
 -- // --
+
+def greet name
+    print "Hello, " + name "!!!"
+end
+
+
+def greet name {
+    print "Hello, " + name "!!!"
+}
 
 
 function greet name do

@@ -1,22 +1,158 @@
 -- Pattern-matching
 
+-- https://github.com/ocaml/ocaml/pull/722#issuecomment-243293068
+let consider_pattern tc1 tc2 pc fp' dc =
+  Log.debug_f "Considering directory entry %s" dc >>
+  match String.cuts ~sep:"%" dc with
+  | [] -> assert false
+  | [_] -> Lwt.return_none
+  | [dc1; dc2] ->
+      begin match cut_prefix tc1 dc1, cut_suffix tc2 dc2 with
+      | None, _ | _, None -> Lwt.return_none
+      | Some dc1', Some dc2' ->
+          Log.debug_f "Matching %s against %s%%%s" pc dc1' dc2' >>
+          begin match cut_circumfix dc1' dc2' pc with
+          | None -> Lwt.return_none
+          | Some pc' ->
+              consider_fixed (Filename.concat tp dc) fp' (Filename.concat rp pc')
+          end
+      end
+  | _ -> Lwt.return_none
 
-fold [1 .. 100] [] { acc i =>
-	case calculate i {
-		Ok x  => [x | acc]
-		Error => acc
-	}
-}
 
-fold [1 .. 100] [] { acc i =>
-	case calculate i {
-		Ok x  => [x | acc]
-		Error => acc
-	}
-}
-
-Enum.reduce list, [], fn(element, acc) ->
-  case some_test(f) do
-    :ok    -> [ f(element) | acc ]
-    :error -> acc
+def! consider_pattern tc1 tc2 pc fp' dc
+  Log.debug ("Considering directory entry %s" % dc)
+  match String.cuts sep: "%" dc
+  | [] -> assert false
+  | [_] -> Lwt.return_none
+  | [dc1, dc2] ->
+    match cut_prefix tc1 dc1, cut_suffix tc2 dc2
+    | None, _ | _, None -> Lwt.return_none
+    | Some dc1', Some dc2' ->
+      Log.debug ("Matching %s against %s%s%s" % (pc, dc1', dc2'))
+      match cut_circumfix dc1' dc2' pc
+      | None -> Lwt.return_none
+      | Some pc' ->
+        consider_fixed (Filename.concat tp dc) fp' (Filename.concat rp pc')
+      end
+    end
+  | _ -> Lwt.return_none
+  end
 end
+
+--
+
+def eval expr env =
+  match macroexpand expr env
+  -- get_meta (add_meta x attr) == Some attr
+  | Form [Atom (_, Symbol "get_meta"), Form [Atom (_, Symbol "add_meta"), x, attr]] ->
+    (Form [Expr.symbol "Some", attr], env)
+
+  -- define x (add_meta x attr) == (); get_meta x == Some attr
+  | Form [Atom (_, Symbol "define"), Atom (_, name),
+          Form [Atom (_, Symbol "add_meta"), x, attr]] ->
+    let (value, env') = eval x env
+        env'' = Env.define name (Form [Expr.symbol "add_meta", value, attr]) env' in
+    (Expr.symbol "()", env'')
+
+  -- get_meta x == (Option.map get_meta (Env.lookup x env))
+  | Form [Atom (_, Symbol "get_meta"), Atom (_, lit)] ->
+    match Env.lookup lit env
+    | Some (Form [Atom (_, Symbol "add_meta"), value, attr]) ->
+      (Form [Expr.symbol "Some", attr], env)
+    | _ ->
+      (Expr.symbol "None", env)
+    end
+
+  | Form [Atom (_, Symbol "macro"), Atom (_, name), body] ->
+    undefined
+
+  | Form [Atom (loc, Symbol "macro") & _] ->
+    fail ("invalid macro syntax at %s" % Location.to_string loc)
+
+  | expr -> eval_expr expr env
+  end
+
+
+
+-- * --
+
+-- TODO: Implement pattern matching with substrings using tries or FAs.
+
+x = "foo"
+xs = ["foo", "bar", "baz"]
+
+case (Random.choice xs)
+  | ~x -> "It's foo!"
+  | _  -> "Try, again!"
+
+-- // --
+
+fold [1 .. 100] init: [] do acc i ->
+  case (find_number i)
+    | Ok x  -> [x & acc]
+    | Error -> acc
+end
+
+-- • --
+
+// Example take from reason: <https://github.com/facebook/reason/issues/376>
+
+-- do-end blocks
+let result =
+  match a
+  | (One, Two x) ->
+    print_string "matched thingy x"
+    zz = 10
+    zz
+  | (Two x, One) ->
+    print_string "matched other x"
+    match another
+    | Foo ->
+      print_string "foo"
+      x
+    | Bar ->
+      print_string "bar"
+      x
+    end
+  end
+
+
+// braces
+let result =
+  case a {
+    | (One, Two x) ->
+      print_string "matched thingy x"
+      zz = 10
+      zz
+    | (Two x, One) ->
+      print_string "matched other x"
+      case another {
+        | Foo ->
+          print_string "foo"
+          x
+        | Bar ->
+          print_string "bar"
+          x
+      }
+  }
+
+
+// indentation
+let result =
+  case a
+    | (One, Two x) ->
+      print_string "matched thingy x"
+      zz = 10
+      zz
+    | (Two x, One) ->
+      print_string "matched other x"
+      case another
+        Foo ->
+          print_string "foo"
+          x
+        Bar ->
+          print_string "bar"
+          x
+
+

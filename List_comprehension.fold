@@ -1,4 +1,6 @@
 -- http://en.wikipedia.org/wiki/List_comprehension
 
-[ x * y | x <- [2,5,10], y <- [8,10,11], x * y > 50]
+[ x * y | x <- [2, 5, 10], y <- [8, 10, 11], x * y > 50]
+
+[ x * y | x <- [2, 5, 10], y <- [8, 10, 11], x * y > 50]
 

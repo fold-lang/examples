@@ -1,0 +1,23 @@
+
+
+{-
+  ## Definitions
+
+-}
+
+
+def calc box =>
+    let x = box.position.x
+        y = box.position.y in
+    x * y
+
+
+function calc box =>
+    x * y where
+        x = box.position.x
+        y = box.position.y
+    end
+
+
+
+

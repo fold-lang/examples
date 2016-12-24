@@ -1,0 +1,85 @@
+
+-- ## Let Expressions
+
+let a = 1 in
+  print "The value of a is $a!"
+
+let f a = a + 1 in
+  print "The value of (f a) is $(f 4)!"
+
+
+-- With a record
+let {
+  a = 1,
+  f b = b + 1,
+  factorial =
+    match n
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+    end,
+  factorial2 =
+    | 0 -> 1
+    | n -> n * factorial (n - 1),
+  c = 3
+} in
+  print "The value of a, f b, c are $a, $(f 4), $c!"
+end
+
+-- With a block
+let
+  a   = 1
+  f b = b + 1
+  factorial n =
+    match n
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+    end
+  factorial2 =
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+  c   = 3
+in
+  print "The value of a, f b, c are $a, $(f 4), $c!"
+end
+
+
+-- ## Where Expressions
+
+print "The value of a is $a!"
+  where a = 1
+
+print "The value of (f a) is $(f 4)!"
+  where f a = a + 1
+
+-- With a record
+print "The value of a, f b, c are $a, $(f 4), $c!"
+  where {
+    a = 1,
+    f b = b + 1,
+    factorial n =
+      match n
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+      end,
+    factorial2 =
+      | 0 -> 1
+      | n -> n * factorial (n - 1),
+    c = 3
+  }
+
+-- With a block
+print "The value of a, f b, c are $a, $(f 4), $c!"
+  where
+    a = 1
+    f b = b + 1
+    factorial n =
+      match n
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+      end
+    factorial2 =
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+    c = 3
+  end
+

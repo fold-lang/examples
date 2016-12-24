@@ -8,17 +8,31 @@ type Person =
 
 dylan :: Person =
   { name => "Bob Dylan"
-    age  => 32
+     age => 32
     city => `London }
+
+dylan :: Person =
+  { name = "Bob Dylan"
+     age = 32
+    city = `London }
+
+dylan :: Person =
+  { name: "Bob Dylan"
+     age: 32
+    city: `London }
 
 || There are also structural run-time types (row polymorphism) that do not
 || require type definition.
 
-p1 :: { `x :: Int, `y :: Int }
-    = { `x => 231, `y => 500 }
+p1 = { `x => 231, `y => 500 }
 
 || The operator `=>` represents a pair, or an item. You can use items anywhere.
 
 coordinate = `x => 23
+
+
+people |> fold init: [] do (name => person) ->
+    
+end
 
 

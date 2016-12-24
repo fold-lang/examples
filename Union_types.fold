@@ -8,15 +8,23 @@ type Visibility =
 
 to_string :: Visibility -> String
 to_string visibility =
-    match visibility with
-        All => "All"
-        Active => "Active"
-        Completed => "Completed"
+    case visibility
+        All -> "All"
+        Active -> "Active"
+        Completed -> "Completed"
     end
 
 to_string visibility =
-    match visibility with
-    | All => "All"
-    | Active => "Active"
-    | Completed => "Completed"
+    case visibility
+    | All -> "All"
+    | Active -> "Active"
+    | Completed -> "Completed"
     end
+
+to_string visibility =
+    case visibility
+      | All -> "All"
+      | Active -> "Active"
+      | Completed -> "Completed"
+    end
+

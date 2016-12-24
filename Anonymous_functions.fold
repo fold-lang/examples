@@ -2,59 +2,59 @@
 -- # Anonymous Functions
 --
 
-
+-- Simple lambda functions.
+x -> x
 x -> x + x
 
+-- Lambda function with a block.
 do x ->
-  x + x
+  a = x + x
+  a + 1
 end
 
+-- Apply a transformation using a lambda.
+map (x -> x * x) [1..10]
 
-map (x => x * x) [1..10]
+-- Lambdas can use pattern matching with the `|` alternative operator.
+-- The following lambda will replace 5 by 0.
+map (5 -> 0 | x -> x * x) [1..10]
 
-map { 2 => x * 4
-      x => x * x } [1..10]
-
-[1..10] . map { \1 * \2 }
+-- The same variable can be referenced multiple times.
+\x + \x
 
 
- tree . { Leaf => "x"
-          Node x => str x }
+-- * --
 
- tree =>
-  | Leaf -> "x"
-  | Node x -> str x
-
-=> \ x y => x + y
-=> \ 5
-=> (~ + ~)
+-> \ x y -> x + y
+-> \ 5
+-> (~ + ~)
 
 (-> system :fetcher :conf :credentials :username)
 
 -> system #fetcher #conf #credentials #username
 
--> map (data flag => process data verbose: (not flag)) [1, 2, 3, 4, 5]
-=> map (process _ verbose: (not _)) [1, 2, 3, 4, 5]
+-> map (data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
+-> map (process _ verbose: (not _)) [1, 2, 3, 4, 5]
 
-=> map { data flag => process data verbose: (not flag) } [1, 2, 3, 4, 5]
-=> map { process _ verbose: (not _) } [1, 2, 3, 4, 5]
+-> map { data flag -> process data verbose: (not flag) } [1, 2, 3, 4, 5]
+-> map { process _ verbose: (not _) } [1, 2, 3, 4, 5]
 
-=> map (data flag => process data verbose: (not flag)) [1, 2, 3, 4, 5]
-=> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
+-> map (data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
+-> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
 
-=> map (λ data flag ⇒ process data verbose: (not flag)) [1, 2, 3, 4, 5]
-=> map λ(process _ verbose: (not _)) [1, 2, 3, 4, 5]
+-> map (λ data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
+-> map λ(process _ verbose: (not _)) [1, 2, 3, 4, 5]
 
-=> map (data flag => process data verbose: (not flag)) [1, 2, 3, 4, 5]
-=> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
+-> map (data flag -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
+-> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
 
-=> map (|data flag| => process data verbose: (not flag)) [1, 2, 3, 4, 5]
-=> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
+-> map (|data flag| -> process data verbose: (not flag)) [1, 2, 3, 4, 5]
+-> map {process _ verbose: (not _)} [1, 2, 3, 4, 5]
 
-=> map (|x| => x * x) [1 .. 5]
+-> map (|x| -> x * x) [1 .. 5]
  = [1, 4, 9, 16, 25]
 
-=> map \(_1 * _1) [1 .. 5]
+-> map \(_1 * _1) [1 .. 5]
  = [1, 4, 9, 16, 25]
 
 -> map \(_1 * _1) [1 .. 5]
@@ -65,23 +65,22 @@ map { 2 => x * 4
 -- Mathematica
 -- If[#1 == 1, 1, #1 * #0[#1-1]]&
 
-=> \(_1 == 1 ? 1 : _1 * (_0 (_1 - 1)))
-=> \(if (_1 == 1): 1 else: _1 * (_0 (_1 - 1)))
+-> \(_1 == 1 ? 1 : _1 * (_0 (_1 - 1)))
+-> \(if (_1 == 1): 1 else: _1 * (_0 (_1 - 1)))
 
-=> \(\1 == 1 ? 1 : @1 * (@0 (@1 - 1)))
+-> \(\1 == 1 ? 1 : @1 * (@0 (@1 - 1)))
 
 
-fix = \f => (\x a => f (x x) a) (\x a => f (x x) a)
+fix = \f -> (\x a -> f (x x) a) (\x a -> f (x x) a)
 
 fix = f -> (x a -> f (x x) a)
            (x a -> f (x x) a)
-
 
 -- // --
 
 -- Anonymous functions can be wrapped in blocks.
 
-[1..99] => fold init: {} do dict i ->
+[1..99] -> fold init: {} do dict i ->
   dict # i::String <- i + i
 end
 
@@ -90,7 +89,7 @@ end
 -- * Since blocks are used, at any time you can extend the block with new statements.
 -- * `do` is a named argument for the lambda argument for `fold`.
 
-squares = [1..9] -> map do n =>
+squares = [1..9] -> map do n ->
   n * n
 end
 
@@ -99,12 +98,12 @@ squares = [1..9] >- map do n ->
   n * n
 end
 
-squares = [1..9] -> map do n =>
+squares = [1..9] -> map do n ->
   n * n
 end
 
 
-squares = [1..9] -> map do n =>
+squares = [1..9] -> map do n ->
   n * n
 end
 

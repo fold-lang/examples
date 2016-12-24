@@ -4,6 +4,28 @@
 -- http://briancarper.net/blog/579/keyword-arguments-ruby-clojure-common-lisp
 --
 
+-- Named arguments
+def range from: (start = 0) to: stop by: (step = 1) =
+  if start >= stop
+    []
+  else
+    [start & range from: start + 1 to: stop by: step]
+  end
+
+range from: 10 to: 200 by: 5
+
+
+-- Implicit named arguments (all default arguments are named)
+def translate :: lang: (`en | `ru) -> String -> String
+def translate (lang = `en) message =
+  match lang
+  | `en -> English.translate message
+  | `ru -> Russian.translate message
+  end
+
+translate lang: `en "Hello"
+
+
 - Implementation:
     - records
     - mixfix operators

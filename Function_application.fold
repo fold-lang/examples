@@ -17,7 +17,12 @@ IO.write $ (String.join (map show args) with: sep) + end) file: IO.stdout
 (IO.write ((String.join (map show args) with: sep) + end) file: IO.stdout))
 
 -- Fold
+IO.write: (String.join (map show args) with: sep) + end file: IO.stdout
+
+IO.write: ((String.join (map show args) with: sep) + end) file: IO.stdout
+
 IO.write: (String.join (map show args), with: sep) + end, file: IO.stdout
+
 
 """
 Prints the values to a stream, or to Sys.stdout by default.
@@ -40,7 +45,80 @@ print "Hello" " " "World" "!" to: open("file.out")
 --   |
 --   `- named function application
 --
--- the named arguments are used to verify the next avaliable function label.
+-- the named arguments are used to verify the next available function label.
+
+-- // --
+
+-- ## Named blocks
+--
+-- If the named parameter is the last element on the line, the colon is omitted
+-- and an implicit block is created.
+
+-- ### Use Cases
+
+-- Case #1
+f l1: e1
+
+f l1
+  e1
+end
+
+-- Case #2
+f l1: e1 l2: e2
+
+f l1: e1 l2
+  e2
+end
+
+-- Case #3
+f l1: e1 l2: e2 l3: e3
+
+f l1: e1 l2: e2 l3
+  e3
+end
+
+f l1: e1 l2
+  e2
+l3
+  e3
+end
+
+f l1
+  e1
+l2
+  e2
+l3
+  e3
+end
+
+-- ### Types
+
+f :: l1: Code -> l2: Code
+
+f l1: e1 l2: e2
+
+
+-- ## Standard control structures
+
+names = ["Ana", "Bob", "Cavin", "Dylan"]
+names =
+  if ("Bill" in names) then
+    Log.info "Bill found, kill Bill!"
+    List.remove names "Bill"
+  else
+    List.prepend names "Bill"
+  end
+
+
+names = ["Ana", "Bob", "Cavin", "Dylan"]
+names =
+  if ("Bill" in names)
+    Log.info "Bill found, kill Bill!"
+    List.remove names "Bill"
+  else
+    List.prepend names "Bill"
+  end
+
 
 
 -- // --
@@ -50,30 +128,30 @@ function send_msg (from sender::String) (to receiver::String) -> Unit {
 }
 
 
-=> send_msg
+-> send_msg
 :: from: String -> to: String -> Unit
-=> send_msg from: "Steve"
+-> send_msg from: "Steve"
 :: to: String -> Unit
-=> send_msg from: "Steve" to: "Alan"
+-> send_msg from: "Steve" to: "Alan"
 :: Unit
 
-=> (send_msg from: "Steve") to: "Alan"
+-> (send_msg from: "Steve") to: "Alan"
 
-=> print 2 + 2
+-> print 2 + 2
 == (print 2) + 2
 
-=> print : 2 + 2
+-> print : 2 + 2
 == (print 2) + 2
 
-=> from :: Code (from: a -> b) -> Code b
+-> from :: Code (from: a -> b) -> Code b
 
-=> f a: x b: y c: z
+-> f a: x b: y c: z
 == (((f a: x) b: y) c: z)
 
-=> f : x : y : z
+-> f : x : y : z
 == (((f x) y) z)
 
-=> f $ g $ h $ x
+-> f $ g $ h $ x
 == f (g (h x))
 
 
@@ -182,4 +260,34 @@ cluster = Cluster.builder
   >> build
 
 
+cluster = Cluster.builder
+  => add_contact_point "ds5.movves.io"
+  => with_credentials "movves" "may0n3s3"
+  => with_compression ProtocolOptions.Compression.SNAPPY
+  => with_pooling_options (PoolingOptions.new
+        => set_core_connections_per_host HostDistance.REMOTE 12
+        => set_max_connections_per_host(HostDistance.REMOTE 20)
+  => build
+
+-- • --
+
+(* Look no error about optionals being erased *)
+let greeting (prefix p = "!") (name n) (age a) => p ++ "hello " ++ n;
+let msg = greeting (:name "Joe", :age 29);
+let msg = greeting (:prefix "!!", :name "Joe", :age 29);
+
+
+-- • --
+
+hello name (lang = `en) = do
+  greeting =
+    case lang
+      | `en ->
+        print "using english"
+        "Hello"
+      | `pt -> "Olá"
+      | `ru -> "Привет"
+    end
+  print "$greeting, $(String.capitalize name)!"
+end
 

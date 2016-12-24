@@ -1,0 +1,22 @@
+
+-- Single-line comments
+
+x = 42 -- the answer
+
+{{}}
+{{ }}
+{{xyz}}
+{{ xyz }}
+
+
+{{
+ }}
+
+{{
+next []      = return ()
+next (a & l) = yield a >> next l
+}}
+
+fold (*) 0 [1, 2, 3] = 6
+
+

@@ -1,4 +1,96 @@
 
+---
+-- Flow
+---
+
+sum = do
+  await >>=
+    | None   -> 0
+    | Some a -> a + sum
+end
+
+fold :: (a -> b -> a) -> a -> Consumer b a
+fold f z = go z where
+  go = next >>= | Some a -> go (f acc a)
+                | None   -> return acc
+
+filter pred = do
+  a <- await
+  if | pred a -> yield a >> filter pred
+     | otherwise -> filter pred
+
+filter = find_all
+
+
+--
+-- Haskell prelude version
+--
+
+filter :: (a -> Bool) -> [a] -> [a]
+filter _pred []    = []
+filter pred (x:xs)
+  | pred x         = x : filter pred xs
+  | otherwise      = filter pred xs
+
+
+filter :: Foldable f => (a -> Bool) -> f a -> f a
+filter _pred []    = []
+filter pred (x:xs)
+  | pred x         = x : filter pred xs
+  | otherwise      = filter pred xs
+
+
+filter f []       = []
+filter f (x & xs) = if f x then x & filter f xs
+                           else     filter f xs
+
+filter =
+  | pred []       -> []
+  | pred (x & xs) -> f x ? x & filter f xs : filter f xs
+
+filter =
+  | pred []                 -> []
+  | pred (x & xs) if pred x -> x & filter f xs
+  | pred (_ & xs)           ->     filter f xs
+
+filter pred xs =
+  case xs
+    | []                 -> []
+    | (x & xs) if pred x -> x & filter f xs
+    | (_ & xs)           ->     filter f xs
+
+-- Using list builder syntax.
+filter pred xs = [ x : x <- xs, pred x ]
+
+
+--
+-- Flow's implementation with explicit constructors
+--
+
+let rec filter pred =
+  fun () -> Await (fun a ->
+      if pred a
+      then fun () -> Yield (a, filter pred)
+      else filter pred)
+
+-- Same as original, but with monadic syntax.
+filter pred =
+  await >>= a ->
+      if pred a
+      then yield a >> filter pred
+      else filter pred
+
+filter pred =
+  x <- await
+  if | pred x    -> yield x >> filter pred
+     | otherwise ->            filter pred
+
+filter pred = [ x : x <- await, pred x ]
+
+
+
+---
+
 matrix = [1, 2, 3;
           4, 5, 6]
 Iter.at(matrix, 1)               # => [4, 5, 6]
@@ -91,5 +183,24 @@ List.fold ["a".."z"]
 fibs = [1 & 1 & zip fibs (tail fibs) with: (+)]
 
 fibs = 1 & 1 & (zip fibs (tail fibs) with: (+))
+
+
+--
+-- Operations inspired by APL
+--
+-- https://godoc.org/robpike.io/ivy
+
+-- Find indices in `a` that exists in `b`.
+-> a = [10, 20, 30, 40, 50]
+-> b = [2, 5, 10, 30]
+-> filter ((a in? b) # \x) (^ (# a))
+:: [Int] = [0, 2]
+
+--       A ← 10 20 30 40 50
+--       B ← 2 5 10 30
+--       (A ∊ B) / ⍳⍴A
+-- 1 3
+
+
 
 

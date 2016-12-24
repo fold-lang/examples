@@ -58,4 +58,33 @@ factorial n | (n == 0)  => 1
             | otherwise => n * factorial (n - 1)
 
 
+-- *** --
+
+factorial :: Int -> Int
+factorial n = case n
+  0 -> 1
+  n -> n * factorial (n - 1)
+end
+
+
+factorial :: Int -> Int
+factorial n = case n {
+  0 -> 1
+  n -> n * factorial (n - 1)
+}
+
+
+factorial :: Int -> Int
+factorial = {
+  0 -> 1
+  n -> n * factorial (n - 1)
+}
+
+
+-- Factorial in XL (eXtensible Language)
+-- Source: https://en.wikipedia.org/wiki/XL_(programming_language)
+--
+-- 0! -> 1
+-- N! -> N * (N - 1)!
+--
 

@@ -1,0 +1,22 @@
+
+-- ## Printf-style
+-> name = "World"
+-> "Hello, %s!" % name
+:: String = "Hello, World!"
+
+-- ## Printf-style with limited variables
+-> "Hello, %(name)!" % (name => "World")
+:: String = "Hello, World!"
+-> "Hello, %(name)! Your lucky number is %d." % (name => "World", 42)
+:: String = "Hello, World! Your lucky number is 42."
+
+-- ## Scope variables
+-> name, number = "World", 42
+-> "Hello, %(name)! Your lucky number is %(number)."
+:: String = "Hello, World! Your lucky number is 42."
+
+-- ## Expressions
+-> name = "world"
+-> "Hello, %(String.uppercase name)! Your lucky number is %(Random.int 100)."
+:: String = "Hello, World! Your lucky number is 78."
+

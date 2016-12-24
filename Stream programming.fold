@@ -1,0 +1,9 @@
+-- Stream Programming
+
+
+map :: (a -> b) -> Iter a b r
+map f = do
+    x <- await
+    yield (f x)
+    map f
+

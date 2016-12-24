@@ -3,12 +3,12 @@ type Pair a = { first:  a,
                 second: a }
 
 -- A generic function
-function swap (pair::Pair a) -> Pair a = {
-    Pair { first, second } = pair
-    Pair { first: second, second: first }
+function swap pair::(Pair a) -> Pair a
+    { first, second } = pair
+    { first: second, second: first }
+end
 
-    Pair first: pair.second, second: pair.first
-}
+swap {first, second} = {first: second, second: first}
 
 fn swap<T>(pair: Pair<T>) -> Pair<T> {
     let Pair { first, second } = pair;
