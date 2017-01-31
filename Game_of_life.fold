@@ -5,12 +5,14 @@ load System.Random
 load World only: (World, Loc)
 load World as: W
 
+
 -- Generic utility functions
 
-count {Eq a} :: a -> [a] -> Int
+count :: {Eq a} -> a -> [a] -> Int
 count x xs = # (filter (x ==) xs)
 
 -- Game of Life
+
 
 type Cell deriving: [Eq, Show] = Alive | Dead
 
@@ -31,22 +33,15 @@ neighborsAlive w x = count Alive neighborStates
         neighbors = W.neighbors W.mooreNeighbors w
         cellAt = W.cellAt w
 
-transition = (Deat,  3) => Alive
-	       | (Alive, 2)
-	       | (Alive, 3) => Alive
-	       | _          => Dead
 
-transition Dead  n | n == 3           = Alive
-transition Alive n | n == 2 || n == 3 = Alive
-transition _ _                        = Dead
+sig transition :: Cell -> Int -> Cell
+def transition Deadn n if (n == 3) = Alive
+  | transition Alive n if (n == 2) || (n == 3) = Alive
+  | transition _ _ = Dead
 
-transition :: Cell -> Int -> Cell
-transition Dead  n | n == 3           = Alive
-transition Alive n | n == 2 || n == 3 = Alive
-transition _ _                        = Dead
 
-evolveCell :: World CellState -> Loc -> CellState -> CellState
-evolveCell w x s = transition s (neighborsAlive w x)
+sig evolveCell :: World CellState -> Loc -> CellState -> CellState
+def evolveCell w x s = transition s (neighborsAlive w x)
 
 renderCell :: CellState -> Char
 renderCell Alive = '@'
