@@ -1,0 +1,338 @@
+
+{- # Bindings -}
+
+
+-- Value definition
+def a = 1
+
+
+-- Value definition with type annotation
+def a :: Int = 1
+
+
+-- Multiple recursive value definitions
+def a = 1,
+    b = c + a,
+    c = a + 10
+
+
+-- Function definition
+def f a =
+  a + 1
+
+
+-- Function definition with block
+def f a =
+  let result = a + 1 in
+  print "result = $result"
+
+
+
+-- Function definition with type annotation
+def f a :: Int -> Int =
+  a + 1
+
+
+-- Function definition with inline type annotation
+def f (a :: Int) -> Int =
+  a + 1
+
+
+-- Function definitions with type declaration
+def f :: Int -> Int
+def f a = a + 1
+
+
+-- Function definitions with pattern matching
+def f 1 = 0
+  | f a = a + 1
+
+
+-- Function definition as a value
+def f = a -> a + 1
+
+
+-- [calculate_magic] prints a string representation of a magic number.
+def calculate_magic () =
+  let
+    magic_number = 42 + fib another_regular_number,
+    regular_number = 1,
+    another_regular_number = 2
+
+  let add_one x = x + 1
+
+  let factorial n =
+    match n
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+    end
+
+  let fib n =
+    if n == 0 || n == 1 then 1
+    else fib (n - 1) + fib (n - 2)
+
+  in
+    print ("The value of fib (magic_number + regular_number) is "
+           ++ string (fib (magic_number + regular_number)) ++ "!")
+
+
+
+
+
+
+
+
+-- * --
+
+
+-- ### Semicolons for Definitions
+
+let x = f x y z; e
+  => let x = f x y z in e
+
+f x y z; e
+  => let () = f x y z in e
+
+
+{- [calculate_magic] prints a string representation of a magic number. -}
+fun calculate_magic () =
+  val magic_number = 42 + fib another_regular_number,
+      regular_number = 1,
+      another_regular_number = 2,
+      f x = 2
+
+  fun add_one x = x + 1
+
+  fun factorial n =
+    match n
+    | 0 => 1
+    | n => n * factorial (n - 1)
+    end
+
+  fun fib 0 = 1
+    | fib 1 = 1
+    | fib n = fib (n - 1) + fib (n - 2)
+
+  in
+    print ("The value of fib (magic_number + regular_number) is "
+           ++ string (fib (magic_number + regular_number)) ++ "!")
+
+
+
+-- ## Let Expressions
+
+let a = 1
+print "The value of a is $a!"
+
+let f a = a + 1
+print "The value of (f a) is $(f 4)!"
+
+let test () =>
+  let
+    a = 1
+
+    f b = b + 1
+
+    factorial =>
+      match n
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+      end
+
+    factorial2 =
+      | 0 -> 1
+      | n -> n * factorial (n - 1),
+
+    c = 3
+  in
+    print "The value of a, f b, c are $a, $(f 4), $c!"
+
+
+-- ## Where Expressions
+
+print "The value of a is $a!"
+where a = 1
+
+print "The value of (f a) is $(f 4)!"
+where f a = a + 1
+
+print "The value of a, f b, c are $a, $(f 4), $c!"
+where
+  a = 1
+
+  f b = b + 1
+
+  factorial n =
+    match n
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+    end
+
+  factorial2 =
+    | 0 -> 1
+    | n -> n * factorial (n - 1),
+  c = 3
+end
+
+
+-- * --
+
+def calculate_magic =>
+  let magic_number = 42 + fib another_regular_number,
+      regular_number = 1,
+      another_regular_number = 2
+  let add_one x => x + 1
+  let factorial =>
+    match n
+    | 0 => 1
+    | n => n * factorial (n - 1)
+  let fib n =>
+    | 0 | 1 => 1
+    | n => fib (n - 1) + fib (n - 2)
+  in
+    print ("The value of fib (magic_number + regular_number) is "
+           ++ string (fib (magic_number + regular_number)) ++ "!")
+
+
+let calculate_magic =
+  let magic_number = 42 + fib another_regular_number,
+      regular_number = 1,
+      another_regular_number = 2
+  let add_one x = x + 1
+  let factorial =
+    match n
+    | 0 => 1
+    | n => n * factorial (n - 1)
+    end
+  let fib
+    | 0 | 1 => 1
+    | n => fib (n - 1) + fib (n - 2)
+  end in
+  print ("The value of fib (magic_number + regular_number) is "
+         ++ string (fib (magic_number + regular_number)) ++ "!")
+
+
+
+
+def test () =>
+  let
+    magic_number = 42,
+    regular_number = 1,
+    fun add_one x => x + 1,
+    fun factorial =>
+      match n
+      | 0 => 1
+      | n => n * factorial (n - 1)
+    c = 3,
+    fun fib n =>
+      | 0 | 1 => 1
+      | n => fib (n - 1) + fib (n - 2)
+  in
+    print "The value of a, f b, c are $a, $(f 4), $c!"
+
+
+
+-- StandardML style
+def test () => let
+  val a = 1
+
+  fun f b = b + 1
+
+  fun factorial =>
+    match n
+    | 0 -> 1
+    | n -> n * factorial (n - 1)
+    end
+
+  fun factorial2 =>
+    | 0 -> 1
+    | n -> n * factorial (n - 1),
+
+  val c = 3
+in
+  print "The value of a, f b, c are $a, $(f 4), $c!"
+
+
+def test () =>
+  let
+    a = 1
+
+    f b = b + 1
+
+    factorial =>
+      match n
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+      end
+
+    factorial2 =>
+      | 0 -> 1
+      | n -> n * factorial (n - 1),
+
+    c = 3
+  in
+    print "The value of a, f b, c are $a, $(f 4), $c!"
+
+
+-- * --
+
+module Person = ...
+
+interface Comparable = ...
+
+def hello name = ...
+
+object
+  def say_hello () =
+    print
+end
+
+
+-- * --
+
+-- StandardML
+fun heron (a, b, c) = let
+    val ab = dist (a, b)
+    val bc = dist (b, c)
+    val ac = dist (a, c)
+    val perim = ab + bc + ac
+    val s = perim / 2.0
+    in
+      Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+    end
+
+
+def heron a b c =
+  let
+    ab    = dist (a, b)
+    bc    = dist (b, c)
+    ac    = dist (a, c)
+    perim = ab + bc + ac
+    s     = perim / 2.0
+  in
+    Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+  end
+
+def heron a b c =
+  Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+    where
+      ab    = dist (a, b)
+      bc    = dist (b, c)
+      ac    = dist (a, c)
+      perim = ab + bc + ac
+      s     = perim / 2.0
+    end
+
+
+-- * --
+
+var x = 0  -- let x = ref 0
+
+macro var $name = $val
+  $name = ref $val
+end
+
+x = ref 0
+
+x!
+

@@ -2,6 +2,36 @@
 -- Fold Macros
 --
 
+
+macro for $x in $xs $body =
+  `(List.iter (x -> $body) $xs)
+
+
+for i in [1, 2, 3] do
+  print i
+end
+
+
+macro if $t then $a else $b =
+  ```
+  match $t
+  | True  -> $a
+  | False -> $b
+  end
+  ```
+
+macro `if t `then a `else b =
+  ```
+  match $t
+  | True  -> $a
+  | False -> $b
+  end
+  ```
+
+
+
+-- * --
+
 -- To create a macro a syntax rule is defined:
 
 macro `unless (cond & body)...
@@ -87,25 +117,17 @@ x + y = `(+, [x, y])
 
 ---
 
-macro time(ex)
-  return quote
-    local t0 = time()
-    local val = $ex
-    local t1 = time()
-    println("elapsed time: ", t1-t0, " seconds")
-    val
-  end
-end
 
+macro time expr =
+  ```
+  let before = Time.now ()
+  let result = $exp
+  let after  = Time.now ()
+  in
+    print "Elapsed time: $(after - before) seconds";
+    result
+  ```
 
-macro time exp
-    quote
-        t = Time.now!
-        x = %(exp)
-        print "elapsed time: %(t - Time.now!) seconds"
-        x
-    end
-end
 
 
 (print (format t "I have ~D apples." 4))
@@ -140,12 +162,17 @@ macro `do expr {
 
 }
 
-macro print (to file = IO.stdout) (flush = False) (~sep = " ") (~end = "\n") args... {
-  string = (String.join (map show args) with: sep) ++ end
-  IO.write to: file string
-  if (flush == True)
-    IO.{ flush stdout }
-}
+
+macro print to: (file = IO.stdout) :(flush = False) :(sep = " ") :(end = "\n") args... =
+  let output_str =
+    String.join with: sep (map show args) ++ end
+  in
+    IO.write to: file output_str;
+    if flush then
+      use IO in
+        flush stdout
+      end
+    end
 
 
 print to: IO.stderr flush: true sep: "\n\t" end: "\n---"
@@ -175,10 +202,10 @@ syntax "|" n "|" =
   end
 
 
-| _ | :: Int -> Int =
-  quote
-    if (unquote n) < 0 then -(unquote n) else (unquote n)
-  end
+macro `| n `| =
+  ```
+  if (unquote n) < 0 then -(unquote n) else (unquote n)
+  ```
 
 
 -- * --
@@ -200,12 +227,14 @@ syntax ("while", "(", cond, ")", body) {
 }
 
 
-while _ _ :: Expr -> Expr -> Expr
-while c a =
-  quote
-    loop! = if (unquote c) then (unquote a) else loop!
-    loop!
-  end
+macro while :: Expr -> Expr -> Expr
+macro while condition body =
+  ```
+  let loop () =
+    if $c then $a else loop ()
+  in
+    loop ()
+  ```
 
 
 -- ## Quoting/Unquoting
@@ -231,12 +260,6 @@ print a
 ```
 
 
-macro while $c $a
-  quote
-    loop () = if (unquote c) then (unquote a) else loop!
-    loop ()
-  end
-end
 
 
 macro if $t then [a] else (b)

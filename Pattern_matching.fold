@@ -1,5 +1,10 @@
 -- Pattern-matching
 
+def hello name
+  | if name == "world" => print "Hello WORLD"
+  | otherwise => print "Hello, $name"
+end
+
 -- https://github.com/ocaml/ocaml/pull/722#issuecomment-243293068
 let consider_pattern tc1 tc2 pc fp' dc =
   Log.debug_f "Considering directory entry %s" dc >>
@@ -92,6 +97,7 @@ fold [1 .. 100] init: [] do acc i ->
   case (find_number i)
     | Ok x  -> [x & acc]
     | Error -> acc
+  end
 end
 
 -- • --
@@ -154,5 +160,29 @@ let result =
         Bar ->
           print_string "bar"
           x
+
+
+
+
+-- * --
+
+
+let result =
+  case a
+  | (One, Two x) =>
+    print "matched thingy x";
+    let zz = 10 in
+    zz + 1
+  | (Two x, One) =>
+    print "matched other x";
+    case another do
+    | Foo =>
+      print "foo";
+      x
+    | Bar =>
+      print "bar";
+      x
+    end
+
 
 

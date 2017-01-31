@@ -1,60 +1,99 @@
-{- Function definition
-   http:--www.objc.io/issue-16/swift-functions.html -}
+{- defction definition
+    -}
+
 
 -- Just say hello.
-def hello name =>
-    print "Hello, $name!"
+def hello name =
+  print "Hello, $name!"
 
--- Hello function with a type annotation.
-def hello (name :: String) :: () =>
-    print "Hello, $name!"
 
 -- Lambda greeting. Equivalent to the previous examples.
-hello = name => print "Hello, $name!"
+def hello = name ->
+  print "Hello, $name!"
+
+
+-- Hello defction with inline type annotation.
+def hello (name :: String) -> () =
+  print "Hello, $name!"
+
+
+-- defction definition with type annotation.
+def hello name :: String -> () =
+  print "Hello, $name!"
+
+
+-- Hello defcton with type declaration.
+def hello :: Int -> Int
+def hello name =
+  print "Hello, $(name)!"
+
+
+-- defcton definition with a block body.
+def hello name =
+  print "Hello, $name!";
+  print "Hello again."
+
 
 -- Lambda greeting with a block body.
-hello = name -> do
-    print "Hello, $name!"
-end
-
--- Oneliner, uses expression binding.
-def hello name => print "Hello, $name!"
-
--- Hello function with separate type annotations.
-def hello :: String -> ()
-def hello name =
-  print "Hello, $(name)!";
-  print "Hello, again"
-
--- Factorial with implicit pattern matching.
-def factorial
-  | 0 -> 1
-  | n -> n * factorial (n - 1)
-end
-
--- Factorial with implicit pattern matching and type annotation.
-def factorial :: Int -> Int
-  | 0 -> 1
-  | n -> n * factorial (n - 1)
+def hello = do name ->
+  print "Hello, $name!";
+  print "Hello again."
 end
 
 
-def factorial
-  | 0 => 1
-  | n => n * factorial (n - 1)
-end
+-- Factorial with argument pattern matching.
+def factorial 0 = 1
+  | factorial n = n * factorial (n - 1)
 
 
--- Create an iterator of list.
-define next
-  | []     -> None
-  | x & xs -> Some (x, xs)
-end
+-- Create a cursor for a list.
+def next [] = None
+  | next [x & xs] = Some (x, xs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 -- * --
 
-let eps = 0.0001
+
+-- Factorial with argument pattern matching.
+defction
+  | factorial 0 = 1
+  | factorial n = n * factorial (n - 1)
+
+-- Create a cursor for a list.
+defction
+  | next [] = None
+  | next [x & xs] = Some (x, xs)
+
+
+-- * --
+
+def eps = 0.0001
 
 def derivative f =
   x -> (f (x + eps) - f x) / eps
@@ -103,9 +142,9 @@ f x y z =
 
 fib :: Int -> Int
 fib = {
-    0 => 0
-    1 => 1
-    n => fib (n - 1) + fib (n - 2)
+    0 -> 0
+    1 -> 1
+    n -> fib (n - 1) + fib (n - 2)
 }
 
 fib 0 = 0
@@ -133,10 +172,10 @@ end
 
 range :: from: Int? -> to: Int -> by: Int? -> [Int]
 
-=> range to: 100
+-> range to: 100
 :: [Int] = [1, 2, 3, 4, 5, ... 99, 100]
 
-=> range from: 2, to: 10, by: 3
+-> range from: 2, to: 10, by: 3
 :: [Int] = [2, 5, 8]
 
 
@@ -165,7 +204,7 @@ range :: from: Int? -> to: Int -> by: Int? -> [Int]
 let sum x y: x + y
 
 
-function range (from start::Int = 0) (to end::Int = +Infinity) (by step::Int = 1) -> [Int] =
+def range (from start::Int = 0) (to end::Int = +Infinity) (by step::Int = 1) -> [Int] =
     let should_continue = start >= stop,
         default_case    = [],
         continuation    = range from: (start + 1) to: stop by: step in
@@ -188,7 +227,7 @@ range start end step =
     end
 
 
-function range start stop step
+def range start stop step
 end
 
 range start stop step = do
@@ -202,16 +241,16 @@ end
 
 factorial :: Int -> Int
 factorial = {
-    0 => 1
-    n => n * factorial (n - 1)
+    0 -> 1
+    n -> n * factorial (n - 1)
 }
 
 -- -- --
 
 take_while <A> :: (A -> Bool) -> [A] -> [A]
 take_while p = {
-    []       => []
-    [x | xs] => p x ? [x | take_while p, xs] : []
+    []       -> []
+    [x | xs] -> p x ? [x | take_while p, xs] : []
 }
 
 -- -- --
@@ -239,7 +278,7 @@ end
 map file_list, read \file
 map file_list (read \file)
 
--- In a simple curried function definition:
+-- In a simple curried def definition:
 f x y z = ...
 
 -- The second token, `f` is by default parsed as a parameter annotation.
@@ -248,27 +287,27 @@ f x y z = ...
 div x y
 
 -- Is parsed as:
-=> div x (by y)
+-> div x (by y)
 -- ^  ^  ^
 -- |  |  |
 -- |  |  `- annotated parameter name
 -- |  `- simple parameter name
--- `- function name
+-- `- def name
 
 -- With types:
 (div x::Int) (y::Int)
 
--- Functions with more than two parameters:
-function range start stop step
+-- defs with more than two parameters:
+def range start stop step
 
 -- Here is the version with types and default values.
-function range (start::Int = 0) (stop::Int) (step::Int = 1)
+def range (start::Int = 0) (stop::Int) (step::Int = 1)
 
--- The functon can be called like this:
+-- The defcton can be called like this:
 
 range 100           -- Only the `stop` argument passed.
 range 0 100         -- First two arguments passed, the `step` is default.
-range 0 100 2       -- Positional function application.
+range 0 100 2       -- Positional def application.
 `
 
 -- The last example's readability can be improved with parameter annotations.
@@ -306,12 +345,12 @@ eles:
 -> range from: 0 to: 100 by: 2
 
 -- If the parameter annotation and the actual parameter name are the same:
-function hello (name name::String)
+def hello (name name::String)
 
 hello name: "Robot"
 
 -- Instead, just add a `~` in front of the parameter name as a shortcut:
-function hello (~name::String)
+def hello (~name::String)
 
 hello name: "Robot"
 
@@ -330,7 +369,7 @@ hello ~name: name
 
 
 
-function (view::View) did_update context::Context with_opitions::({String => Int}?) = {
+def (view::View) did_update context::Context with_opitions::({String -> Int}?) = {
     ...
 }
 
@@ -505,24 +544,22 @@ end
 
 "Returns a sequence of numbers from start (inclusive) to end (exclusive),
 by step, where start defaults to 0, step to 1."
-function range (from start::Int = 0) (to stop::Int) (by step::Int = 1) -> [Int]:
-    if (start == stop):
+def range from: (start::Int = 0) to: (stop::Int) by (step::Int = 1) -> [Int] =
+    if (start == stop)
         []
-    else:
-        [start, (range from: (start + 1) to: stop by: step)...]
-    end
-end
+    else
+        [start & range from: (start + 1) to: stop by: step]
 
 
-function square n:
+def square n:
   n * n
 end
 
 square n = n * n
 
-square = n => n * n
+square = n -> n * n
 
-function square n:
+def square n:
     log "Will calculate square..."
     n * n
 end
@@ -538,14 +575,14 @@ square n = do
     return x
 end
 
-square = n => do
+square = n -> do
     log "Will calculate square..."
     n * n
 end
 
 
 
-function assoc v::(PersistentVector a) i::Int el::a -> PersistentVector
+def assoc v::(PersistentVector a) i::Int el::a -> PersistentVector
     check_bounds! v i
     if | i > (length v - length v.tail) -> do
          newtail = v.tail # [1..end]
@@ -562,8 +599,8 @@ end
 
 visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]}
 visits_durations_by_device visits_by_device = do
-    visit_duration = \v => (last v) - (first v)
-    map_values (\V => map visit_duration V) visits_by_device
+    visit_duration = \v -> (last v) - (first v)
+    map_values (\V -> map visit_duration V) visits_by_device
 end
 
 
@@ -620,27 +657,27 @@ end
 
 -- -- --
 
-function greet
+def greet
   return "hello"
 end
 
-function greet()
+def greet()
   return "hello"
 end
 
-function greet():  string
+def greet():  string
   return "hello"
 end
 
-function greet(name:string)
+def greet(name:string)
   return "hello " + name
 end
 
-function greet(first:string, last:string)
+def greet(first:string, last:string)
   return "hello " + first + " " + last
 end
 
-function greet(first:string, last:string):string
+def greet(first:string, last:string):string
   return "hello " + first + " " + last
 end
 
@@ -651,17 +688,17 @@ type List T = {
     Nil
 }
 
-function length = {
-    Cons (_, tail) => 1 + length tail
-    Nil => 0
+def length = {
+    Cons (_, tail) -> 1 + length tail
+    Nil -> 0
 }
 
 list_1 = Cons (11, Cons (22, Cons (33, Nil)))
 length test_list == 3
 
-function append l1 l2 = l1 . {
-    Nil => l2
-    Cons (x, tail) => Cons (x, append tail l2)
+def append l1 l2 = l1 . {
+    Nil -> l2
+    Cons (x, tail) -> Cons (x, append tail l2)
 }
 
 list_2 = append(test_list, Cons (44, Nil))
@@ -674,18 +711,18 @@ type List T =
     | Cons (T, List T)
     | Nil
 
-function length =
-    | Cons (_, tail) => 1 + length tail
-    | Nil => 0
+def length =
+    | Cons (_, tail) -> 1 + length tail
+    | Nil -> 0
 end
 
 list_1 = Cons (11, Cons (22, Cons (33, Nil)))
 length test_list == 3
 
-function append l1 l2 =
+def append l1 l2 =
     case l1:
-        Nil => l2
-        Cons (x, tail) => Cons (x, append tail l2)
+        Nil -> l2
+        Cons (x, tail) -> Cons (x, append tail l2)
     end
 end
 
@@ -698,26 +735,26 @@ list_2 == Cons (11, Cons (22, Cons (33, Cons (44, Nil))))
     (print ("Hello" + name)))
 
 (def hello
-    [] => (hello "World")
-    [name] => (print ("Hello" + name)))
+    [] -> (hello "World")
+    [name] -> (print ("Hello" + name)))
 
 
 -- -- --
 
 
-function hello name
+def hello name
     print ("Hello" + name)
 end
 
-function
+def
     hello
-    [] => (hello "World")
-    [name] => (print ("Hello" + name)))
+    [] -> (hello "World")
+    [name] -> (print ("Hello" + name)))
 end
 
 def hello
-    => hello "World"
-    name => print ("Hello" + name)
+    -> hello "World"
+    name -> print ("Hello" + name)
 end
 
 -- -- --
@@ -730,9 +767,9 @@ retry = callback timeout retries ->
 
 -- -- --
 
-fun run_seq_command :: [Int] -> A -> Bool -> Int -> Unit
-fun run_seq_command nslots ready n =
-  | Done r => do
+def run_seq_command :: [Int] -> A -> Bool -> Int -> Unit
+def run_seq_command nslots ready n =
+  | Done r -> do
     Log.info "Job %a finished" (slog (string_of_int << V.hash)) n
     results = M.append n r results
     running = M.remove n   running
@@ -740,7 +777,7 @@ fun run_seq_command nslots ready n =
       print_status (M.cardinal results) running
     end
     new_ready = (Set (G.succ g n) ++ mutual_exclusion_set n)
-                  |> filter (n => all (n => M.mem n results) (G.pred g n) &&
+                  |> filter (n -> all (n -> M.mem n results) (G.pred g n) &&
                                   empty? (mutual_exclusion_set n \\ map_keys running))
     loop (nslots + 1) results running (ready ++ new_ready)
   end
@@ -771,15 +808,15 @@ fun run_seq_command nslots ready n =
 
 [1, 2, 3, 4] >> map (x -> x > 2) >> first
 
-[1, 2, 3, 4] => map (x -> x > 2) => first
+[1, 2, 3, 4] -> map (x -> x > 2) -> first
 
-[1, 2, 3, 4] -> map (x => x > 2) -> first
+[1, 2, 3, 4] -> map (x -> x > 2) -> first
 
 [1, 2, 3, 4] |> map (x -> x > 2) |> first
 
 [1, 2, 3, 4] | map { \x > 2 } | first
 
-=> [1, 2, 3, 4]
+-> [1, 2, 3, 4]
    (where { \x > 2 })
    first
 
@@ -839,14 +876,14 @@ main Sys#args
 
 let access_counts_to_string access_counts =
   String.Map.fold access_counts ~init:""
-    ~f:(fun ~key:access ~data:hourly_counts access_str ->
-      List.fold hourly_counts ~init:access_str ~f:(fun hours_str (h, c) ->
+    ~f:(def ~key:access ~data:hourly_counts access_str ->
+      List.fold hourly_counts ~init:access_str ~f:(def hours_str (h, c) ->
           hours_str ^ (format "%s, %d, %d\n" access (Float.to_int (Time.to_float h)) c)))
 
 def access_counts_to_string access_counts
   String.Map.fold access_counts
-    init: "" f: \(key access) (data hourly_counts) access_str =>
-        List.fold hourly_counts init: access_str f: \hours_str (h, c) =>
+    init: "" f: \(key access) (data hourly_counts) access_str ->
+        List.fold hourly_counts init: access_str f: \hours_str (h, c) ->
           hours_str ++ ("%s, %d, %d\n" % (access, Float.to_int (Time.to_float h), c))
 end
 
@@ -868,22 +905,22 @@ type Tree: do
 end
 
 
-detections => length
+detections -> length
 detections -> length
 detections >> length
 detections |> length
 
-detections => ([] -> [x | xs] -> 1 + length xs)
-detections -> ([] => [x | xs] => 1 + length xs)
-detections |> ([] => [x | xs] => 1 + length xs)
-detections :- ([] => [x | xs] => 1 + length xs)
-detections :> ([] => [x | xs] => 1 + length xs)
+detections -> ([] -> [x | xs] -> 1 + length xs)
+detections -> ([] -> [x | xs] -> 1 + length xs)
+detections |> ([] -> [x | xs] -> 1 + length xs)
+detections :- ([] -> [x | xs] -> 1 + length xs)
+detections :> ([] -> [x | xs] -> 1 + length xs)
 
-detections # ([] => [x | xs] => 1 + length xs)
-detections . ([] => [x | xs] => 1 + length xs)
-detections & ([] => [x | xs] => 1 + length xs)
-detections | ([] => [x | xs] => 1 + length xs)
-detections > ([] => [x | xs] => 1 + length xs)
+detections # ([] -> [x | xs] -> 1 + length xs)
+detections . ([] -> [x | xs] -> 1 + length xs)
+detections & ([] -> [x | xs] -> 1 + length xs)
+detections | ([] -> [x | xs] -> 1 + length xs)
+detections > ([] -> [x | xs] -> 1 + length xs)
 
 
 -> name
@@ -891,10 +928,10 @@ detections > ([] => [x | xs] => 1 + length xs)
 -- -- --
 
 || Creates a new object given a message passing primitive.
-|| This is very good function.
-function mk_object n_vs
+|| This is very good def.
+def mk_object n_vs
   msg ->
-    function lookup locals
+    def lookup locals
       case locals
         | Empty -> raise: "Message not found: " + msg
         | Link f r -> if (f.name == m): f.value else: lookup(r)
@@ -905,27 +942,27 @@ end
 
 lookup <A> :: Self >> Formula -> Bool -> Int -> A
 
-function self >> lookup attrs recursive level
+def self >> lookup attrs recursive level
     ...
 end
 
-db => lookup
+db -> lookup
 
 db >> lookup ("city" == "London" and "age" > 25)
         : True : 2
 
-db => lookup ("city" == "London" and "age" > 25)
+db -> lookup ("city" == "London" and "age" > 25)
         $ True $ 2
 
 
 
-function db => lookup
+def db -> lookup
 
 
 
 || Transforms the integer index in content object by selecting the adequate
 || content type of the provided index.
-function <Content_type::Collection_type where Content_type.Index::Forward_indext_type>
+def <Content_type::Collection_type where Content_type.Index::Forward_indext_type>
     (integer_index_into_content content::Content_type content_index::Int)
         -> Content_type.Element
     ...
@@ -934,7 +971,7 @@ end
 
 || Transforms the integer index in content object by selecting the adequate
 || content type of the provided index.
-function <Content_type::Collection_type where Content_type.Index::Forward_indext_type>
+def <Content_type::Collection_type where Content_type.Index::Forward_indext_type>
     integer_index_into_content content::Content_type content_index::Int
         -> Content_type.Element
     ...
@@ -943,7 +980,7 @@ end
 -- -- --
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
     xs >> group_by_access
        >> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
@@ -963,23 +1000,35 @@ plano = rir_se_do_disparate disparate << pedir_para_dizer_um_disparate
 dizer_ola = nome -> print "Olá, " + nome
 
 
+def sum ctx xs =
+  let hourly_counts_by_access xs =
+    xs |> group_by_access
+       |> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
+       |> add_missing_hours_by_access ctx.date
+  let sum_by_access =
+    map (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+        (hourly_counts_by_access xs)
+  in
+    sum_by_access
 
 
-function sum ctx xs
+
+
+def sum ctx xs
   hourly_counts_by_access =
     xs -> group_by_access
-       -> xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       -> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
        -> add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
-    (hourly_counts => `Sum (fold (+) 0 (map #2 hourly_counts)))
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
   sum_by_access
 end
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
     xs >> group_by_access
-       >> xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       >> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
        >> add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
@@ -987,78 +1036,78 @@ function sum ctx xs
 end
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
-    xs => group_by_access
-       => xs -> add_missing_accesses xs (Spaces.obtain_access_list)
-       => add_missing_hours_by_access ctx.date
+    xs -> group_by_access
+       -> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
+       -> add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
   sum_by_access
 end
 
 
-function calc_sum ctx xs
+def calc_sum ctx xs
   hourly_counts_by_access =
-    xs => group_by_access
-       => xs -> add_missing_accesses xs (Spaces.obtain_access_list)
-       => add_missing_hours_by_access ctx.date
+    xs -> group_by_access
+       -> xs -> add_missing_accesses xs (Spaces.obtain_access_list)
+       -> add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (hourly_counts -> `Sum (fold (+) 0 (map (#2) hourly_counts)))
   sum_by_access
 end
 
 
-function self => calc_sum xs
-  xs => group_by_access
-     => add_missing_accesses (Spaces.obtain_access_list!)
-     => add_missing_hours_by_access self.date
-     => map ((#2) >> (\case | [] | [x] -> `Sum 0
+def self -> calc_sum xs
+  xs -> group_by_access
+     -> add_missing_accesses (Spaces.obtain_access_list!)
+     -> add_missing_hours_by_access self.date
+     -> map ((#2) >> (\case | [] | [x] -> `Sum 0
                             | counts   -> `Sum (fold (+) 0 counts))
 end
 
 
-function calc_sum ctx xs
+def calc_sum ctx xs
   xs | group_by_access
      | add_missing_accesses (Spaces.obtain_access_list!)
      | add_missing_hours_by_access ctx.date
-     | map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
+     | map ((#2) >> (counts -> `Sum (fold (+) 0 counts)))
 end
 
 
-fun calc_sum ctx xs :: App.Context -> [(Time, Int)] =
+def calc_sum ctx xs :: App.Context -> [(Time, Int)] =
   xs |> group_by_access
      |> add_missing_accesses (Spaces.obtain_access_list ())
      |> add_missing_hours_by_access ctx.date
      |> map (\item #2 >> fold (+) 0 >> `Sum))
 
 
-function calc_sum ctx xs
+def calc_sum ctx xs
   xs -> group_by_access
      -> add_missing_accesses (Spaces.obtain_access_list!)
      -> add_missing_hours_by_access ctx.date
-     -> map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
+     -> map ((#2) >> (counts -> `Sum (fold (+) 0 counts)))
 end
 
-function self -> calc_sum ctx
+def self -> calc_sum ctx
   self -> group_by_access
        -> add_missing_accesses (Spaces.obtain_access_list!)
        -> add_missing_hours_by_access ctx.date
-       -> map ((#2) >> (counts => `Sum (fold (+) 0 counts)))
+       -> map ((#2) >> (counts -> `Sum (fold (+) 0 counts)))
 end
 
-function calc_sum ctx xs
+def calc_sum ctx xs
   hourly_counts_by_access =
-    xs => group_by_access
-       => add_missing_accesses \xs (Spaces.obtain_access_list)
-       => add_missing_hours_by_access ctx.date
+    xs -> group_by_access
+       -> add_missing_accesses \xs (Spaces.obtain_access_list)
+       -> add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (\hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
   sum_by_access
 end
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
     xs >- group_by_access
        >- xs -> add_missing_accesses xs (Spaces.obtain_access_list)
@@ -1070,10 +1119,10 @@ function sum ctx xs
 end
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
     xs | group_by_access
-       | xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       | xs -> add_missing_accesses xs (Spaces.obtain_access_list)
        | add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
@@ -1081,10 +1130,10 @@ function sum ctx xs
 end
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
     xs . group_by_access
-       . xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       . xs -> add_missing_accesses xs (Spaces.obtain_access_list)
        . add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
@@ -1092,10 +1141,10 @@ function sum ctx xs
 end
 
 
-function sum ctx xs
+def sum ctx xs
   hourly_counts_by_access =
     xs # group_by_access
-       # xs => add_missing_accesses xs (Spaces.obtain_access_list)
+       # xs -> add_missing_accesses xs (Spaces.obtain_access_list)
        # add_missing_hours_by_access ctx.date
   sum_by_access = map hourly_counts_by_access
     (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
@@ -1105,8 +1154,8 @@ end
 process = >> add_missing_accesses >> add_missing_hours_by_access
 
 <* <*> <+> <$> *** <|> !! ||
-=== ==> <<< >>> <> +++ <- ->
-=> >> << >>= =<< .. ... ::
+=== =-> <<< >>> <> +++ <- ->
+-> >> << >>= =<< .. ... ::
 -< >- -<< >>- ++ /= ==
 
 
@@ -1141,7 +1190,7 @@ view (w,h) turtle =
          opacity 0.7 : fitted_image w h "/water.gif"]
 
 
-[1, 2, 3, 4, 5] => length
+[1, 2, 3, 4, 5] -> length
 
 -- -- --
 
@@ -1156,11 +1205,11 @@ instance Show Space
 end
 
 group_devices_by_store :: Space -> Map Store (Set Device)
-group_devices_by_store => fn space ->
+group_devices_by_store -> fn space ->
   let store_distances_by_antenna = get_store_distances space,
       find_stores = find_stores_for_antenna store_distances_by_antenna
   in
-    In_channel.stdin => lines => fold init: Store_map.empty
+    In_channel.stdin -> lines -> fold init: Store_map.empty
       do device_set_by_store line ->
         let {antenna, device, rssi} = Row.parse line
         in
@@ -1175,14 +1224,14 @@ group_devices_by_store => fn space ->
 end
 
 group_devices_by_store :: Space -> {Store: {Device}}
-group_devices_by_store = function space
+group_devices_by_store = def space
   let store_distances_by_antenna = get_store_distances space,
       find_stores = find_stores_for_antenna store_distances_by_antenna
   In_channel.stdin >- lines >- fold init: Store_map.empty
-    function device_set_by_store line
+    def device_set_by_store line
       let {antenna, device, rssi} = Row.parse line
       fold (find_stores antenna rssi) init: device_set_by_store
-        function device_set_by_store' store
+        def device_set_by_store' store
           Store_map.change device_set_by_store' store
             (some << (\case | None -> {}
                             | Some device_set -> device @ device_set))
@@ -1231,18 +1280,18 @@ end
   n -> (* n (factorial (- n 1))))
 
 
-function factorial
+def factorial
   | 0 -> 1
   | n -> n * factorial (n - 1)
 end
 
--- Map function defintition
+-- Map def defintition
 
 map :: (a -> b) -> [a] -> [b]
 map f [] = []
 map f (x:xs) = (f x) : (map f xs)
 
-function map
+def map
    | f [] -> []
    | f [x & xs] -> [f x & map f xs]
 end
@@ -1253,14 +1302,14 @@ fn map :: (a -> b) -> [a] -> [b]
 end
 
 
-function map
-   | f [] => []
-   | f [x & xs] => [f x & map f xs]
+def map
+   | f [] -> []
+   | f [x & xs] -> [f x & map f xs]
 end
 
 map = do
-   f [] => []
-   f [x & xs] => [f x & map f xs]
+   f [] -> []
+   f [x & xs] -> [f x & map f xs]
 end
 
 [2 3 4] == map (a -> a + 1) [1 2 3]
@@ -1283,11 +1332,11 @@ say_hello name = do
   print "Hello, {name}!"
 end
 
-say_hello name =>
+say_hello name ->
   print "Hello, " name "!"
 
 
-range from: start = 0, to: stop, by: step = 1 =>
+range from: start = 0, to: stop, by: step = 1 ->
     start == stop
         ? []
         : [start, (range from: (start + 1) to: stop by: step)...]
@@ -1315,7 +1364,7 @@ let create ?(nln = true) ~src input =
     peek = `Start }
 
 
-function create (nln = true) ~src input
+def create (nln = true) ~src input
   nln = if nln then Some (`ASCII 0x000A (* LF *)) else None
   d = Uutf.decoder ~encoding:`UTF_8 ?nln input
   { src, d, buf = Buffer.create 1024,
@@ -1324,7 +1373,7 @@ function create (nln = true) ~src input
 end
 
 
-fun create ?(nln = true) ~src input:
+def create ?(nln = true) ~src input:
   nln = if nln then Some (`ASCII 0x000A (* LF *)) else None
   d = Uutf.decoder ~encoding:`UTF_8 ?nln input
   { src; d; buf = Buffer.create 1024;
@@ -1335,28 +1384,28 @@ fun create ?(nln = true) ~src input:
 -- * --
 
 -- StandardML
-fun area (Circle (_, r)) = 3.14 * r * r
+def area (Circle (_, r)) = 3.14 * r * r
   | area (Square (_, s)) = s * s
   | area (Triangle (a, b, c)) = heron (a, b, c)
 
 
 
 area = do
-  (Circle (_, r)) => 3.14 * r * r
-  (Square (_, s)) => s * s
-  (Triangle (a, b, c)) => heron (a, b, c)
+  (Circle (_, r)) -> 3.14 * r * r
+  (Square (_, s)) -> s * s
+  (Triangle (a, b, c)) -> heron (a, b, c)
 end
 
 
 -- * --
 
 -- Ur/Web
-fun foldl [a] [b] (f : a -> b -> b) =
+def foldl [a] [b] (f : a -> b -> b) =
     let
-        fun foldl' acc ls =
+        def foldl' acc ls =
             case ls of
-                [] => acc
-              | x :: ls => foldl' (f x acc) ls
+                [] -> acc
+              | x :: ls -> foldl' (f x acc) ls
     in
         foldl'
     end
@@ -1366,8 +1415,8 @@ foldl (f :: a -> b -> b) =
   let
     foldl' acc ls =
       case ls of
-        | [] => acc
-        | x & ls => foldl' (f x acc) ls
+        | [] -> acc
+        | x & ls -> foldl' (f x acc) ls
       end
   in
     foldl'

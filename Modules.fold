@@ -1,52 +1,51 @@
 
-//
-// Interfaces
-//
+--
+-- Interfaces
+--
 
 
-/**
- * # Type Module
- *
- * To group together a type and a collection of functions that operate on that
- * type a _Type Module_ can be used. Type modules create both: a type and a
- * module for that type, with the same name. So the type declaration must have
- * exactly the same name as the module.
- *
- * > Note: OCaml has no native support for type module but the equivalent model
- * > is widely used with the conventional type `Module.t`.
- *
- * > Warning: The usage of the module's name may be replaced by `Self`.
- *
- * Not only the declaration of the type uses the same name, but also all the
- * function and value signatures use it.
- */
+{- # Type Module
 
-module Person {
+   To group together a type and a collection of functions that operate on that
+   type a _Type Module_ can be used. Type modules create both: a type and a
+   module for that type, with the same name. So the type declaration must have
+   exactly the same name as the module.
+
+   > Note: OCaml has no native support for type module but the equivalent model
+   > is widely used with the conventional type `Module.t`.
+
+   > Warning: The usage of the module's name may be replaced by `Self`.
+
+   Not only the declaration of the type uses the same name, but also all the
+   function and value signatures use it.
+ -}
+
+module Person
   type Self = { name :: String, age :: Int }
 
-  name :: Self -> String
-}
+  val name :: Self -> String
+end
 
-/*
- * This pattern makes it easier to extend types, since no changes have to be
- * performed to the existing declarations. Compared to OCaml, the beginners
- * will not be asking what the type `t` means, the proposed model is natural:
- * you had a type and now it moved to its own module.
- *
- * > TODO: Review how the interface inclusion will work:
- * >   include Monad with type t = t
- * > will become:
- * >   include Monad for type List
- */
+{-
+  This pattern makes it easier to extend types, since no changes have to be
+  performed to the existing declarations. Compared to OCaml, the beginners
+  will not be asking what the type `t` means, the proposed model is natural:
+  you had a type and now it moved to its own module.
+
+  > TODO: Review how the interface inclusion will work:
+  >   include Monad with type t = t
+  > will become:
+  >   include Monad for type List
+ -}
 
 
 
-mod List
+module List
   type List a = [] | a & List a
 
-  List (l: List a) = l
+  let List (l: List a) = l
 
-  List (v: Vec a) = Vec.to_list v
+  let List (v: Vec a) = Vec.to_list v
 
 end
 
@@ -146,13 +145,12 @@ open OS hide: [mkdir, mkfifo]
 --
 -- Interfaces
 --
->>>>>>> f0aec6245a6953af18342ce828fcf1e85d19c5b8
 
-protocol Animal T {
+sig Animal T
     init :: String -> T
     name :: T -> String
     talk :: T -> String
-}
+end
 
 data Dog (name : String)
 
@@ -168,15 +166,15 @@ talk laika == "woof!"
 
 -- Module User
 
-protocol Show T {
-    show : T -> String
-}
+sig Show T
+    show :: T -> String
+end
 
 type User = (name: String, birthday: Date, profession: String)
 
-instance Show User {
-    show (u: user) -> String = u.name
-}
+ext Show User
+  let show (self::User) -> String = u.name
+end
 
 
 protocol Show T {
@@ -466,5 +464,28 @@ mod IntSet =
 -- Block notation
 mod IntSet
   include (Set.Make Int)
+end
+
+
+-- * --
+
+
+
+{- Provenance tracking. -}
+
+interface Irmin_task
+  include Tc.S0
+
+  def create :: date: Int64 -> owner: String -> uid: Int64? -> String -> Self
+  def date :: Self -> Int64
+  def uid :: Self -> Int64
+  def owner :: Self -> String
+  def messages :: Self -> List String
+  def add :: Self -> String -> Unit
+  def empty :: Self
+
+  type F = a -> Self
+
+  def none :: F ()
 end
 

@@ -5,6 +5,23 @@ seq(100) | filter{x-> x % 2 == 0} | stdout
 seq 100 |> filter (x -> x % 2 == 0) |> each print
 
 
+-- With anonymous functions
+
+Random.int n
+|> x -> x + 1
+|> x -> x * 2
+|> string
+|> print
+
+
+Random.int n
+|> (x -> x + 1)
+|> (x -> x * 2)
+|> string
+|> print
+
+
+
 
 sum_of_squared_odd_numbers upper =
   [1 .. ] >> map (n => n * n)             -- Squared

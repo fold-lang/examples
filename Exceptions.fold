@@ -1,0 +1,16 @@
+
+
+def divide a b =
+  if b == 0 then raise DivisionByZero
+  else a / b
+
+
+do
+  let a = 42,
+      b = 0 in
+  divide a b
+    catch
+    | DivisionByZero -> print "cannot divide by zero"
+    | Failure msg -> print "failure: $msg"
+    end
+

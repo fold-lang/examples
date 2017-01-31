@@ -3,21 +3,27 @@
 --
 
 -- Simple lambda functions.
-x -> x
-x -> x + x
+x => x
+x => x + x
 
 -- Lambda function with a block.
-do x ->
+do x =>
   a = x + x
   a + 1
 end
 
 -- Apply a transformation using a lambda.
-map (x -> x * x) [1..10]
+map (x => x * x) [1..10]
 
 -- Lambdas can use pattern matching with the `|` alternative operator.
 -- The following lambda will replace 5 by 0.
-map (5 -> 0 | x -> x * x) [1..10]
+map (5 => 0 | x => x * x) [1..10]
+
+[1..10 |> map do
+              | 5 => 0
+              | x => x * x
+
+
 
 -- The same variable can be referenced multiple times.
 \x + \x
@@ -25,7 +31,7 @@ map (5 -> 0 | x -> x * x) [1..10]
 
 -- * --
 
--> \ x y -> x + y
+-> \ x y => x + y
 -> \ 5
 -> (~ + ~)
 

@@ -6,6 +6,25 @@
 -- in do statements \n denotes ;
 -- in collections \n deontes ,
 
+keyword args... = expr
+
+keyword args...
+  expr
+end
+
+
+keyword arg: expr
+
+keyword arg
+  expr
+end
+
+keyword args...
+  expr
+end
+
+
+
 do: expr
 
 do expr end
