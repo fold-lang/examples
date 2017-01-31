@@ -1,5 +1,4 @@
-{- defction definition
-    -}
+{- Function definition -}
 
 
 -- Just say hello.
@@ -51,48 +50,7 @@ def next [] = None
   | next [x & xs] = Some (x, xs)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- * --
-
-
--- Factorial with argument pattern matching.
-defction
-  | factorial 0 = 1
-  | factorial n = n * factorial (n - 1)
-
--- Create a cursor for a list.
-defction
-  | next [] = None
-  | next [x & xs] = Some (x, xs)
-
-
--- * --
-
+-- Derivatives
 def eps = 0.0001
 
 def derivative f =
@@ -102,11 +60,11 @@ def square x = x * x
 def around delta target =
   actual -> abs (actual - target) < delta
 
-assert
-  dsquare = derivative square
+def main() =
+  let dsquare = derivative square in
 
-  dsquare 5  |> satisfies (around 0.1 10)
-  dsquare 10 |> satisfies (around 0.1 20)
+  assert (dsquare 5  |> satisfies (around 0.1 10));
+  assert (dsquare 10 |> satisfies (around 0.1 20))
 end
 
 
