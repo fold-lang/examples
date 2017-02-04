@@ -6,48 +6,43 @@ def hello name =
   print "Hello, $name!"
 
 
--- Lambda greeting. Equivalent to the previous examples.
-def hello = name ->
-  print "Hello, $name!"
-
-
--- Hello defction with inline type annotation.
-def hello (name :: String) -> () =
-  print "Hello, $name!"
-
-
--- defction definition with type annotation.
-def hello name :: String -> () =
-  print "Hello, $name!"
-
-
--- Hello defcton with type declaration.
-def hello :: Int -> Int
+-- Hello function with type declaration.
+def hello :: String -> ()
 def hello name =
   print "Hello, $(name)!"
 
 
--- defcton definition with a block body.
+-- Hello function with type annotation.
+def hello name :: String -> () =
+  print "Hello, $(name)!"
+
+
+-- Lambda greeting, functions are just lambda values.
+def hello = name ->
+  print "Hello, $name!"
+
+
+-- Function with composed body.
 def hello name =
-  print "Hello, $name!";
-  print "Hello again."
+  let msg = "Hello, $name!"
+  print "What's up?."
 
 
 -- Lambda greeting with a block body.
-def hello = do name ->
-  print "Hello, $name!";
-  print "Hello again."
-end
+def hello =
+  do name ->
+    print "Hello, $name!";
+    print "What's up?."
+  end
 
 
--- Factorial with argument pattern matching.
+-- Factorial and fibonacci with argument pattern matching.
 def factorial 0 = 1
   | factorial n = n * factorial (n - 1)
 
-
--- Create a cursor for a list.
-def next [] = None
-  | next [x & xs] = Some (x, xs)
+def fibonacci 0 = 0
+  | fibonacci 1 = 1
+  | fibonacci n = fibonacci (n - 1) + fibonacci (n - 2)
 
 
 -- Derivatives
@@ -57,75 +52,20 @@ def derivative f =
   x -> (f (x + eps) - f x) / eps
 
 def square x = x * x
-def around delta target =
+
+def around delta, target =
   actual -> abs (actual - target) < delta
 
-def main() =
+def () =
   let dsquare = derivative square in
-
-  assert (dsquare 5  |> satisfies (around 0.1 10));
-  assert (dsquare 10 |> satisfies (around 0.1 20))
-end
+  assert (dsquare 5  |> satisfies (around 0.1, 10));
+  assert (dsquare 10 |> satisfies (around 0.1, 20))
 
 
--- * --
-
-next :: List a -> Producer a
-
-next []      = return ()
-next (a & l) = yield a >> next l
-
-next =
-  | []      -> return ()
-  | (a & l) -> yield a >> next l
-
-def next
-  | []      -> return ()
-  | (a & l) -> yield a >> next l
-end
-
-def next
-  | []      -> return ()
-  | (a & l) -> yield a >> next l
-end
-
-
-
-
-
--- -- --
-
-a a =
-f x y z =
-
-fib :: Int -> Int
-fib = {
-    0 -> 0
-    1 -> 1
-    n -> fib (n - 1) + fib (n - 2)
-}
-
-fib 0 = 0
-  | 1 = 1
-  | n = fib (n - 1) + fib (n - 2)
-
-fib n when
-  | n == 0 = 0
-  | n == 1 = 1
-  | else   = fib (n - 1) + fib (n - 2)
-
--- -- --
-
-range :: from: Int? -> to: Int -> by: Int? -> [Int]
-range (from start) (to end) (by step) =
-    if (start >= stop)
-        then: []
-        else: [start | range from: (start + 1) to: stop by: step]
-
-def range from: start = 0, to: stop, by: step = 1
-  if | start >= stop -> []
-     | else -> [start & range from: start + 1 to: stop by: step]
-end
+-- Constructs a list with numbers from `start` to `stop`.
+let range from: (start = 0) to: stop by: (step = 1) =
+  if start >= stop then []
+  else [start & range from: (start + 1) to: stop by: step]
 
 
 range :: from: Int? -> to: Int -> by: Int? -> [Int]
@@ -137,99 +77,13 @@ range :: from: Int? -> to: Int -> by: Int? -> [Int]
 :: [Int] = [2, 5, 8]
 
 
-range :: from: Int? -> to: Int -> by: Int? -> [Int]
-range (from start = 0) (to end) (by step = 1) =
-    let should_continue = start >= stop,
-        default_case    = [],
-        continuation    = range from: (start + 1) to: stop by: step in
-    if should_continue
-        [start | continuation]
-    else
-        default_case
-    end
-
-range (from start = 0) (to end = +Infinity) (by step = 1) -> [Int] =
-    should_continue = start >= stop
-    default_case    = []
-    continuation    = range from: (start + 1) to: stop by: step
-    if should_continue
-        then: [start, continuation...]
-        else: default_case
-
-range :: from: Int? -> to: Int -> by: Int? -> [Int]
 
 
-let sum x y: x + y
+let take_while :: (a -> Bool) -> List a -> List a
+let take_while p [] = []
+  | take_while p [x & xs] =
+    if p x then [x & take_while p xs] else []
 
-
-def range (from start::Int = 0) (to end::Int = +Infinity) (by step::Int = 1) -> [Int] =
-    let should_continue = start >= stop,
-        default_case    = [],
-        continuation    = range from: (start + 1) to: stop by: step in
-    if should_continue
-        [start | continuation]
-    else
-        default_case
-    end
-
-range start end step =
-    let should_continue = start >= stop,
-        default_case    = [],
-        continuation    = range from: start + 1, to: stop, by: step
-    in
-        if should_continue
-            []
-        else
-            default_case
-        end
-    end
-
-
-def range start stop step
-end
-
-range start stop step = do
-end
-
-
-
-
--- -- --
-
-
-factorial :: Int -> Int
-factorial = {
-    0 -> 1
-    n -> n * factorial (n - 1)
-}
-
--- -- --
-
-take_while <A> :: (A -> Bool) -> [A] -> [A]
-take_while p = {
-    []       -> []
-    [x | xs] -> p x ? [x | take_while p, xs] : []
-}
-
--- -- --
-
-range :: from: Int? -> to: Int -> by: Int? -> [Int]
-range (from start) (to end) (by step) <- {
-    if (start >= stop)
-        then: []
-        else: [start | range from: (start + 1) to: stop by: step]
-}
-
--- -- --
-
-range :: from: Int? -> to: Int -> by: Int? -> [Int]
-range (from start) (to end) (by step) = do
-    if (start >= stop) then
-        []
-    else
-        [start | range from: (start + 1) to: stop by: step]
-    end
-end
 
 -- -- --
 
@@ -452,23 +306,11 @@ sum[2, 3]
 
 --
 
-visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] =
-    durations = map !((last ~1) - (first ~1))
-    durations = map (x -> (last x) - (first x))
-    map !(~, durations ~) visits_by_device
+let visits_durations_by_device :: List Visits -> List (Device, List Time)
+let visits_durations_by_device visits_by_device =
+    let durations = map (x -> (last x) - (first x)) in
+    map (dev visit -> (dev, durations visit)) visits_by_device
 
-visits_durations_by_device visits_by_device::[Visits] -> [(Device, [Time])] = {
-    durations = map !((last ~1) - (first ~1))
-    durations = map (x -> (last x) - (first x))
-    map !(~, durations ~) visits_by_device
-}
-
-visits_durations_by_device :: [Visits] -> [(Device, [Time])]
-visits_durations_by_device visits_by_device =
-    let durations = map \(last ~1 - first ~1)
-        durations = map (x -> (last x) - (first x))
-    in:
-      map !(~, durations ~) visits_by_device
 
 
 --
@@ -540,119 +382,54 @@ end
 
 
 
-def assoc v::(PersistentVector a) i::Int el::a -> PersistentVector
-    check_bounds! v i
-    if | i > (length v - length v.tail) -> do
-         newtail = v.tail # [1..end]
-         newtail # (mask i) := el
-         PersistentVector v.trie newtail v.length
-       end
-       | otherwise -> do
-         newnode = v.trie # i # [1..end]
-         newnode # (mask i) := el
-         PersistentVector (assoc v.trie i newnode) v.tail v.length
-       end
-end
+let assoc (v::PersistentVector a) (i::Int) (el::a) -> PersistentVector =
+  check_bounds! v i;
+  if i > (length v - length v.tail) then
+     let newtail = v.tail # [1 .. length v.tail] in
+     newtail # (mask i) := el;
+     PersistentVector v.trie newtail v.length
+  else
+    let newnode = v.trie # i # [1..end] in
+    newnode # (mask i) := el;
+    PersistentVector (assoc v.trie i newnode) v.tail v.length
 
 
-visits_durations_by_device :: {Device : [Visit]} -> {Device : [Time]}
-visits_durations_by_device visits_by_device = do
-    visit_duration = \v -> (last v) - (first v)
-    map_values (\V -> map visit_duration V) visits_by_device
-end
+let visits_durations_by_device :: Dict Device (List Visit) -> Dict Device (List Time)
+let visits_durations_by_device visits_by_device =
+  let duration v = last v - first v in
+  Dict.map (map duration) visits_by_device
+
+val x = 1
+
+fun sum ctx xs =
+  let hourly_counts_by_access =
+    xs |> group_by_access
+       |> add_missing_accesses \accesses (Spaces.obtain_access_list ctx.space)
+       |> add_missing_hours_by_access ctx.date
+  let sum_by_access = map hourly_counts_by_access
+  in
+    (hourly_counts -> `Sum (fold (+) 0 (map #2 hourly_counts)))
+  sum_by_access
 
 
--- -- --
 
-def greet
-  return "hello"
-end
+---
 
-greet() =
-  return "hello"
-end
-
-greet() -> String = "hello"
-
-def greet(name:String)
-  return "hello " + name
-end
-
-def greet(first:String, last:String)
-  return "hello " + first + " " + last
-end
-
-greet(first: String, last: String) -> String =
-    "hello " + first + " " + last
+type List a =
+  | Cons (a, list a)
+  | Nil
 
 
--- -- --
-
-def greet
-  return "hello"
-end
-
-def greet()
-  return "hello"
-end
-
-def greet():  string
-  return "hello"
-end
-
-def greet(name:string)
-  return "hello " + name
-end
-
-def greet(first:string, last:string)
-  return "hello " + first + " " + last
-end
-
-def greet(first:string, last:string):string
-  return "hello " + first + " " + last
-end
+let length self =
+  match self
+  | Cons (_, tail) -> 1 + length tail
+  | Nil -> 0
+  end
 
 
--- -- --
+let list_1 = Cons (11, Cons (22, Cons (33, Nil)))
+assert (length test_list == 3)
 
-def greet
-  return "hello"
-end
-
-def greet()
-  return "hello"
-end
-
-def greet():  string
-  return "hello"
-end
-
-def greet(name:string)
-  return "hello " + name
-end
-
-def greet(first:string, last:string)
-  return "hello " + first + " " + last
-end
-
-def greet(first:string, last:string):string
-  return "hello " + first + " " + last
-end
-
--- -- --
-
-type List T = {
-    Cons (head: T, tail: List T)
-    Nil
-}
-
-def length = {
-    Cons (_, tail) -> 1 + length tail
-    Nil -> 0
-}
-
-list_1 = Cons (11, Cons (22, Cons (33, Nil)))
-length test_list == 3
 
 def append l1 l2 = l1 . {
     Nil -> l2
@@ -786,17 +563,18 @@ select first from: [1, 2, 3, 4] where: x -> x > 2
 
 open Str
 
-def read_line ch
-  try Some (input_line ch)
-    with: End_of_file -> None
-end
+let read_line ch =
+  Some (input_line ch)
+  catch End_of_file -> None
 
-def fold_channel f acc ch
-  case (read_line ch)
-    | Some line -> fold_channel f (f line acc) ch
-    | None -> acc
+
+let fold_channel f acc ch =
+  match read_line ch
+  | Some line -> fold_channel f (f line acc) ch
+  | None -> acc
   end
-end
+
+
 
 def add_to totals values =
   case totals
@@ -805,6 +583,7 @@ def add_to totals values =
               then: map (+) totals values
               else: fail "Inconsistent-length rows"
 end
+
 
 || Sums all the values from channel.
 def sum_channel ch
@@ -1033,7 +812,7 @@ def calc_sum ctx xs
 end
 
 
-def calc_sum ctx xs :: App.Context -> [(Time, Int)] =
+def sum ctx xs :: App.Context -> List (Time, Int) =
   xs |> group_by_access
      |> add_missing_accesses (Spaces.obtain_access_list ())
      |> add_missing_hours_by_access ctx.date
@@ -1136,19 +915,19 @@ view (w,h) turtle =
 
 
 -- VIEW
-view :: (Int, Int) -> Turtle -> Element
-view (w,h) turtle =
+let view :: (Int, Int) -> Turtle -> Element
+let view (w,h) turtle =
   let turtle_pic =
-        to_form (image 96 96 "/turtle.gif")
-          >> x -> rotate turtle.angle >> not true
-          >= move (turtle.x, turtle.y)
+    to_form (image 96 96 "/turtle.gif")
+      |> rotate turtle.angle >> not true
+      |> move (turtle.x, turtle.y)
   in
-      layers
-        [collage w h [turtle_pic],
-         opacity 0.7 : fitted_image w h "/water.gif"]
+    layers
+      [collage w h [turtle_pic],
+       opacity 0.7 : fitted_image w h "/water.gif"]
 
 
-[1, 2, 3, 4, 5] -> length
+[1, 2, 3, 4, 5] |> length
 
 -- -- --
 
@@ -1161,6 +940,29 @@ show = space -> show (Int space)
 instance Show Space
   show = show <Str>
 end
+
+
+
+let group_devices_by_store :: Space -> Map Store (Set Device)
+let group_devices_by_store space =
+  let store_distances_by_antenna = get_store_distances space
+  let find_stores =
+    find_stores_for_antenna store_distances_by_antenna
+  in
+    IO.stdin
+    |> Text.lines
+    |> List.fold init: Store_map.empty
+      do device_set_by_store line ->
+        let {antenna, device, rssi} = Row.parse line in
+         fold (find_stores antenna rssi) init: device_set_by_store
+            do device_set_by_store' store ->
+              Store_map.change device_set_by_store' store
+                (some << (do None -> {}
+                           | Some device_set -> device @ device_set
+                          end))
+            end
+      end
+
 
 group_devices_by_store :: Space -> Map Store (Set Device)
 group_devices_by_store -> fn space ->
@@ -1314,9 +1116,9 @@ end
 -- From carcass by D. Buenzli
 -- https://github.com/dbuenzli/carcass/blob/b2c7af8ba6dfe69ca59b8a0ba33afc296a1c53d9/src/carcass.ml#L212
 
-let create ?(nln = true) ~src input =
-  let nln = if nln then Some (`ASCII 0x000A (* LF *)) else None in
-  let d = Uutf.decoder ~encoding:`UTF_8 ?nln input in
+let create :(nln = true) :src input =
+  let nln = if nln then Some (`ASCII 0x000A {- LF -}) else None;
+  let d = Uutf.decoder encoding: `UTF_8 :nln input;
   { src; d; buf = Buffer.create 1024;
     prev_line = 0; prev_col = 0;
     peek = `Start }
@@ -1342,7 +1144,7 @@ def create ?(nln = true) ~src input:
 -- * --
 
 -- StandardML
-def area (Circle (_, r)) = 3.14 * r * r
+let area (Circle (_, r)) = 3.14 * r * r
   | area (Square (_, s)) = s * s
   | area (Triangle (a, b, c)) = heron (a, b, c)
 
