@@ -4,93 +4,17 @@
 --
 
 
-binary_search <Ord T> :: [T] -> T -> Int?
-binary_search haystack needle = do
-    search l h = do
-        m = (low + high) / 2
-        if | (h < l)                 => None
-           | (haystack # m > needle) => search l (m - 1)
-           | (haystack # m < needle) => search (m + 1) h
-           | otherwise               => Some m
+def binary_search :: {Ord a} -> List a -> a -> Int?
+def binary_search haystack needle =
+  let search l h =
+    let m = (low + high) / 2 in
+    when
+    | h < l                -> None
+    | haystack[m] > needle -> search l (m - 1)
+    | haystack[m] < needle -> search (m + 1) h
+    | otherwise            -> Some m
     end
+  in
     search 0 (#haystack - 1)
-end
-
-binary_search <Ord T> :: [T] -> T -> Int?
-binary_search haystack needle = {
-    search l h = {
-        m = (low + high) / 2
-        if | h < l                 => None
-           | haystack # m > needle => search l (m - 1)
-           | haystack # m < needle => search (m + 1) h
-           | otherwise             => Some m
-    }
-    search 0 (#haystack - 1)
-}
 
 
-binarySearch :: Integral a => (a -> Ordering) -> (a, a) -> Maybe a
-binarySearch p (l, h)
-  | h < l = Nothing
-  | otherwise =
-      let mid = (low + high) `div` 2 in
-      case p mid of
-        LT -> binarySearch p (low, mid-1)
-        GT -> binarySearch p (mid+1, high)
-        EQ -> Just mid
-
-
-
-function {Ord a} binary_search haystack::[a] needle::a -> Int?
-  function recurse low high haystack needle
-    mid = (low + high) / 2
-    if | high < low            -> None
-       | haystack.mid > needle -> recurse low (mid - 1) haystack needle
-       | haystack.mid < needle -> recurse (mid + 1) high haystack needle
-       | otherwise             -> Some mid
-  end
-  recurse 0 (#haystack - 1) haystack needle
-end
-
-
-binarySearch :: Integral a => (a -> Ordering) -> (a, a) -> Maybe a
-binarySearch p (low,high)
-  | high < low = Nothing
-  | otherwise =
-      let mid = (low + high) `div` 2 in
-      case p mid of
-        LT -> binarySearch p (low, mid-1)
-        GT -> binarySearch p (mid+1, high)
-        EQ -> Just mid
-
-
-binary_search :: {Comparable a} -> [a] -> a -> Int?
-binary_search haystack needle =
-    search 0 (#haystack - 1) haystack needle where
-    search low high haystack needle =
-        let mid = (low + high) / 2 in
-        if | high < low             -> None
-           | haystack[mid] > needle -> search low (mid - 1)  haystack needle
-           | haystack[mid] < needle -> search (mid + 1) high haystack needle
-           | otherwise              -> Some mid
-
-
-binary_search :: {Comparable a} -> [a] -> a -> Int?
-binary_search haystack needle =
-    [search 0 (#haystack - 1) haystack needle] where
-    [search low high haystack needle] =
-        let mid = (low + high) / 2 in
-        if | high < low             -> None
-           | haystack[mid] > needle -> [search low (mid - 1)  haystack needle]
-           | haystack[mid] < needle -> [search (mid + 1) high haystack needle]
-           | otherwise              -> Some mid
-
-
-binary_search{Comparable A}(haystack: [A], needle: A) -> Int? =
-    search(0, |haystack| - 1, haystack, needle) where
-    search(low, high, haystack, needle) =
-        let mid = (low + high) / 2 in
-        if | high < low             -> None
-           | haystack[mid] > needle -> search(low, mid - 1,  haystack, needle)
-           | haystack[mid] < needle -> search(mid + 1, high, haystack, needle)
-           | otherwise              -> Some mid
