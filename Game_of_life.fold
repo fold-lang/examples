@@ -8,41 +8,48 @@ load World as: W
 
 -- Generic utility functions
 
-count :: {Eq a} -> a -> [a] -> Int
-count x xs = # (filter (x ==) xs)
+def count :: {Eq a} -> a -> List a -> Int
+def count x xs =
+  #(filter (x ==) xs)
 
 -- Game of Life
 
-
-type Cell deriving: [Eq, Show] = Alive | Dead
-
-random_cell :: IO Cell = do
-  x <- random_io
-  return (x ? Alive : Dead)
-end
-
-random_world :: Int -> Int -> IO (World Cell_State)
-random_world width height = do
-  states <- replicate (width * height) random_cell
-  let bounds = ((0, 0), (width - 1, height - 1))
-  return : W.from_list bounds W.Torus states
-
-neighborsAlive :: World CellState -> Loc -> Int
-neighborsAlive w x = count Alive neighborStates
-  where neighborStates = map cellAt (neighbors x)
-        neighbors = W.neighbors W.mooreNeighbors w
-        cellAt = W.cellAt w
+@deriving (Eq, Show)
+type Cell = Alive | Dead
 
 
-sig transition :: Cell -> Int -> Cell
+def random_cell :: IO Cell =
+  x <- random_io;
+  return (if x then Alive else Dead)
+
+
+def random_world :: Int -> Int -> IO (World Cell_State)
+def random_world width height =
+  do!
+    states <- replicate (width * height) random_cell;
+    let bounds = ((0, 0), (width - 1, height - 1))
+    return (W.from_list bounds W.Torus states)
+  end
+
+
+def neighbors_alive :: World CellState -> Loc -> Int
+def neighbors_alive w x =
+  count Alive neighbor_states
+  where
+    neighbor_states = map cell_at (neighbors x),
+    neighbors = W.neighbors W.moore_neighbors w,
+    cell_at = W.cell_at w
+
+
+def transition :: Cell -> Int -> Cell
 def transition Deadn n if (n == 3) = Alive
   | transition Alive n if (n == 2) || (n == 3) = Alive
   | transition _ _ = Dead
 
 
-sig evolveCell :: World CellState -> Loc -> CellState -> CellState
-def evolveCell w x s = transition s (neighborsAlive w x)
+def evolve_cell :: World CellState -> Loc -> CellState -> CellState
+def evolve_cell w x s = transition s (neighbors_alive w x)
 
-renderCell :: CellState -> Char
-renderCell Alive = '@'
-renderCell Dead  = ' '
+def render_cell :: CellState -> Char
+def render_cell Alive = '@'
+  | render_cell Dead  = ' '

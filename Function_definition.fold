@@ -2,34 +2,34 @@
 
 
 -- Just say hello.
-def hello name =
+fun hello name =
   print "Hello, $name!"
 
 
 -- Hello function with type declaration.
-def hello :: String -> ()
-def hello name =
+val hello :: String -> ()
+fun hello name =
   print "Hello, $(name)!"
 
 
 -- Hello function with type annotation.
-def hello name :: String -> () =
+fun hello name :: String -> () =
   print "Hello, $(name)!"
 
 
 -- Lambda greeting, functions are just lambda values.
-def hello = name ->
+val hello = name ->
   print "Hello, $name!"
 
 
 -- Function with composed body.
-def hello name =
-  let msg = "Hello, $name!"
+fun hello name =
+  let msg = "Hello, $name!" in
   print "What's up?."
 
 
 -- Lambda greeting with a block body.
-def hello =
+val hello =
   do name ->
     print "Hello, $name!";
     print "What's up?."
@@ -37,26 +37,26 @@ def hello =
 
 
 -- Factorial and fibonacci with argument pattern matching.
-def factorial 0 = 1
+fun factorial 0 = 1
   | factorial n = n * factorial (n - 1)
 
-def fibonacci 0 = 0
+fun fibonacci 0 = 0
   | fibonacci 1 = 1
   | fibonacci n = fibonacci (n - 1) + fibonacci (n - 2)
 
 
 -- Derivatives
-def eps = 0.0001
+val eps = 0.0001
 
-def derivative f =
+fun derivative f =
   x -> (f (x + eps) - f x) / eps
 
-def square x = x * x
+fun square x = x * x
 
-def around delta, target =
+fun around delta, target =
   actual -> abs (actual - target) < delta
 
-def () =
+val () =
   let dsquare = derivative square in
   assert (dsquare 5  |> satisfies (around 0.1, 10));
   assert (dsquare 10 |> satisfies (around 0.1, 20))

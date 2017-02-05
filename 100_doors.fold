@@ -3,9 +3,10 @@
 -- http://rosettacode.org/wiki/100_doors
 --
 
-doors = replicate 100 False
+let doors = replicate 100 False
 
-for a = 1:100, b in a:a:100
+for a <- 1..100, b <- a..100
 	doors[b] = !doors[b]
-end
+
 for a = 1:100 println("Door $a is " * (doors[a] ? "open" : "close") ) end
+

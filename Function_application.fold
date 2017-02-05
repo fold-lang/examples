@@ -1,6 +1,9 @@
---
--- Function application
---
+{-
+ - Function application
+ -}
+
+
+
 
 -- Math-style
 IO.write(String.join(map(show, args), with: sep) + end, file: IO.stdout)

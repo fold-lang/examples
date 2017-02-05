@@ -3,7 +3,7 @@
 
 -- ## Definitions
 
-def calc box =
+fun calc box =
   let
     x = box.position.x,
     y = box.position.y
@@ -11,7 +11,7 @@ def calc box =
     x * y
 
 
-def calc box =
+fun calc box =
   x * y where
     x = box.position.x,
     y = box.position.y

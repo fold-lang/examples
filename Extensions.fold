@@ -1,10 +1,9 @@
 
 
-ext String {
-  def banana self {
-    short_name = drop_first 1 (characters self)
-    "%(self) %(self) Bo B%(short_ame) Banana Fana Fo F%(short_name)"
-  }
-}
+extension String
+  def banana self =
+    let short_name = drop_first 1 (characters self) in
+    "$self %(self) Bo B%(short_ame) Banana Fana Fo F$(short_name)"
+end
 
 

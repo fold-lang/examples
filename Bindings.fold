@@ -3,44 +3,44 @@
 
 
 -- Value definition
-def a = 1
+let a = 1
 
 
 -- Value definition with type annotation
-def a :: Int = 1
+let a :: Int = 1
 
 
 -- Multiple recursive value definitions
-def a = 1,
+let a = 1,
     b = c + a,
     c = a + 10
 
 
 -- Function definition
-def f a =
+let f a =
   a + 1
 
 
 -- Function definition with block
-def f a =
+let f a =
   let result = a + 1 in
   print "result = $result"
 
 
 
 -- Function definition with type annotation
-def f a :: Int -> Int =
+let f a :: Int -> Int =
   a + 1
 
 
 -- Function definition with inline type annotation
-def f (a :: Int) -> Int =
+let f (a :: Int) -> Int =
   a + 1
 
 
 -- Function definitions with type declaration
-def f :: Int -> Int
-def f a = a + 1
+let f :: Int -> Int
+let f a = a + 1
 
 
 -- Function definitions with pattern matching

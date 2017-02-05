@@ -1,32 +1,10 @@
-{-
-  # Sorting Algorithms
-
-  - Quicksort
-  - Binary Search -}
-
+-- Quicksort
 
 def qsort input =
   match input
   | [] | [_] -> input
   | [x & xs] ->
+    let (less, more) = List.partition (\x < p) xs in
     qsort less ++ [x & qsort more]
-    where (less, more) = List.partition (\x < p) xs
   end
-
-
-
--- * --
-
-def binary_search haystack needle
-  search 0 (#haystack - 1) haystack needle where
-  search low high haystack needle =>
-    let mid = (low + high) / 2 in
-    when
-    | high < low             => None
-    | haystack[mid] > needle => search low (mid - 1)  haystack needle
-    | haystack[mid] < needle => search (mid + 1) high haystack needle
-    | otherwise              => Some mid
-    end
-end
-
 

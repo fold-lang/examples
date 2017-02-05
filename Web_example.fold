@@ -1,61 +1,45 @@
 
-open Core_kernel.Std
-open Opium.Std
+open Core
+open Opium
+
 
 type Person =
-  { name :: String
+  { name :: String,
      age :: Int }
 
 
-let print_param = put "/hello/:name" do: req ->
-  `String ("Hello " + param req "name")
+val print_param =
+  put "/hello/:name" do req ->
+    Response.text ("Hello " + param req "name")
+  end
 
 
-let print_person = get "/person/:name/:age": req ->
-  let person = {
-    name = param req "name";
-    age = "age" |> param req |> Int.of_string;
-  } in
-  `Json (person |> json_of_person |> Ezjsonm.wrap) |> respond'
-end
-
-let main =
-  App.empty => print_param
-            >> print_person
-            >> App.run_command
+val print_person =
+  get "/person/:name/:age" do req ->
+    let person = 
+      { name = param req "name",
+        age  = int (param req "age") }
+    in
+      Response.json person
+  end
 
 
-(get "/analytics/<metric_name::String>/<date::Date>" (req =>
-  (div (h1 {style = {font = `Helvetica, color = #223322}}
-        (Response req.metric_name)))))
-
-get "/analytics/<metric_name::String>/<date::Date>": req =>
-    div:
-        h1 {style = {font = `Helvetica, color = #223322}}:
-            Response req.metric_name
-
-get "/analytics/<metric_name::String>/<date::Date>" { req =>
-    div {
-        h1 style: (font: `Helvetica, color: #223322) {
-            Response req.metric_name
-        }
-    }
-}
+val get_metric_for_date =
+  get "/analytics/:metric_name/:date" do req ->
+    div class: "metric-header" [
+      h1 style: [font => `Helvetica, color => #223322]
+        "Metric: $(req.metric_name)",
+      p "Interval: $(date.start) $(date.end)"
+    ]
+  end
 
 
-get "/analytics/<metric_name::String>/<date::Date>" { req =>
-    div : h1 style: (font: `Helvetica, color: #223322) {
-            Response req.metric_name
-    }
-}
-
-
-
-
-
-get "/analytics/<metric_name::String>/<date::Date>" do: req =>
-    div (h1 {style = {font = `Helvetica, color = #223322}}
-        (Response req.metric_name)))
-
-
+fun main () =
+  let api =
+    App.new
+    |> print_param
+    |> print_person
+    |> get_metric_for_date
+  in
+    App.run api
 
