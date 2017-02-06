@@ -1,4 +1,13 @@
 
+
+-- Associative lists
+
+type Dict k v = List (k, v)
+
+
+OrdMap [k1 => v2, k2 => v2, ..., kn => vn]
+
+
 -- Dictionary is a hash-map
 
 type Person =

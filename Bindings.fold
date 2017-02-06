@@ -3,57 +3,57 @@
 
 
 -- Value definition
-let a = 1
+val a = 1
 
 
 -- Value definition with type annotation
-let a :: Int = 1
+val a :: Int = 1
 
 
 -- Multiple recursive value definitions
-let a = 1,
+val a = 1,
     b = c + a,
     c = a + 10
 
 
 -- Function definition
-let f a =
+fun f a =
   a + 1
 
 
 -- Function definition with block
-let f a =
+fun f a =
   let result = a + 1 in
   print "result = $result"
 
 
 
 -- Function definition with type annotation
-let f a :: Int -> Int =
+fun f a :: Int -> Int =
   a + 1
 
 
 -- Function definition with inline type annotation
-let f (a :: Int) -> Int =
+fun f (a :: Int) -> Int =
   a + 1
 
 
 -- Function definitions with type declaration
-let f :: Int -> Int
-let f a = a + 1
+val f :: Int -> Int
+fun f a = a + 1
 
 
 -- Function definitions with pattern matching
-def f 1 = 0
+fun f 1 = 0
   | f a = a + 1
 
 
 -- Function definition as a value
-def f = a -> a + 1
+val f = a -> a + 1
 
 
 -- [calculate_magic] prints a string representation of a magic number.
-def calculate_magic () =
+fun calculate_magic () =
   let
     magic_number = 42 + fib another_regular_number,
     regular_number = 1,
@@ -74,6 +74,17 @@ def calculate_magic () =
   in
     print ("The value of fib (magic_number + regular_number) is "
            ++ string (fib (magic_number + regular_number)) ++ "!")
+
+
+val x =
+  some_number + factorial 10
+  where
+    some_number = 23,
+    factorial n =
+      match n
+      | 0 -> 1
+      | n -> n * factorial (n - 1)
+      end
 
 
 
@@ -176,19 +187,19 @@ end
 
 
 -- * --
-
-def calculate_magic =>
+fun calculate_magic () =
   let magic_number = 42 + fib another_regular_number,
       regular_number = 1,
       another_regular_number = 2
-  let add_one x => x + 1
-  let factorial =>
+  let add_one x = x + 1
+  let factorial =
     match n
     | 0 => 1
     | n => n * factorial (n - 1)
-  let fib n =>
-    | 0 | 1 => 1
-    | n => fib (n - 1) + fib (n - 2)
+    end
+  let fib 0 = 1
+    | fib 1 = 1
+    | fib n = fib (n - 1) + fib (n - 2)
   in
     print ("The value of fib (magic_number + regular_number) is "
            ++ string (fib (magic_number + regular_number)) ++ "!")
