@@ -5,33 +5,23 @@
 type Dict k v = List (k, v)
 
 
-OrdMap [k1 => v2, k2 => v2, ..., kn => vn]
+val x = Map.new [k1 => v2, k2 => v2, ..., kn => vn]
 
 
 -- Dictionary is a hash-map
 
 type Person =
-  { name :: String
-    age  :: Int
+  { name :: String,
+    age  :: Int,
     city :: City }
 
-dylan :: Person =
-  { name => "Bob Dylan"
-     age => 32
-    city => `London }
-
-dylan :: Person =
-  { name = "Bob Dylan"
-     age = 32
+val dylan :: Person =
+  { name = "Bob Dylan",
+    age  = 32,
     city = `London }
 
-dylan :: Person =
-  { name: "Bob Dylan"
-     age: 32
-    city: `London }
-
-|| There are also structural run-time types (row polymorphism) that do not
-|| require type definition.
+-- There are also structural run-time types (row polymorphism) that do not
+-- require type definition.
 
 p1 = { `x => 231, `y => 500 }
 
@@ -40,8 +30,7 @@ p1 = { `x => 231, `y => 500 }
 coordinate = `x => 23
 
 
-people |> fold init: [] do (name => person) ->
-    
-end
+people_by_name
+|> fold (acc (name, p) -> [p.age & acc]) []
 
 
