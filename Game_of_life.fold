@@ -19,17 +19,15 @@ type Cell = Alive | Dead
 
 
 def random_cell :: IO Cell =
-  x <- random_io;
-  return (if x then Alive else Dead)
+  let x = random_io in
+  if x then Alive else Dead
 
 
 def random_world :: Int -> Int -> IO (World Cell_State)
 def random_world width height =
-  do!
-    states <- replicate (width * height) random_cell;
-    let bounds = ((0, 0), (width - 1, height - 1))
-    return (W.from_list bounds W.Torus states)
-  end
+  let states = replicate (width * height) random_cell,
+      bounds = ((0, 0), (width - 1, height - 1))
+  W.from_list bounds W.Torus states
 
 
 def neighbors_alive :: World CellState -> Loc -> Int
