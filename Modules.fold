@@ -155,12 +155,12 @@ end
 data Dog (name : String)
 
 instance Animal Dog {
-    init ~name = Dog name
+    make :name = Dog name
     name dog = dog.name
     talk dog = "woof!"
 }
 
-laika : Dog = init (name: "Laika Kosmonavt")
+laika : Dog = make name: "Laika Kosmonavt"
 name laika == "Laika Kosmonavt"
 talk laika == "woof!"
 
@@ -476,16 +476,86 @@ end
 interface Irmin_task
   include Tc.S0
 
-  def create :: date: Int64 -> owner: String -> uid: Int64? -> String -> Self
-  def date :: Self -> Int64
-  def uid :: Self -> Int64
-  def owner :: Self -> String
-  def messages :: Self -> List String
-  def add :: Self -> String -> Unit
-  def empty :: Self
+  val create :: date: Int64 -> owner: String -> uid: Int64? -> String -> Self
+  val date :: Self -> Int64
+  val uid :: Self -> Int64
+  val owner :: Self -> String
+  val messages :: Self -> List String
+  val add :: Self -> String -> Unit
+  val empty :: Self
 
-  type F = a -> Self
+  type f a = a -> self
 
-  def none :: F ()
+  val none :: f ()
 end
+
+
+-- • --
+
+
+-- replicate :: forall f a. Unfoldable f => Int -> a -> f a
+-- replicate n v = unfoldr step n
+--   where
+--     step :: Int -> Maybe (Tuple a Int)
+--     step i =
+--       if i <= 0 then Nothing
+--       else Just (Tuple v (i - 1))
+
+def replicate n x = unfold step n
+  where step i =
+    if i <= 0 then None
+    else Some (x, i - 1)
+
+-- • --
+
+-- Module Implemntations
+
+-- Module definition
+module M = { ... }
+-- module M = struct ... end
+
+-- Module definition with type
+module M = { ... }
+-- module M = struct ... end
+
+interface M = { ... }
+-- module type M = sig ... end
+
+module M = Foo { ... }
+-- module M = Foo (struct end)
+
+module M = Foo int { ... }
+-- module M = Foo.T0 (struct type nonrec t = int ... end)
+
+include Foo { ... }
+-- include Foo(struct ... end)
+
+include Foo int { ... }
+-- include Foo.T0(struct type nonrec t = int ... end)
+
+include Foo int
+-- include Foo.T0 with type t := int
+
+
+-- Module Interfaces
+
+module M :: I
+-- module M : I
+
+module M :: { ... }
+-- module M : sig ... end
+
+module M :: { ... }
+-- module type M : sig ... end
+
+
+
+-- • --
+M : sig
+M = mod { }
+
+m : val int
+f : fun int -> int
+
+
 

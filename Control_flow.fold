@@ -1,0 +1,31 @@
+
+
+
+if sqrt x > 100 then
+  print "it's too big"
+else
+  print "no"
+
+for i <- [0..9] do
+  print "i = %d" i
+end
+
+let x = &10 in
+while *x > 0 do
+  x := x - 1
+end
+
+when
+| f x > 0 -> "too big"
+| f x < 0 -> "too small"
+| otherwise -> "good"
+end
+
+case result do
+| Ok x -> print "It's ok, %s" x
+| Error msg -> print ("Oh no: " ++ msg)
+end
+
+
+
+

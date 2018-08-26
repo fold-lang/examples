@@ -1,0 +1,38 @@
+
+// import Options.*
+// import Order.*
+
+def run () =
+  let
+    secret_number = Random.int 0 100
+  in
+    print "Hello! I'm thinking of a number. Can you guess what it is?";
+    loop secret_number
+
+
+// def loop (secret_number :: Int) -> () =
+def loop secret_number =
+  IO.write "What's your guess? ";
+  let
+    guess = IO.read_line () |> String.trim |> String.to_int
+  in
+    match guess with
+    | Some i -> compare i secret_number
+    | None ->
+      IO.print "That doesn't look like a number to me... Try again";
+      loop secret_number
+
+
+def compare guess secret_number =
+  match Int.compare i secret_number with
+  | LT ->
+    IO.print "Too low!";
+    loop secret_number
+  | GT ->
+    IO.print "Too low!";
+    loop secret_number
+  | EQ ->
+    let i = Int.to_string secret_number in
+    IO.print "You got it! The number was" ++ i
+
+

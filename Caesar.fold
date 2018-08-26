@@ -1,0 +1,79 @@
+-- F#
+-- http://www.rosettacode.org/wiki/Caesar_cipher#F.23
+module caesar =
+  open System
+
+  let cipher n s =
+    let shift c =
+      if Char.IsLetter c then
+        let a = int (if Char.IsLower c then 'a' else 'A')
+        char ((int c - a + n) mod 26 + a)
+      else c
+    String.map shift s
+
+  let encrypt n = cipher n
+  let decrypt n = cipher (26 - n)
+
+
+-- OCaml
+module caesar = struct
+  open System
+
+  let cipher n s =
+    let shift c =
+      if Char.IsLetter c then
+        let a = int (if Char.IsLower c then 'a' else 'A') in
+        char ((int c - a + n) mod 26 + a)
+      else c in
+    String.map shift s
+
+  let encrypt n = cipher n
+  let decrypt n = cipher (26 - n)
+end
+
+
+-- Fold
+module Caesar =
+  open System
+
+  def cipher n s =
+    let shift c =
+      if Char.is_letter c then
+
+        a = int (Char.is_lower c ? 'a' : 'A')
+        a = int ('a' if Char.is_lower c else 'A')
+        a = int (if (Char.is_lower c) 'a' else 'A')
+        a = int (if Char.is_lower c then 'a' else 'A')
+        a = int (if (Char.is_lower c) 'a' else 'A' end)
+        a = int (if Char.is_lower c -> 'a' | else -> 'A')
+        a = int (if Char.is_lower c then 'a' else 'A' end)
+
+        char ((int c - a + n) mod 26 + a)
+      else
+        c
+      end
+    map shift s
+
+  def encrypt n = cipher n
+  def decrypt n = cipher (26 - n)
+
+
+
+-- Fold
+module Caesar
+  open System
+
+  def cipher n s =
+    let shift c =
+      if Char.is_letter c
+        a = int (if Char.is_lower c -> 'a' | else -> 'A')
+        char ((int c - a + n) mod 26 + a)
+      else
+        c
+      end in
+    map shift s
+
+  def encrypt n = cipher n
+  def decrypt n = cipher (26 - n)
+end
+

@@ -20,3 +20,18 @@ next (a & l) = yield a >> next l
 fold (*) 0 [1, 2, 3] = 6
 
 
+
+val add :: Vec a -> a -> Vec a
+{{ [Vec.add a v] adds the element [a] at the end of the vector [v].
+
+    {b Complexity:} {e O(log32(n)) ~ O(1)}
+
+    {b Examples:}
+
+  let v1 = vec [] in
+  let v2 = vec ['a'; 'b'; 'c'; 'd'] in
+
+  assert (Vec.add v1 'x' = vec ['x']);
+  assert (Vec.get (Vec.add v2 'x') 4 = 'x')
+}}
+

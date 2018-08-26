@@ -1,0 +1,248 @@
+
+-- Like all functional programming languages, a key feature of Fold is the
+-- function, which is used for abstraction. For instance, the factorial
+-- function can be expressed as:
+fun factorial n =>
+  if n == 0 then 1
+  else n * factorial (n - 1)
+
+
+-- The same function can be expressed with clausal function definitions where
+-- the if-then-else conditional is replaced by a sequence of templates of the
+-- factorial function evaluated for specific values, separated by '|', which
+-- are tried one by one in the order written until a match is found:
+fun factorial 0 => 1
+  | factorial n => n * factorial (n - 1)
+
+
+fun factorial
+  | 0 => 1
+  | n => n * factorial (n - 1)
+
+
+-- This can be rewritten using a case statement like this:
+fun factorial =>
+  n => case n do
+       | 0 => 1
+       | n => n * factorial (n - 1)
+       end
+
+
+-- or as a lambda function:
+def factorial = 0 => 1 | n => n * factorial (n - 1)
+
+
+-- Using a local function, this function can be rewritten in a more efficient
+-- tail recursive style.
+def factorial n =
+  let loop (0, acc) = acc
+    | loop (n, acc) = loop (n - 1, n * acc) in
+  loop (n, 1)
+
+
+type Loc = (Float, Float)
+
+
+def dist (x0, y0) (x1, y1) =>
+    let dx = x1 - x0,
+        dy = y1 - y0
+    in
+        Math.sqrt (dx * dx + dy * dy)
+
+
+def heron (a, b, c) =
+    let ab = dist a b,
+        bc = dist b c,
+        ac = dist a c,
+        perim = ab + bc + ac,
+        s = perim / 2.0
+    in
+        Math.sqrt (s * (s - ab) * (s - bc) * (s - ac))
+
+
+-- A data type is defined with the datatype keyword, as in:
+type Shape =
+  | Circle   (Loc, Float)      -- center and radius
+  | Square   (Loc, Float)      -- upper-left corner and side length; axis-aligned
+  | Triangle (Loc, Loc, Loc)   -- corners
+
+
+-- Order matters in pattern matching; patterns that are textually first are
+-- tried first. Pattern matching can be syntactically embedded in function
+-- definitions as follows:
+def area (Circle (_, r)) = 3.14 * r * r
+  | area (Square (_, s)) = s * s
+  | area (Triangle (a, b, c)) = heron (a, b, c) -- see above
+
+
+-- The so-called "clausal form" style function definition, where patterns
+-- appear immediately after the function name, is merely syntactic sugar for
+def area shape =
+  case shape
+    Circle (_, r) -> 3.14 * r * r,
+    Square (_, s) -> s * s,
+    Triangle (a, b, c) -> heron (a, b, c)
+  end
+
+
+-- Pattern exhaustiveness checking will make sure each case of the datatype has
+-- been accounted for, and will produce a warning if not. The following pattern is
+-- inexhaustive:
+def center (Circle (c, _)) = c
+  | center (Square ((x, y), s)) = (x + s / 2.0, y + s / 2.0)
+
+
+-- The set of clauses in the following function definition is exhaustive and
+-- not redundant:
+def has_corners (Circle _) = False
+  | has_corners _ = True
+
+-- The pattern in the second clause of the following (meaningless) function is
+-- redundant:
+def f (Circle ((x, y), r)) = x + y
+  | f (Circle _) = 1.0
+  | f _ = 0.0
+
+-- Functions can produce functions as return values:
+def const k = _ -> k
+
+-- Functions can also both consume and produce functions:
+def compose f g = x -> f (g x)
+
+-- The function List.map from the basis library is one of the most commonly
+-- used higher-order functions in Fold:
+def map _ [] = []
+  | map f [x & xs] = [f x & map f xs]
+
+-- A more efficient implementation of map would define a tail-recursive inner loop as follows:
+def map f xs =
+    let loop ([], acc) = List.rev acc
+      | loop ([x & xs], acc) = loop (xs, [f x & acc])
+    in
+        loop (xs, [])
+
+-- Exceptions are raised with the raise keyword, and handled with pattern
+-- matching try constructs.
+exception Undefined
+
+fun max [x] = x
+  | max [x & xs] = let m = max xs in if x > m then x else m
+  | max [] = raise Undefined
+
+do
+  try string (max xs) with
+  with { Undefined -> "empty list...there is no max!" }
+  |> print
+
+-- The exception system can be exploited to implement non-local exit, an
+-- optimization technique suitable for functions like the following.
+
+exception Zero
+
+def product ns =
+  let loop [] = 1
+    | loop [0 & _] = raise Zero
+    | loop [h & t] = h * product t in
+  try p ns with
+    | Zero => 0
+  end
+
+-- The interface for a queue data structure might be:
+interface Queue
+    type Self a
+    exception QueueError
+    val empty     :: Self a
+    val is_empty  :: Self a -> Bool
+    val singleton :: a -> Self a
+    val insert    :: a -> Self a -> Self a
+    val peek      :: Self a -> a
+    val remove    :: Self a -> (a, Self a)
+end
+
+
+-- One can now implement the queue data structure by writing a structure with
+-- this signature:
+module TwoListQueue :: Queue
+   type Self a = (List a, List a)
+
+   exception QueueError
+
+   def empty = ([], [])
+
+   def is_empty ([], []) = True
+     | is_empty _ = False
+
+   def singleton a = ([], [a])
+
+   def insert a ([], []) = ([], [a])
+     | insert a (ins, outs) = (a & ins, outs)
+
+   def peek (_, []) = raise QueueError
+     | peek (ins, a & outs) = a
+
+   def remove (_, []) = raise QueueError
+     | remove (ins, [a]) = (a, ([], rev ins))
+     | remove (ins, a & outs) = (a, (ins, outs))
+end
+
+
+functor BFS (structure Q: QUEUE) = (* after Okasaki, ICFP, 2000 *)
+  struct
+     datatype 'a tree
+      = E
+      | T of 'a * 'a tree * 'a tree
+    fun bfsQ (q  : 'a tree Q.queue)  : 'a list =
+      if Q.isEmpty q then []
+      else let
+         val (t, q') = Q.remove q
+        in case t
+          of E => bfsQ q'
+           | T (x, l, r) => let
+                val q'' = Q.insert (r, Q.insert (l, q'))
+               in
+                 x  :: bfsQ q''
+                end
+         end
+     fun bfs t = bfsQ (Q.singleton t)
+  end
+
+
+-- after Okasaki, ICFP, 2001
+module BFS (Q::Queue)
+    type Tree a = E | T (a, Tree a, Tree a)
+
+    def bfs_q (q :: Q Tree a) -> List a =
+        if Q.is_empty q then
+            []
+        else
+            let (t, q') = Q.remove q in
+            case t
+              | E -> bfs_q q'
+              | T (x, l, r) ->
+                    let q'' = Q.insert (r, Q.insert (l, q')) in
+                    x & bfs_q q''
+            end
+
+    def bfs t = bfs_q (Q.singleton t)
+end
+
+
+-- after Okasaki, ICFP, 2001
+module BFS (Q :: Queue)
+  type Tree a = E | T (a, Tree a, Tree a)
+
+  def bfs_q (q :: Q Tree a) -> List a =
+    if Q.is_empty q then
+      []
+    else
+      let (t, q') = Q.remove q in
+      case t
+      | E -> bfs_q q'
+      | T (x, l, r) ->
+        let q'' = Q.insert (r, Q.insert (l, q')) in
+        x & bfs_q q''
+      end
+
+  def bfs t = bfs_q (Q.singleton t)
+end
+

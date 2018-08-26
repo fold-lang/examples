@@ -1,0 +1,26 @@
+--
+-- Birthday paradox
+--
+-- Source: https://en.wikipedia.org/wiki/OCaml#Birthday_paradox
+--
+-- The following program calculates the smallest number of people in a room for
+-- whom the probability of completely unique birthdays is less than 50% (the
+-- so-called birthday paradox, where for 1 person the probability is 365/365
+-- (or 100%), for 2 it is 364/365, for 3 it is 364/365 × 363/365, etc.)
+-- (answer = 23).
+
+
+val year_size = 365.0
+
+fun birthday_paradox prob people =
+  let prob' =
+    (year_size - float people) / year_size * prob
+  in
+    if prob' < 0.5 then
+      print ("answer = %d" % (people + 1))
+    else
+      birthday_paradox prob' (people + 1)
+
+fun main () =
+  birthday_paradox 1.0 1
+

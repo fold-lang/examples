@@ -1,0 +1,227 @@
+
+-- Stream by matz
+seq(100) | filter{x-> x % 2 == 0} | stdout
+
+seq 100 |> filter (x -> x % 2 == 0) |> each print
+
+
+-- With anonymous functions
+
+Random.int n
+|> x -> x + 1
+|> x -> x * 2
+|> string
+|> print
+
+
+Random.int n
+|> (x -> x + 1)
+|> (x -> x * 2)
+|> string
+|> print
+
+
+
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ] >> map (n => n * n)             -- Squared
+          >> take_while (n => n < upper)  -- Below upper limit
+          >> filter is_odd                -- That are odd
+          >> xs => reduce xs sum          -- Sum them
+
+interface IO t
+    read  :: t -> a
+    write :: a -> t
+    open  :: a -> t
+    close :: t -> ()
+end
+
+instance Producer File
+  iter file =
+    try
+      yield (File.get_line file)
+      iter file
+    with End_of_file ->
+      File.close file
+      return ()
+    end
+
+  stop = File.close
+end
+
+
+instance IO List
+  next []      = return ()
+  next (a & l) = yield a >> next l
+
+  stop l = return ()
+end
+
+
+file :: Path -> Node Void String r
+file path =
+    guard (loop chan) >> close chan
+        where
+            chan = open path
+            loop chan =
+                try yield (input_line chan)
+                with End_of_file -> empty
+      end
+
+
+-- Using the syntax of UNIX pipes.
+
+-- By using the pipe operator, the transformations become clear and fimiliar
+-- for those who use the UNIX shells.
+-- The candidates for the operator are: `|`, `|>`, `=>`, `>>`, `->`, `>-`, `.`.
+
+
+"hello" | length
+
+fun professions people =
+  people
+    |> filter (p -> p.age > 18)
+    |> group by: (p -> p.age)
+    |> map (p -> p.profession)
+    |> to_set
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    | map (n -> n * n)
+    | take_while (n -> n < upper)
+    | filter is_odd
+    | reduce (+)
+
+-- * --
+
+"hello" |> length
+
+professions_of_adults =
+  people |> filter (p -> p # age > 18) |> group by: #age |> map #profession
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    |> map (n -> n * n)
+    |> take_while (n -> n < upper)
+    |> filter is_odd
+    |> reduce (+)
+
+
+-- * --
+
+"hello" => length
+
+professions_of_adults =
+  people => filter (p -> p # age > 18) => group by: #age => map #profession
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    => map (n -> n * n)
+    => take_while (n -> n < upper)
+    => filter is_odd
+    => reduce (+)
+
+
+-- * --
+
+"hello" >> length
+
+professions_of_adults =
+  people >> filter (p -> p # age > 18) >> group by: #age >> map #profession
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    >> map (n -> n * n)
+    >> take_while (n -> n < upper)
+    >> filter is_odd
+    >> reduce (+)
+
+-- * --
+
+
+"hello" -> length
+
+professions_of_adults =
+  people -> filter (p => p # age > 18) -> group by: #age -> map #profession
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    -> map (\n => n * n)
+    -> take_while (\n => n < upper)
+    -> filter is_odd
+    -> reduce (+)
+
+
+-- * --
+
+"hello" >- length
+
+professions_of_adults =
+  people >- filter (p -> p # age > 18) >- group by: #age >- map #profession
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    >- map (n -> n * n)
+    >- take_while (n -> n < upper)
+    >- filter is_odd
+    >- reduce (+)
+
+
+-- * --
+
+"hello" . length
+
+professions_of_adults =
+  people . filter (p -> p # age > 18) . group by: #age . map #profession
+
+sum_of_squared_odd_numbers upper =
+  [1 .. ]
+    .map (\n -> n * n)
+    .take_while (\n -> n < upper)
+    .filter is_odd
+    .reduce (+)
+
+
+
+--
+-- Pattern Matching
+--
+
+def map f list {
+    loop acc = {
+        []       -> rev acc
+        [x & xs] -> loop xs [f x & acc]
+    }
+    loop [] list
+}
+
+--
+-- ADTs
+--
+
+-- How would ADTs (union types) be declared?
+
+union List a
+  Nil
+  Cons a (List a)
+end
+
+type List a =
+  | Nil
+  | Cons a (List a)
+
+
+
+-- * --
+-- One really anoying thing about the `|>` pipelines is the bad alignment if
+-- all the arguments are function calls.
+
+cmd "cat" ["/tmp/data.csv"]
+>> cmd "cut" ["-d"; ","; "-f"; "2"]
+>> cmd "head" []
+
+-- A simple solution to this issue is to support an optional prefix version of `>>`.
+>> cmd "cat" ["/tmp/data.csv"]
+>> cmd "cut" ["-d"; ","; "-f"; "2"]
+>> cmd "head" []
+

@@ -1,9 +1,86 @@
 -- Pattern-matching
 
-def hello name
-  | if name == "world" => print "Hello WORLD"
-  | otherwise => print "Hello, $name"
-end
+fun hello name =
+  if name == "world" then
+    print "Hello WORLD"
+  else
+    print "Hello, $name"
+
+
+fun hello "wolrd" =
+    print "Hello WORLD"
+  | hello name =
+    print "Hello, $name"
+
+
+fun hello name =
+  case name do
+  | "world" ->
+    print "Hello, WOLRLD"
+
+  | other ->
+    print "Hello, $other"
+  end
+
+-- * --
+
+
+type Option a =
+  | None
+  | Some a
+
+
+function hello
+  | "wolrd" -> print "Hello WORLD"
+  | name -> print "Hello, $name"
+
+
+def max [x] = Some x
+
+  | max [x & xs] =
+    let m = max xs in
+    Some (if (x > m) then x else m)
+
+  | max [] = None
+
+
+def length list =
+  case list
+    [] -> 0
+    [x & xs] -> 1 + length xs
+  end
+
+
+max [x] =
+  Some x
+
+max [x & xs] =
+  let m = max xs in
+  Some (if (x > m) then x else m)
+
+max [] = None
+
+
+
+def max [x] = Some x
+
+  | max [x & xs] =
+      let m = max xs in
+      Some (if (x > m) then x else m)
+
+  | max [] = None
+
+
+
+
+def max =
+  | [x] -> Some x
+  | max [x & xs] ->
+      let m = max xs in
+      Some (if (x > m) then x else m)
+  | max [] -> None
+
+
 
 -- https://github.com/ocaml/ocaml/pull/722#issuecomment-243293068
 let consider_pattern tc1 tc2 pc fp' dc =
@@ -25,30 +102,31 @@ let consider_pattern tc1 tc2 pc fp' dc =
   | _ -> Lwt.return_none
 
 
-def! consider_pattern tc1 tc2 pc fp' dc
-  Log.debug ("Considering directory entry %s" % dc)
-  match String.cuts sep: "%" dc
-  | [] -> assert false
-  | [_] -> Lwt.return_none
-  | [dc1, dc2] ->
-    match cut_prefix tc1 dc1, cut_suffix tc2 dc2
-    | None, _ | _, None -> Lwt.return_none
-    | Some dc1', Some dc2' ->
-      Log.debug ("Matching %s against %s%s%s" % (pc, dc1', dc2'))
-      match cut_circumfix dc1' dc2' pc
-      | None -> Lwt.return_none
-      | Some pc' ->
-        consider_fixed (Filename.concat tp dc) fp' (Filename.concat rp pc')
+fun consider_pattern tc1 tc2 pc fp' dc =
+  Lwt.do
+    Log.debug ("Considering directory entry %s" % dc);
+    case String.cuts sep: "%" dc do
+    | [] -> assert false
+    | [_] -> Lwt.return_none
+    | [dc1, dc2] ->
+      case (cut_prefix tc1 dc1, cut_suffix tc2 dc2) do
+      | (None, _) | (_, None) -> Lwt.return_none
+      | (Some dc1', Some dc2') ->
+        Log.debug ("Matching %s against %s%s%s" % (pc, dc1', dc2'))
+        case cut_circumfix dc1' dc2' pc do
+        | None -> Lwt.return_none
+        | Some pc' ->
+          consider_fixed (Filename.concat tp dc) fp' (Filename.concat rp pc')
+        end
       end
+    | _ -> Lwt.return_none
     end
-  | _ -> Lwt.return_none
   end
-end
 
 --
 
-def eval expr env =
-  match macroexpand expr env
+fun eval expr env =
+  case macroexpand expr env do
   -- get_meta (add_meta x attr) == Some attr
   | Form [Atom (_, Symbol "get_meta"), Form [Atom (_, Symbol "add_meta"), x, attr]] ->
     (Form [Expr.symbol "Some", attr], env)
@@ -183,6 +261,25 @@ let result =
       print "bar";
       x
     end
+
+
+-- Views
+-- https://ghc.haskell.org/trac/ghc/wiki/ViewPatterns#Examples
+type conc_list 'a =
+  | Empty
+  | Single 'a
+  | Concat (conc_list 'a) (conc_list 'a)
+
+val view : conc_list 'a -> list 'a
+def view Empty = []
+  | view (Single a) = [a]
+  | view (Concat (view left_head left_tail) right) = left_head
+
+match x with
+| (x y) ->
+| (view x) x y
+
+
 
 
 

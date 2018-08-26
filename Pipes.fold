@@ -1,227 +1,100 @@
 
--- Stream by matz
-seq(100) | filter{x-> x % 2 == 0} | stdout
+{-
 
-seq 100 |> filter (x -> x % 2 == 0) |> each print
+      +---------+       +---------+       +---------+
+      |         |       |         |       |         |
+ ... --> node0 -->  i  --> node1 -->  o  --> node2 --> ...
+      |         |       |         |       |         |
+      +----|----+       +----|----+       +----|----+
+           v                 v                 v
+          ...                r                ...
+-}
 
+-- Core Types
 
--- With anonymous functions
-
-Random.int n
-|> x -> x + 1
-|> x -> x * 2
-|> string
-|> print
-
-
-Random.int n
-|> (x -> x + 1)
-|> (x -> x * 2)
-|> string
-|> print
+data Pipe (i, o, r) =
+  | Yield (o, Pipe (i, o, r))
+  | Await (i -> Pipe (i, o, r))
+  | Ready r
 
 
+-- Type Synonyms
 
+-- Effects neither `await` nor `yield`.
+type Effect r = Pipe (Void, Void, r)
 
-sum_of_squared_odd_numbers upper =
-  [1 .. ] >> map (n => n * n)             -- Squared
-          >> take_while (n => n < upper)  -- Below upper limit
-          >> filter is_odd                -- That are odd
-          >> xs => reduce xs sum          -- Sum them
+-- Producers can only `yield`.
+type Producer (o, r) = Pipe (Void, o, r)
 
-interface IO t
-    read  :: t -> a
-    write :: a -> t
-    open  :: a -> t
-    close :: t -> ()
-end
+-- Consumers can only `await`.
+type Consumer (i, r) = Pipe (i, Void, r)
 
-instance Producer File
-  iter file =
-    try
-      yield (File.get_line file)
-      iter file
-    with End_of_file ->
-      File.close file
-      return ()
-    end
+-- Pipe Monad
+instance Pipe :: Monad
+  def pure a = Ready r
 
-  stop = File.close
+  def f >>= Yield (b, n) = Yield (b, n >>= f)
+    | f >>= Await k      = Await (a -> k a >>= f)
+    | f >>= Ready r      = f r
 end
 
 
-instance IO List
-  next []      = return ()
-  next (a & l) = yield a >> next l
+-- Creation
 
-  stop l = return ()
-end
-
-
-file :: Path -> Node Void String r
-file path =
-    guard (loop chan) >> close chan
-        where
-            chan = open path
-            loop chan =
-                try yield (input_line chan)
-                with End_of_file -> empty
-      end
+def empty   = Ready ()
+def yield b = Yield (b, Ready ())
+def await   = Await (b -> Ready b)
 
 
--- Using the syntax of UNIX pipes.
+-- Category Instance
 
--- By using the pipe operator, the transformations become clear and fimiliar
--- for those who use the UNIX shells.
--- The candidates for the operator are: `|`, `|>`, `=>`, `>>`, `->`, `>-`, `.`.
+def id = Await (a -> Yield (a, id))
 
+def compose d u =
+  case (d, u)
+  -- Downstream is ready: notify the upstream about termination.
+  | (Ready r, _) -> Ready r
 
-"hello" | length
+  -- Downstream is yielding: exhaust downstream first.
+  | (Yield (b, d'), _) -> yield b >> compose d' u
 
-fun professions people =
-  people
-    |> filter (p -> p.age > 18)
-    |> group by: (p -> p.age)
-    |> map (p -> p.profession)
-    |> to_set
+  -- Downstream is awaiting: keep awaiting.
+  | (Await k, Yield (b, u')) -> compose (k b) u'
 
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    | map (n -> n * n)
-    | take_while (n -> n < upper)
-    | filter is_odd
-    | reduce (+)
-
--- * --
-
-"hello" |> length
-
-professions_of_adults =
-  people |> filter (p -> p # age > 18) |> group by: #age |> map #profession
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    |> map (n -> n * n)
-    |> take_while (n -> n < upper)
-    |> filter is_odd
-    |> reduce (+)
+  -- Upstream is ready: notify downstream about termination.
+  | (Await _, Ready r) -> Ready r
+  end
 
 
--- * --
+-- Infix composition
 
-"hello" => length
-
-professions_of_adults =
-  people => filter (p -> p # age > 18) => group by: #age => map #profession
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    => map (n -> n * n)
-    => take_while (n -> n < upper)
-    => filter is_odd
-    => reduce (+)
+def (n1 <<< n2) = compose n1 n2
+def (n2 >>> n1) = compose n1 n2
 
 
--- * --
+-- Helper Operations
 
-"hello" >> length
+def await_from node =
+  node >>> await
 
-professions_of_adults =
-  people >> filter (p -> p # age > 18) >> group by: #age >> map #profession
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    >> map (n -> n * n)
-    >> take_while (n -> n < upper)
-    >> filter is_odd
-    >> reduce (+)
-
--- * --
+def run n =
+  match n
+  | Ready r       -> Some r
+  | Await k       -> None
+  | Yield (a, n') -> run n'
+  end
 
 
-"hello" -> length
-
-professions_of_adults =
-  people -> filter (p => p # age > 18) -> group by: #age -> map #profession
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    -> map (\n => n * n)
-    -> take_while (\n => n < upper)
-    -> filter is_odd
-    -> reduce (+)
+def next n =
+  case n
+  | Ready _       -> None
+  | Yield (a, s') -> Some (a, s')
+  | Await k       -> fail "stream requires more input."
+  end
 
 
--- * --
-
-"hello" >- length
-
-professions_of_adults =
-  people >- filter (p -> p # age > 18) >- group by: #age >- map #profession
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    >- map (n -> n * n)
-    >- take_while (n -> n < upper)
-    >- filter is_odd
-    >- reduce (+)
-
-
--- * --
-
-"hello" . length
-
-professions_of_adults =
-  people . filter (p -> p # age > 18) . group by: #age . map #profession
-
-sum_of_squared_odd_numbers upper =
-  [1 .. ]
-    .map (\n -> n * n)
-    .take_while (\n -> n < upper)
-    .filter is_odd
-    .reduce (+)
-
-
-
---
--- Pattern Matching
---
-
-def map f list {
-    loop acc = {
-        []       -> rev acc
-        [x & xs] -> loop xs [f x & acc]
-    }
-    loop [] list
-}
-
---
--- ADTs
---
-
--- How would ADTs (union types) be declared?
-
-union List a
-  Nil
-  Cons a (List a)
-end
-
-type List a =
-  | Nil
-  | Cons a (List a)
-
-
-
--- * --
--- One really anoying thing about the `|>` pipelines is the bad alignment if
--- all the arguments are function calls.
-
-cmd "cat" ["/tmp/data.csv"]
->> cmd "cut" ["-d"; ","; "-f"; "2"]
->> cmd "head" []
-
--- A simple solution to this issue is to support an optional prefix version of `>>`.
->> cmd "cat" ["/tmp/data.csv"]
->> cmd "cut" ["-d"; ","; "-f"; "2"]
->> cmd "head" []
+def next Ready _       -> None
+  | Yield (a, s') -> Some (a, s')
+  | Await k       -> fail "stream requires more input."
+  end
 

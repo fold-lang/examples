@@ -1,10 +1,8 @@
 -- Quicksort
 
-def qsort input =
-  match input
-  | [] | [_] -> input
-  | [x & xs] ->
-    let (less, more) = List.partition (\x < p) xs in
+let qsort [] = []
+  | qsort ([_] as xs) = xs
+  | qsort [x & xs] =
+    let (less, more) = List.partition (\x < p) xs
     qsort less ++ [x & qsort more]
-  end
 

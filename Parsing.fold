@@ -1,0 +1,23 @@
+
+
+
+type List a =
+  | []
+  | (&) a (List a)
+
+
+type List a =
+  | []
+  | a & List a
+
+
+type List a =
+  | []
+  | a & List a
+
+
+def x & xs =
+  List.cons x xs
+
+
+

@@ -1,30 +1,30 @@
-{-
- - Function application
- -}
+(*
+   Function application
+ *)
+
+
+IO.write(String.join(map(show, args), with: sep) ++ terminator, file: IO.stdout)
 
 
 
+** Math-style
+IO.write(String.join(map(show, args), with: sep) ++ terminator, file: IO.stdout)
 
--- Math-style
-IO.write(String.join(map(show, args), with: sep) + end, file: IO.stdout)
+** Ruby Style, with commas
+IO.write (String.join (map show, args), with: sep) ++ terminator, file: IO.stdout
 
--- Ruby Style, with commas
-IO.write (String.join (map show, args), with: sep) + end, file: IO.stdout
+** Haskell-style
+IO.write ((String.join (map show args) with: sep) ++ terminator) file: IO.stdout
 
--- Haskell-style
-IO.write ((String.join (map show args) with: sep) + end) file: IO.stdout)
+** S-expressions
+(IO.write ((String.join (map show args) with: sep) ++ terminator) file: IO.stdout)
 
-IO.write $ (String.join (map show args) with: sep) + end) file: IO.stdout
+** Fold
+IO.write (String.join (map show args) with: sep ++ terminator) file: IO.stdout
 
--- S-expressions
-(IO.write ((String.join (map show args) with: sep) + end) file: IO.stdout))
+IO.write: (String.join (map show args) with: sep) ++ terminator file: IO.stdout
 
--- Fold
-IO.write: (String.join (map show args) with: sep) + end file: IO.stdout
-
-IO.write: ((String.join (map show args) with: sep) + end) file: IO.stdout
-
-IO.write: (String.join (map show args), with: sep) + end, file: IO.stdout
+IO.write: (String.join (map show args), with: sep) ++ terminator, file: IO.stdout
 
 
 """
@@ -34,8 +34,8 @@ Optional keyword arguments:
   sep:   string inserted between values, default a space.
   end:   string appended after the last value, default a newline.
 """
-function print args... (sep :: String = " ") (end :: String = "\n") -> Unit:
-    IO.write: (String.join (map show args) with: sep) + end
+function print args... (sep :: String = " ") (break : String = "\n") -> Unit:
+    IO.write: (String.join (map show args) with: sep) + break
         file: IO.stdout
 end
 
@@ -293,4 +293,9 @@ hello name (lang = `en) = do
     end
   print "$greeting, $(String.capitalize name)!"
 end
+
+
+-- * --
+
+
 

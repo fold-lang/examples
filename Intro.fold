@@ -1,13 +1,13 @@
---
--- Indroduction to Fold
---
--- Rizo Isrof, @rizo_isrof
--- Based on work of Fredrik Dyrkell, @lexicallyscoped
---
+**
+** Indroduction to Fold
+**
+** Rizo Isrof, @rizo_isrof
+** Based on work of Fredrik Dyrkell, @lexicallyscoped
+**
 
--- For installation instruction go to http://fold-lang.org/get
+** For installation instruction go to http://fold-lang.org/get
 
--- Show all packages installed
+** Show all packages installed
 
 => Pkg.list!
 :: [Pkg] = [

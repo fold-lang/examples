@@ -2,9 +2,58 @@
 -- Fold Macros
 --
 
+type Parser a
+{- The type for parser producing value [a]. -}
 
-macro for $x in $xs $body =
-  `(List.iter (x -> $body) $xs)
+
+val syntax :: Expr -> Parser (List Expr)
+{- [syntax form...] describes the parser using the elements from [form] and
+   returning a list of all non-terminal expressions. -}
+
+val argument = syntax expression
+
+syntax `val name `= value
+syntax `def name (args <- argument*) `= value
+syntax `if t `then a `else b
+
+
+val expression = syntax
+
+
+val if :: Parser (List Expr) =
+  sytnax `if t `then a `else b
+
+
+parser
+  | xs <- if =
+    match t
+    | True  -> a
+    | False -> b
+    end
+
+  | `if t `then a `end =
+    match t
+    | True  -> a
+    | False -> ()
+    end
+
+if Random.int () > 100 then
+  print "Too big"
+else
+  print "Too small"
+
+-- * --
+
+-- For-expression
+
+
+syntax `for x `in xs body =
+  List.iter (x -> body) xs)
+
+
+`for x `in xs body =>
+
+Form [Atom (Symbol "for"), ]
 
 
 for i in [1, 2, 3] do
@@ -12,23 +61,24 @@ for i in [1, 2, 3] do
 end
 
 
-macro if $t then $a else $b =
-  ```
-  match $t
-  | True  -> $a
-  | False -> $b
-  end
-  ```
-
-macro `if t `then a `else b =
-  ```
-  match $t
-  | True  -> $a
-  | False -> $b
-  end
-  ```
+syntax
+  | `define name          = `(var $name)
+  | `define name `= value = `(var $name = $value)
 
 
+def hello name =
+  print "hello"
+
+
+val x = 1
+
+
+def factorial 0 = 1
+  | factorial n = n * factorial (n - 1)
+
+
+def a + b =
+  Int.add a b
 
 -- * --
 

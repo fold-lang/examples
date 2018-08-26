@@ -3,9 +3,7 @@
 -- http://rosettacode.org/wiki/Binary_search#Metaphor
 --
 
-
-def binary_search :: {Ord a} -> List a -> a -> Int?
-def binary_search haystack needle =
+fun binary_search haystack needle =
   let search l h =
     let m = (low + high) / 2 in
     when
@@ -16,5 +14,4 @@ def binary_search haystack needle =
     end
   in
     search 0 (#haystack - 1)
-
 

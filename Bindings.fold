@@ -17,34 +17,34 @@ val a = 1,
 
 
 -- Function definition
-fun f a =
+def f a =
   a + 1
 
 
 -- Function definition with block
-fun f a =
+def f a =
   let result = a + 1 in
   print "result = $result"
 
 
 
 -- Function definition with type annotation
-fun f a :: Int -> Int =
+def f a :: Int -> Int =
   a + 1
 
 
 -- Function definition with inline type annotation
-fun f (a :: Int) -> Int =
+def f (a :: Int) -> Int =
   a + 1
 
 
 -- Function definitions with type declaration
-val f :: Int -> Int
-fun f a = a + 1
+def f :: Int -> Int
+def f a = a + 1
 
 
 -- Function definitions with pattern matching
-fun f 1 = 0
+def f 1 = 0
   | f a = a + 1
 
 
@@ -53,7 +53,7 @@ val f = a -> a + 1
 
 
 -- [calculate_magic] prints a string representation of a magic number.
-fun calculate_magic () =
+def calculate_magic () =
   let
     magic_number = 42 + fib another_regular_number,
     regular_number = 1,
@@ -264,7 +264,7 @@ in
   print "The value of a, f b, c are $a, $(f 4), $c!"
 
 
-def test () =>
+function test () =
   let
     a = 1
 

@@ -1,0 +1,150 @@
+-- Persistent bit-partitioned Vector Trie
+-- Indexed finite iterable
+
+module Array  = Data_array
+module List   = Data_list
+module String = Data_string
+module Iter   = Data_iter
+
+open Base
+
+
+@deriving Show
+type Self a = {
+  root   :: Array (Node a), -- Root node links.
+  last   :: Array a,        -- A pointer to the tail of the vector.
+  length :: Int,            -- The len of the vector.
+  shift  :: Int             -- Current maximum index shift.
+}
+
+
+@deriving Show
+type Node a =
+  | Link (Array (Node a))   -- Branch node with links to other nodes.
+  | Data (Array a)          -- Leaf node holds the actual data values.
+
+val default_shift = 5
+val trie_length   = 2 ** default_shift
+
+
+-- O(1)
+val empty = {
+  root   = Array [],
+  length = 0,
+  last   = Array [],
+  shift  = default_shift
+}
+
+
+-- O(1)
+function singleton a = {
+  root   = Array [],
+  last   = Array [a],
+  length = 1,
+  shift  = default_shift
+}
+
+
+let link (Link a) = a
+  | link _ = fail "link request on data node"
+
+
+def data (Data a) = a
+  | data _ = fail "data request on link node"
+
+
+def tail_offset len =
+  if len < 32 then 0
+  else ((len - 1) >>> shift_by) <<< shift_by
+
+
+def node_with_index v idx =
+  if idx >= tail_offset v.len then Data v.tail
+  else
+    let loop level node =
+      if level == 0 then node
+      else
+        let sub_idx = (idx >>> level) &&& trie_len - 1 in
+        loop (level - shift_by) (link node # sub_idx)
+    in
+      loop (v.shift - shift_by) (v.root # (idx >>> v.shift))
+
+
+-- O(log32(n)) ~ O(1)
+def idx v idx =
+  let node = node_with_index v idx in
+  data node # (idx &&& (trie_len - 1))
+
+
+-- O(log32(n)) ~ O(1)
+def new_path level tail =
+  if level = 0 then Data tail
+  else Link (Array [new_path (level - shift_by) tail])
+
+
+{- Pushes the tail array to its correct location in the tree.
+   If the parent is a leaf node, add the tail as a Data node.
+   If index maps to the existing child, extend the child with a Link to tail.
+   Otherwise add a new child to parent with a tail node. -}
+def push_tail len level (parent :: Array (Node a)) tail -> Array (Node a) =
+  let sub_idx =
+    ((len - 1) >>> level) &&& (trie_len - 1) in
+  when
+  -- Parent is a leaf node.
+  | level == shift_by ->
+    let target  = Data tail
+    let parent' = Array.copy_and_add parent target in
+    parent'
+  -- Maps to existing child. Replace the child with a link to target.
+  | sub_idx < Array.len parent ->
+     let child   = Array.get_exn parent sub_idx
+     let target  = Link (push_tail len (level - shift_by) (link child) tail)
+     let parent' = Array.copy parent in
+     Array.set parent' sub_idx target;
+     parent'
+  -- Does not map to existing child. Create a link and add path.
+  | otherwise ->
+    let target  = new_path (level - shift_by) tail
+    let parent' = Array.copy_and_add parent target in
+    parent'
+
+-- O(log32(n)) ~ O(1)
+def add v x =
+  when
+  | v.len == 0 -> singleton x
+
+  {{ Tail update.
+     Tail node has room for another element.
+     Duplicate the old tail and add a new element.
+     Return the updated vector with incremented len and a new tail. }}
+  | v.len land (trie_len - 1) != 0 ->
+    { v with len  = v.len + 1,
+             tail = Array.append v.tail x }
+
+  {{ Root overflow
+     The current len requires another shift.
+     Replace the current root with a new one and add the tail to the tree. }}
+  | v.len lsr shift_by > 1 lsl v.shift ->
+    { len = v.len + 1;
+      shift  = v.shift  + shift_by;
+      tail   = [| x |];
+      root   = [| Link v.root; new_path v.shift v.tail |] }
+  {{ Update the tree.
+     Push the tail to the root. }}
+  | otherwise ->
+    { length = v.length + 1,
+      shift  = v.shift,
+      tail   = Array [x],
+      root   = push_tail v.length v.shift v.root v.tail }
+
+def of_list l =
+  List.fold (v x -> add v x) empty l
+
+
+instance Vec :: Iter.Index
+  def len = Self.len
+  def idx = Self.idx
+end
+
+
+

@@ -1,0 +1,18 @@
+
+use Core
+
+fun main () =
+  let input =
+    when
+    | Array.length Sys.argv == 2 -> open_in Sys.argv.(1)
+    | Array.length Sys.argv == 1 -> stdin
+    | otherwise -> fail "usage: sigma [file]"
+    end
+  let result =
+    In_channel.fold_lines input
+      init: 0.0 f: do acc x ->
+        acc + if (is_empty x) then 0.0 else x::Float
+      end
+  in
+    print (Float.to_string result)
+

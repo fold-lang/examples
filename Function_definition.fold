@@ -4,7 +4,7 @@
 
 
 -- Just say hello.
-fun hello name =
+function hello name =
   print "Hello, $name!"
 
 
@@ -15,7 +15,7 @@ fun hello name =
 
 
 -- Hello function with type annotation.
-fun hello name :: String -> () =
+function hello name :: String -> () =
   print "Hello, $(name)!"
 
 
@@ -39,12 +39,27 @@ val hello =
 
 
 -- Factorial and fibonacci with argument pattern matching.
-fun factorial 0 = 1
+function
+  | factorial 0 = 1
   | factorial n = n * factorial (n - 1)
 
-fun fibonacci 0 = 0
+
+
+-- 1
+def factorial 0 = 1
+  | factorial n = n * factorial (n - 1)
+
+-- 2
+def factorial 0 => 1
+  | factorial n => n * factorial (n - 1)
+
+
+
+function
+  | fibonacci 0 = 0
   | fibonacci 1 = 1
   | fibonacci n = fibonacci (n - 1) + fibonacci (n - 2)
+
 
 
 -- Derivatives
@@ -81,9 +96,12 @@ range :: from: Int? -> to: Int -> by: Int? -> [Int]
 
 
 
-let take_while :: (a -> Bool) -> List a -> List a
 let take_while p [] = []
   | take_while p [x & xs] =
+    if p x then [x & take_while p xs] else []
+
+let take_while p [] => []
+  | take_while p [x & xs] =>
     if p x then [x & take_while p xs] else []
 
 
@@ -1183,4 +1201,179 @@ foldl (f :: a -> b -> b) =
   in
     foldl'
   end
+
+
+
+
+
+
+--
+
+
+
+
+val x :: Int = 2 + 2
+
+
+def sum x y = x + y
+
+
+def sum x y =
+  let
+    r = x + y,
+    b = r - 1
+  in
+    r / b
+
+
+val result = sum 2 2
+
+
+type color =
+  | Red
+  | Green
+  | Blue
+  | RGB (int, int, int)
+
+val c1 = Red                  -- color
+val c2 = RGB (255, 100, 0)    -- color
+
+type list =
+  | Empty
+  | List int list
+
+-- [] :: list
+val l1 = Empty
+
+-- [1, 2, 3, 4]
+-- 1 : 2 : 3: 4 : []
+val l2 = List 1 (List 2 (List 3 (List 4 Empty)))
+
+def len1 list =
+  match list with
+  | Empty -> 0
+  | List x rest -> 1 + len1 rest
+
+def len2 Empty = 0
+  | len2 (List x rest) = 1 + len2 rest
+
+val so_um_el = List 42 Empty
+
+-- len1 <=> len2
+
+type list2 =
+  | []
+  | (&) int list2
+
+val x = 1
+
+
+-- 1
+def len4 list =
+  match list
+  | [] -> 0
+  | x & rest -> 1 + len4 rest
+  end
+
+-- 2
+def len4 list =
+  match list {
+  | [] -> 0
+  | x & rest -> 1 + len4 rest
+  }
+
+
+def len4 list =
+  match list with
+  | [] => 0
+  | x & rest => 1 + len4 rest
+
+fn x => 1 + 1
+
+def sum x y => x + y
+
+f : N -> N
+    x => x + 1
+
+f(x) = x + 1
+
+def sum x y = {
+  print x;
+  x + y
+}
+
+def sum x y => {
+  print x;
+  x + y
+}
+
+
+
+
+def len4 [] => 0
+  | len4 (x & rest) => 1 + len4 rest
+
+def len3 [] = 0
+  | len3 (x & rest) = 1 + len3 rest
+
+
+len3 [...]
+
+match
+  ...
+end
+
+match {
+  ...
+}
+
+
+def get_cat_images url =
+    let
+      rep = HTTP.get url,
+      img = Data.process reg
+    in
+      View.render img
+  | get_cat_images "localhost" =
+    let resolve_url url =
+      match url {
+      | "localhost" ->
+        match url + ... {
+        | "rstrst" -> OK
+        | "..." -> No
+        }
+      | other -> DNS.resove url
+      }
+    in
+      resolve_url "http://..."
+  | get_cat_images "127.0.0.1" =
+    let
+      zip = File.open "/var/cats.zip",
+      img = Zip.uncompress zip
+    in
+      View.render img
+
+
+def get_cat_images url =>
+    let
+      rep = HTTP.get url,
+      img = Data.process reg
+    in
+      View.render img
+  | get_cat_images "localhost" =>
+    let resolve_url url =>
+      match url with
+      | "localhost" => "OK"
+      | other => DNS.resove url
+    in
+      resolve_url "http://..."
+  | get_cat_images "127.0.0.1" =>
+    let
+      zip = File.open "/var/cats.zip",
+      img = Zip.uncompress zip
+    in
+      View.render img
+
+
+
 
